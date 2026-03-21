@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When AI Meets the Pentagon | GoBeyond Advisory</title>
+<meta name="description" content="What the Anthropic-Pentagon standoff means for global AI infrastructure strategy. An intelligence brief by GoBeyond Advisory.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #B8964A;
+  --gold-light: #D4AF6A;
+  --gold-dim: rgba(184,150,74,0.1);
+  --gold-border: rgba(184,150,74,0.18);
+  --bg: #F8F5F0;
+  --bg-2: #F2EDE6;
+  --bg-dark: #0C0A07;
+  --bg-dark2: #141209;
+  --text: #1A1710;
+  --text-dim: rgba(26,23,16,0.55);
+  --text-faint: rgba(26,23,16,0.25);
+  --white: #FDFBF8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:22px 64px;display:flex;justify-content:space-between;align-items:center;background:rgba(248,245,240,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(184,150,74,0.15);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:0.04em;color:var(--text);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:40px;list-style:none;}
+.nav-links a{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color 0.3s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);background:var(--bg-dark);padding:11px 26px;text-decoration:none;transition:background 0.3s;}
+.nav-cta:hover{background:#2a2618;}
+
+.article-hero{padding:160px 64px 80px;background:var(--bg-dark);position:relative;overflow:hidden;}
+.article-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.article-hero-inner{max-width:820px;margin:0 auto;}
+.article-category{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;display:flex;align-items:center;gap:14px;}
+.article-category::before{content:'';width:32px;height:1px;background:var(--gold);}
+.article-title{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.5vw,72px);font-weight:300;line-height:1.05;color:var(--white);margin-bottom:20px;}
+.article-title em{font-style:italic;color:var(--gold);}
+.article-subtitle{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2vw,24px);font-weight:300;font-style:italic;color:rgba(253,251,248,0.5);margin-bottom:48px;line-height:1.4;}
+.article-meta{display:flex;align-items:center;gap:32px;padding-top:32px;border-top:1px solid rgba(184,150,74,0.15);}
+.meta-item{display:flex;flex-direction:column;gap:4px;}
+.meta-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(253,251,248,0.25);}
+.meta-value{font-family:'Cormorant Garamond',serif;font-size:16px;color:rgba(253,251,248,0.7);}
+.meta-divider{width:1px;height:36px;background:rgba(184,150,74,0.2);}
+
+.article-body{max-width:820px;margin:0 auto;padding:80px 64px 100px;}
+.article-lede{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2vw,26px);font-weight:300;font-style:italic;line-height:1.6;color:var(--text-dim);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid rgba(26,23,16,0.08);}
+.article-section{margin-bottom:56px;}
+.article-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,2.8vw,36px);font-weight:300;line-height:1.15;color:var(--text);margin-bottom:8px;margin-top:56px;}
+.article-h1-rule{width:40px;height:2px;background:var(--gold);margin-bottom:24px;}
+.article-h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text);margin-bottom:16px;margin-top:36px;}
+.article-p{font-family:'Cormorant Garamond',serif;font-size:clamp(17px,1.6vw,20px);line-height:1.85;color:var(--text-dim);margin-bottom:20px;}
+.article-p strong{color:var(--text);font-weight:600;}
+
+.pull-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.2vw,27px);font-weight:300;font-style:italic;color:var(--text);line-height:1.35;padding:36px 0 36px 36px;border-left:3px solid var(--gold);margin:48px 0;}
+
+.callout{background:var(--bg-dark);padding:40px 44px;margin:48px 0;position:relative;}
+.callout::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);}
+.callout-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.callout p{font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.75;color:rgba(253,251,248,0.65);margin-bottom:12px;}
+.callout p:last-child{margin-bottom:0;}
+.callout strong{color:var(--white);}
+
+.callout-light{background:var(--bg-2);padding:36px 44px;margin:40px 0;border-left:3px solid var(--gold);}
+.callout-light .callout-title{color:var(--gold);}
+.callout-light p{font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.75;color:var(--text-dim);margin-bottom:8px;}
+.callout-light p:last-child{margin-bottom:0;}
+
+.article-list{list-style:none;margin:24px 0 32px;display:flex;flex-direction:column;gap:16px;}
+.article-list li{font-family:'Cormorant Garamond',serif;font-size:clamp(17px,1.6vw,20px);line-height:1.75;color:var(--text-dim);padding-left:24px;position:relative;}
+.article-list li::before{content:'—';position:absolute;left:0;color:var(--gold);font-family:'Cormorant Garamond',serif;}
+.article-list li strong{color:var(--text);font-weight:600;}
+
+.checklist{list-style:none;margin:20px 0;display:flex;flex-direction:column;gap:10px;}
+.checklist li{font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.65;color:rgba(253,251,248,0.65);padding-left:22px;position:relative;}
+.checklist li::before{content:'→';position:absolute;left:0;color:var(--gold);}
+
+.article-closing{background:var(--bg-2);padding:44px;margin:56px 0;border-left:3px solid var(--gold);}
+.article-closing p{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,1.8vw,22px);font-style:italic;line-height:1.7;color:var(--text-dim);margin-bottom:16px;}
+.article-closing p:last-child{margin-bottom:0;}
+
+.about-box{background:var(--bg-dark);padding:44px;margin-top:72px;position:relative;}
+.about-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);}
+.about-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.about-box p{font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.75;color:rgba(253,251,248,0.6);margin-bottom:12px;}
+.about-box p:last-child{margin-bottom:0;}
+.about-links{margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);}
+
+.cta-strip{background:var(--bg-dark2);padding:64px;text-align:center;}
+.cta-strip-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.cta-strip h3{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3vw,42px);font-weight:300;color:var(--white);margin-bottom:28px;line-height:1.2;}
+.cta-strip h3 em{color:var(--gold);font-style:italic;}
+.cta-strip a.btn-dark{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);background:rgba(184,150,74,0.15);border:1px solid var(--gold-border);padding:16px 40px;text-decoration:none;transition:background 0.3s;}
+.cta-strip a.btn-dark:hover{background:rgba(184,150,74,0.25);}
+
+footer{padding:52px 64px;background:var(--bg-dark);display:flex;justify-content:space-between;align-items:center;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:rgba(248,245,240,0.9);}
+.footer-logo span{color:var(--gold);}
+.footer-tagline{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(248,245,240,0.3);}
+.footer-links{display:flex;gap:28px;list-style:none;}
+.footer-links a{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(248,245,240,0.25);text-decoration:none;transition:color 0.3s;}
+.footer-links a:hover{color:var(--gold);}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  nav{padding:18px 24px;}
+  .nav-links{display:none;}
+  .article-hero{padding:130px 24px 60px;}
+  .article-body{padding:48px 24px 72px;}
+  .callout,.callout-light,.about-box{padding:28px 24px;}
+  .cta-strip{padding:48px 24px;}
+  footer{flex-direction:column;gap:20px;text-align:center;padding:40px 24px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">GoBeyond<span>Advisory</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#focus">Focus Areas</a></li>
+    <li><a href="index.html#philosophy">Philosophy</a></li>
+    <li><a href="index.html#markets">Markets</a></li>
+    <li><a href="index.html#engage">Engage</a></li>
+  </ul>
+  <a href="index.html#engage" class="nav-cta">Engage Advisory</a>
+</nav>
+
+<section class="article-hero">
+  <div class="article-hero-inner">
+    <div class="article-category">Intelligence Brief · Geopolitical Risk</div>
+    <h1 class="article-title">When AI Meets the Pentagon:<br><em>What the Anthropic Standoff Means for Global Infrastructure Strategy</em></h1>
+    <p class="article-subtitle">The U.S. government's showdown with Anthropic is not just a domestic tech story. It is a geopolitical signal every sovereign AI investor and cross-border builder should be reading carefully.</p>
+    <div class="article-meta">
+      <div class="meta-item">
+        <div class="meta-label">Published By</div>
+        <div class="meta-value">GoBeyond Advisory</div>
+      </div>
+      <div class="meta-divider"></div>
+      <div class="meta-item">
+        <div class="meta-label">Date</div>
+        <div class="meta-value">February 2026</div>
+      </div>
+      <div class="meta-divider"></div>
+      <div class="meta-item">
+        <div class="meta-label">Category</div>
+        <div class="meta-value">AI Infrastructure · Geopolitical Risk</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="article-body">
+
+  <p class="article-lede">At GoBeyond Advisory, we see three strategic implications: AI sovereignty is accelerating globally, enterprise AI risk profiles shifted overnight, and Kingdom-minded builders navigating government contracts must now think in terms of red lines — not just revenue.</p>
+
+  <!-- SECTION 1 -->
+  <div class="article-section reveal">
+    <h2 class="article-h1">What Happened: The Dispute in Plain Language</h2>
+    <div class="article-h1-rule"></div>
+    <p class="article-p">In July 2025, the U.S. Department of Defense awarded Anthropic a contract worth up to $200 million to deploy its Claude AI model inside classified military networks. By February 2026, that partnership had collapsed into the most public AI governance confrontation in U.S. history.</p>
+    <p class="article-p">The fracture point: Anthropic refused to allow unrestricted military use of Claude, insisting on two hard safeguards — no use for fully autonomous lethal weapons and no mass domestic surveillance of American citizens. The Pentagon demanded access for "all lawful purposes," without exception.</p>
+    <p class="article-p">After a week of failed negotiations, Defense Secretary Pete Hegseth set a 5:01 PM deadline on February 27 for Anthropic to stand down. Anthropic did not.</p>
+    <ul class="article-list">
+      <li>President Trump ordered all federal agencies to immediately cease using Anthropic technology, with a 6-month phaseout for defense agencies.</li>
+      <li>Hegseth designated Anthropic a "Supply-Chain Risk to National Security" — a classification normally reserved for companies tied to foreign adversaries.</li>
+      <li>The designation forces every company doing business with the Pentagon to certify they have no commercial relationship with Anthropic.</li>
+      <li>Anthropic announced it would challenge the designation in court.</li>
+      <li>OpenAI, within hours, announced a new Pentagon deal — positioning itself to absorb the displaced contracts.</li>
+    </ul>
+    <div class="pull-quote">"We cannot in good conscience accede to their request." — Anthropic CEO Dario Amodei · "Anthropic's stance is fundamentally incompatible with American principles." — Sec. Pete Hegseth</div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="article-section reveal">
+    <h2 class="article-h1">Geopolitical Implications for Cross-Border AI Infrastructure</h2>
+    <div class="article-h1-rule"></div>
+    <p class="article-p">For GoBeyond Advisory clients operating across the GCC, West Africa, and the broader emerging market corridor, this dispute is not peripheral noise. It is a structural signal with direct implications for AI infrastructure investment, sovereign procurement, and cross-border capital positioning.</p>
+
+    <h3 class="article-h2">The Acceleration of AI Sovereignty</h3>
+    <p class="article-p">Governments are no longer willing to be passive consumers of AI from private Western companies. The Pentagon's actions — however aggressive — reflect a deeper tension that every sovereign player is now grappling with: who controls the AI that runs national infrastructure?</p>
+    <p class="article-p">For GCC sovereign wealth funds and West African national technology initiatives, this conflict validates the case for developing sovereign AI capacity — either through proprietary models, regional partnerships, or strategic joint ventures with AI developers willing to negotiate governance terms bilaterally.</p>
+    <p class="article-p">The Anthropic case shows that even a $380 billion company with frontier technology can be excluded from a market overnight. Sovereign clients should be building AI infrastructure with redundancy, governance clarity, and jurisdictional independence built in from the start.</p>
+
+    <h3 class="article-h2">The Supply Chain Risk Designation: A Weaponized Procurement Tool</h3>
+    <p class="article-p">The Hegseth designation is the most consequential element of this story. Unlike a simple contract cancellation, a supply-chain risk designation cascades through the entire vendor ecosystem. Every company with Pentagon exposure must now audit and eliminate any commercial relationship with Anthropic.</p>
+    <p class="article-p">For cross-border infrastructure clients, this is a preview of a coming bifurcation: AI supply chains will increasingly be segmented by geopolitical alignment, not just technical capability.</p>
+
+    <div class="callout reveal">
+      <div class="callout-title">GoBeyond Advisory View</div>
+      <p>We anticipate the supply-chain risk framework will be expanded or replicated — either by the U.S. or by allied governments — as a policy lever for managing AI vendor alignment. Cross-border clients should begin mapping AI vendor exposure today, not after a designation forces the issue.</p>
+    </div>
+
+    <h3 class="article-h2">OpenAI Moves Into the Gap — and What It Signals</h3>
+    <p class="article-p">OpenAI's swift announcement of a Pentagon deal hours after the Anthropic ban is a strategic lesson in positioning. Altman drew clear lines — no autonomous weapons without human approval, no domestic surveillance — but framed them as operational parameters rather than moral vetoes. The Pentagon accepted.</p>
+    <p class="article-p">This is the template going forward: AI companies that want government contracts must frame ethical constraints as technical specifications and operational safeguards, not ideological red lines. The language of sovereignty, security, and operational reliability will carry — the language of conscience will not.</p>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="article-section reveal">
+    <h2 class="article-h1">Strategic Risk Analysis for Enterprise AI Buyers</h2>
+    <div class="article-h1-rule"></div>
+    <p class="article-p">The Anthropic-Pentagon conflict has fundamentally altered the enterprise AI risk profile — not just for government clients, but for any organization with significant exposure to the AI vendor ecosystem.</p>
+
+    <h3 class="article-h2">Vendor Concentration Risk Is Now a Geopolitical Risk</h3>
+    <p class="article-p">Over-dependence on any single AI provider now carries geopolitical risk in addition to operational and commercial risk. Multi-cloud, multi-model AI architectures are no longer just best practice — they are risk mitigation imperatives.</p>
+
+    <div class="callout-light reveal">
+      <div class="callout-title">Risk Checklist for Enterprise AI Buyers</div>
+      <ul class="checklist" style="list-style:none;margin-top:8px;">
+        <li>Map all AI vendor dependencies across your supply chain and vendor ecosystem</li>
+        <li>Identify which vendors have active or potential government contract exposure</li>
+        <li>Audit AI deployment contexts against your own ethical and operational red lines</li>
+        <li>Develop contingency transition plans for your top 2–3 AI providers</li>
+        <li>Review AI governance frameworks for geopolitical risk categories</li>
+        <li>Brief legal and compliance teams on supply-chain risk designation implications</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="article-section reveal">
+    <h2 class="article-h1">A Word to Kingdom-Minded Builders</h2>
+    <div class="article-h1-rule"></div>
+    <p class="article-p">At GoBeyond Advisory, we believe that commerce is a vehicle for Kingdom impact — and that conviction does not disappear when the stakes are high. The Anthropic story deserves reflection from that lens.</p>
+    <p class="article-p">Dario Amodei and the Anthropic leadership team made a decision rooted in conscience — they would not remove safeguards against mass surveillance and autonomous killing machines, regardless of the commercial consequences. The structure of that decision — holding a principled line under enormous financial and political pressure — is a model Kingdom-minded builders should understand.</p>
+    <div class="pull-quote">The cost of conviction is often visibility. Anthropic now has global visibility — not because they sought it, but because they would not move.</div>
+    <p class="article-p">There is a harder lesson here too. Anthropic entered a $200 million government contract without fully securing the governance language it needed to protect its principles. <strong>The time to negotiate your red lines is before the contract, not after the deadline.</strong></p>
+
+    <ul class="article-list">
+      <li>Define your non-negotiables in writing before entering government or institutional partnerships. Vague language is not protection.</li>
+      <li>When a government client pressures you to compromise a principled position, the response should be prepared — not improvised under deadline.</li>
+      <li>Understand that in cross-border markets, the definition of "lawful purposes" varies by jurisdiction.</li>
+      <li>Integrity at scale requires institutional infrastructure, not just personal conviction.</li>
+    </ul>
+  </div>
+
+  <!-- CLOSING -->
+  <div class="article-closing reveal">
+    <p>The central tension — between the values of technology builders and the demands of state power — will only intensify as AI becomes more deeply embedded in military, infrastructure, and governance systems worldwide.</p>
+    <p>For Kingdom-minded builders navigating this landscape, the mandate is clear: build with excellence, negotiate with wisdom, and hold your principles before the pressure arrives.</p>
+  </div>
+
+  <!-- ABOUT BOX -->
+  <div class="about-box reveal">
+    <div class="about-label">About GoBeyond Advisory</div>
+    <p>GoBeyond Advisory is a Houston-based infrastructure advisory firm specializing in AI infrastructure monetization and cross-border capital strategy across the United States, West Africa, and the Gulf Cooperation Council. The firm advises sovereign capital allocators, enterprise infrastructure operators, and institutional partners on AI infrastructure strategy, government relations, and cross-border deal architecture.</p>
+    <div class="about-links">gobeyondadvisory.com · Houston, Texas · Cross-Border Capital · AI Infrastructure · Kingdom-Minded Strategy</div>
+  </div>
+
+</div>
+
+<div class="cta-strip">
+  <div class="cta-strip-label">GoBeyond Advisory</div>
+  <h3>Navigate the AI infrastructure landscape<br><em>with clarity and conviction.</em></h3>
+  <a href="index.html#engage" class="btn-dark">Engage Advisory →</a>
+</div>
+
+<footer>
+  <div class="footer-logo">GoBeyond<span>Advisory</span></div>
+  <div class="footer-tagline">Strategic Capital Deployment for Emerging Infrastructure Markets</div>
+  <ul class="footer-links">
+    <li><a href="index.html#focus">Focus</a></li>
+    <li><a href="index.html#markets">Markets</a></li>
+    <li><a href="index.html#engage">Engage</a></li>
+    <li><a href="founders.html">Founders</a></li>
+  </ul>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+} else {
+  reveals.forEach(el => el.classList.add('visible'));
+}
+</script>
+</body>
+</html>

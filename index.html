@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoBeyond Advisory | Strategic Investment & Infrastructure Advisory</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #B8964A;
+  --gold-light: #D4AF6A;
+  --gold-dim: rgba(184,150,74,0.1);
+  --gold-border: rgba(184,150,74,0.18);
+  --bg: #F8F5F0;
+  --bg-2: #F2EDE6;
+  --bg-dark: #0C0A07;
+  --bg-dark2: #141209;
+  --text: #1A1710;
+  --text-dim: rgba(26,23,16,0.55);
+  --text-faint: rgba(26,23,16,0.25);
+  --white: #FDFBF8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  padding:22px 64px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(248,245,240,0.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(184,150,74,0.15);
+}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:0.04em;color:var(--text);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:40px;list-style:none;}
+.nav-links a{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color 0.3s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);background:var(--bg-dark);padding:11px 26px;text-decoration:none;transition:background 0.3s;}
+.nav-cta:hover{background:#2a2618;}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:grid;grid-template-rows:1fr auto;
+  padding-top:80px;
+  background:#F8F5F0;
+  position:relative;overflow:hidden;
+}
+.hero-inner{
+  padding:100px 64px 60px;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:center;
+  min-height:calc(100vh - 80px);
+}
+.hero-left{}
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:32px;
+  display:flex;align-items:center;gap:14px;
+  animation:fadeUp 0.7s ease 0.1s both;
+}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--gold);}
+.hero-headline{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,6vw,82px);
+  font-weight:300;line-height:1.05;letter-spacing:-0.01em;
+  margin-bottom:28px;
+  animation:fadeUp 0.7s ease 0.25s both;
+}
+.hero-headline em{font-style:italic;color:var(--gold);}
+.hero-body{
+  font-size:16px;line-height:1.8;color:var(--text-dim);
+  max-width:440px;margin-bottom:48px;
+  animation:fadeUp 0.7s ease 0.4s both;
+}
+.hero-actions{
+  display:flex;align-items:center;gap:28px;
+  animation:fadeUp 0.7s ease 0.55s both;
+}
+.btn-dark{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);background:var(--bg-dark);padding:16px 36px;text-decoration:none;transition:background 0.3s;}
+.btn-dark:hover{background:#2a2618;}
+.btn-ghost{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color 0.3s;}
+.btn-ghost:hover{color:var(--gold);}
+
+.hero-right{
+  animation:fadeUp 0.7s ease 0.35s both;
+}
+.hero-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.hero-stat{
+  background:var(--bg-dark);padding:36px 28px;
+}
+.hero-stat-num{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:10px;}
+.hero-stat-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(248,245,240,0.4);}
+
+/* MARQUEE */
+.marquee{background:var(--bg-dark);padding:16px 0;overflow:hidden;white-space:nowrap;}
+.marquee-track{display:inline-flex;gap:64px;animation:ticker 25s linear infinite;}
+.marquee-item{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(184,150,74,0.6);display:flex;align-items:center;gap:20px;}
+.marquee-dot{width:3px;height:3px;background:var(--gold);border-radius:50%;}
+
+/* FOCUS AREAS */
+.focus{padding:100px 64px;background:var(--white);}
+.focus-inner{max-width:1100px;margin:0 auto;}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,54px);font-weight:300;line-height:1.1;margin-bottom:20px;}
+.section-title em{font-style:italic;color:var(--gold);}
+.section-body{font-size:15px;line-height:1.85;color:var(--text-dim);max-width:580px;margin-bottom:64px;}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.pillar{
+  background:var(--bg-2);padding:44px 36px;
+  border-top:2px solid transparent;
+  transition:border-color 0.3s,background 0.3s;
+  position:relative;
+}
+.pillar:hover{border-color:var(--gold);background:var(--bg);}
+.pillar-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;color:var(--text-faint);margin-bottom:28px;}
+.pillar-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;margin-bottom:14px;line-height:1.2;}
+.pillar-body{font-size:14px;line-height:1.7;color:var(--text-dim);}
+
+/* PHILOSOPHY — DARK SECTION */
+.philosophy{
+  padding:100px 64px;
+  background:var(--bg-dark);
+  color:var(--white);
+}
+.philosophy-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;}
+.phil-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
+.phil-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,44px);font-weight:300;font-style:italic;line-height:1.2;color:var(--white);margin-bottom:32px;}
+.phil-quote em{color:var(--gold);font-style:normal;}
+.phil-body{font-size:15px;line-height:1.8;color:rgba(253,251,248,0.5);}
+.phil-principles{display:flex;flex-direction:column;gap:3px;}
+.phil-principle{
+  background:rgba(248,245,240,0.04);
+  border-left:2px solid rgba(184,150,74,0.2);
+  padding:20px 24px;
+  font-size:14px;line-height:1.6;color:rgba(253,251,248,0.55);
+  transition:border-color 0.3s,background 0.3s;
+}
+.phil-principle:hover{border-color:var(--gold);background:rgba(248,245,240,0.07);}
+.phil-principle strong{color:var(--white);font-weight:600;display:block;margin-bottom:4px;font-size:13px;letter-spacing:0.04em;}
+
+/* GEOGRAPHY */
+.geo{padding:100px 64px;background:var(--white);}
+.geo-inner{max-width:1100px;margin:0 auto;}
+.geo-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:60px;align-items:start;}
+.geo-list{list-style:none;display:flex;flex-direction:column;}
+.geo-item{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid rgba(26,23,16,0.06);transition:padding-left 0.3s;}
+.geo-item:hover{padding-left:8px;}
+.geo-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:600;color:var(--text);}
+.geo-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);}
+.focus-tags{display:flex;flex-direction:column;gap:12px;}
+.focus-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);padding:12px 20px;transition:background 0.3s;}
+.focus-tag:hover{background:rgba(184,150,74,0.18);}
+
+/* CONTACT */
+.contact{padding:100px 64px;background:var(--bg-2);}
+.contact-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start;}
+.contact-form{display:flex;flex-direction:column;gap:18px;}
+.form-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px;}
+.form-input{background:var(--white);border:1px solid rgba(26,23,16,0.1);border-bottom:1px solid var(--gold-border);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;padding:14px 16px;outline:none;transition:border-color 0.3s;width:100%;}
+.form-input:focus{border-color:var(--gold);}
+.form-input::placeholder{color:var(--text-faint);}
+textarea.form-input{resize:vertical;min-height:110px;}
+.form-submit{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);background:var(--bg-dark);border:none;padding:17px 40px;cursor:pointer;width:100%;margin-top:8px;transition:background 0.3s;}
+.form-submit:hover{background:#2a2618;}
+.contact-info{padding-top:8px;}
+.contact-detail{margin-bottom:36px;}
+.contact-detail-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
+.contact-detail-value{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text);}
+.contact-detail-value a{color:var(--gold);text-decoration:none;}
+
+/* FOOTER */
+footer{padding:52px 64px;background:var(--bg-dark);display:flex;justify-content:space-between;align-items:center;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:rgba(248,245,240,0.9);}
+.footer-logo span{color:var(--gold);}
+.footer-tagline{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(248,245,240,0.3);}
+.footer-links{display:flex;gap:28px;list-style:none;}
+.footer-links a{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(248,245,240,0.25);text-decoration:none;transition:color 0.3s;}
+.footer-links a:hover{color:var(--gold);}
+
+/* INSIGHTS */
+.insights{padding:100px 64px;background:var(--bg-dark);}
+.insights-inner{max-width:1100px;margin:0 auto;}
+.insights .section-label{color:var(--gold);}
+.insights .section-title{color:var(--white);}
+.insights .section-title em{color:var(--gold);}
+.insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:48px;align-items:stretch;}
+.insight-card{
+  background:rgba(248,245,240,0.04);
+  border-top:2px solid rgba(184,150,74,0.3);
+  border-bottom:1px solid rgba(184,150,74,0.1);
+  padding:40px 36px;
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  min-height:320px;
+  transition:border-color 0.3s,background 0.3s;
+  position:relative;
+}
+.insight-card:hover{border-color:var(--gold);background:rgba(248,245,240,0.07);}
+.insight-card-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.insight-card-tag::before{content:'';width:20px;height:1px;background:var(--gold);}
+.insight-card-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;line-height:1.25;color:var(--white);margin-bottom:16px;}
+.insight-card-body{font-size:13px;line-height:1.75;color:rgba(253,251,248,0.4);margin-bottom:28px;flex:1;}
+.insight-card-link{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);}
+.insight-card-date{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:rgba(253,251,248,0.2);margin-top:24px;}
+
+@media(max-width:900px){
+  .insights{padding-left:24px;padding-right:24px;}
+  .insights-grid{grid-template-columns:1fr;gap:16px;}
+  .insight-card{min-height:unset;}
+}
+
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.reveal{opacity:1;transform:translateY(0);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal.animate{opacity:0;transform:translateY(24px);}
+
+@media(max-width:900px){
+  nav{padding:18px 24px;}
+  .nav-links{display:none;}
+  .hero-inner{grid-template-columns:1fr;gap:40px;padding:60px 24px;}
+  .hero-right{display:none;}
+  .focus,.geo,.contact,.philosophy{padding-left:24px;padding-right:24px;}
+  .pillars,.philosophy-inner,.geo-grid,.contact-inner{grid-template-columns:1fr;gap:40px;}
+  footer{flex-direction:column;gap:20px;text-align:center;padding:40px 24px;}
+}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "GoBeyond Advisory",
+  "url": "https://gobeyondadvisory.com",
+  "description": "Institutional advisory firm connecting capital, government, and emerging market infrastructure across West Africa, the Gulf Cooperation Council, and beyond.",
+  "founder": {
+    "@type": "Person",
+    "name": "Mike Ogbebor",
+    "url": "https://mikeogbebor.com",
+    "jobTitle": "Founder & Managing Director"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Houston",
+    "addressRegion": "TX",
+    "addressCountry": "US"
+  },
+  "areaServed": ["United States","Nigeria","Ghana","Côte d'Ivoire","United Arab Emirates","Gulf Cooperation Council","Southeast Asia"],
+  "knowsAbout": ["Infrastructure Advisory","Cross-Border Capital Strategy","Public-Private Partnerships","Emerging Markets Investment","West Africa Capital Markets","GCC Investment Advisory","AI Infrastructure Deployment","Government Modernization","Digital Settlement Infrastructure"],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "hello@gobeyondadvisory.com",
+    "contactType": "General Inquiries"
+  },
+  "sameAs": ["https://mikeogbebor.com","https://eco-rails.com","https://gobeyondseries.com"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Mike Ogbebor",
+  "url": "https://mikeogbebor.com",
+  "jobTitle": "Founder & Managing Director",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "GoBeyond Advisory",
+    "url": "https://gobeyondadvisory.com"
+  },
+  "description": "Houston-based entrepreneur, strategic advisor, and infrastructure expert operating across West Africa, the GCC, and beyond.",
+  "address": {"@type": "PostalAddress","addressLocality": "Houston","addressRegion": "TX","addressCountry": "US"},
+  "sameAs": ["https://gobeyondadvisory.com","https://eco-rails.com","https://gobeyondseries.com","https://globalkidneyfoundation.com","https://newlineinvestors.com"]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo" style="text-decoration:none;">GoBeyond<span>Advisory</span></a>
+  <ul class="nav-links">
+    <li><a href="#focus">Focus Areas</a></li>
+    <li><a href="#philosophy">Philosophy</a></li>
+    <li><a href="#markets">Markets</a></li>
+    <li><a href="#insights">Insights</a></li>
+    <li><a href="#engage">Engage</a></li>
+  </ul>
+  <a href="#engage" class="nav-cta">Engage Advisory</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Strategic Investment & Infrastructure Advisory</div>
+      <h1 class="hero-headline">Capital deployed<br>where it creates<br><em>lasting infrastructure.</em></h1>
+      <p class="hero-body">GoBeyond Advisory advises, structures, and deploys capital into high-impact infrastructure and real-asset opportunities across growth markets. Houston. West Africa. Middle East.</p>
+      <div class="hero-actions">
+        <a href="#engage" class="btn-dark">Engage Advisory</a>
+        <a href="#focus" class="btn-ghost">View Focus Areas →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat-grid">
+        <div class="hero-stat">
+          <div class="hero-stat-num">3</div>
+          <div class="hero-stat-label">Core Advisory Pillars</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">4+</div>
+          <div class="hero-stat-label">Active Markets</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">AI</div>
+          <div class="hero-stat-label">Infrastructure Integrated</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">∞</div>
+          <div class="hero-stat-label">Long-Term Horizon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="marquee-dot"></span>Infrastructure Advisory</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Cross-Border Capital Strategy</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Public–Private Structuring</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>West Africa</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Middle East</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>AI Integration</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Sovereign Markets</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Infrastructure Advisory</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Cross-Border Capital Strategy</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Public–Private Structuring</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>West Africa</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Middle East</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>AI Integration</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Sovereign Markets</span>
+  </div>
+</div>
+
+<section class="focus" id="focus">
+  <div class="focus-inner">
+    <div class="section-label reveal">Core Pillars</div>
+    <h2 class="section-title reveal">Advisory built around<br><em>structural impact.</em></h2>
+    <p class="section-body reveal">GoBeyond Advisory operates at the intersection of infrastructure, capital, and AI — advising institutions, sovereigns, and enterprises navigating complex cross-border growth.</p>
+    <div class="pillars reveal">
+      <div class="pillar">
+        <div class="pillar-num">Pillar 01</div>
+        <div class="pillar-title">Infrastructure Advisory</div>
+        <div class="pillar-body">End-to-end advisory on infrastructure strategy, feasibility, and execution across real estate, digital infrastructure, energy, and public works in emerging markets.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">Pillar 02</div>
+        <div class="pillar-title">Cross-Border Capital Strategy</div>
+        <div class="pillar-body">Structuring capital across sovereign boundaries — FX strategy, compliance alignment, and institutional-grade deal architecture for Africa, the GCC, and Southeast Asia.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">Pillar 03</div>
+        <div class="pillar-title">Public–Private & Institutional Structuring</div>
+        <div class="pillar-body">Bridging government mandates and private capital. Structuring PPP frameworks, government modernization proposals, and institutional partnership agreements.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="philosophy" id="philosophy">
+  <div class="philosophy-inner">
+    <div class="reveal">
+      <div class="phil-label">Our Philosophy</div>
+      <div class="phil-quote">Capital is most effective when aligned with <em>long-term infrastructure</em>, disciplined execution, and local market understanding.</div>
+      <p class="phil-body">GoBeyond Advisory does not pursue short-term speculation. We partner with institutions, governments, and enterprise clients to build the systems that generate lasting value across generations.</p>
+    </div>
+    <div class="phil-principles reveal">
+      <div class="phil-principle"><strong>Infrastructure Leads</strong>Capital follows infrastructure. We identify and build the foundational layer first.</div>
+      <div class="phil-principle"><strong>Institutional Tone, Boutique Access</strong>The discipline of an institution. The agility of a boutique.</div>
+      <div class="phil-principle"><strong>Company Captures Value</strong>Personal authority builds trust. The advisory platform converts it into lasting enterprise value.</div>
+      <div class="phil-principle"><strong>Disciplined Execution</strong>Strategy without execution is noise. We close.</div>
+      <div class="phil-principle"><strong>Long-Term Stewardship</strong>We measure success in decades, not quarters.</div>
+    </div>
+  </div>
+</section>
+
+<section class="geo" id="markets">
+  <div class="geo-inner">
+    <div class="section-label reveal">Geographic Focus</div>
+    <h2 class="section-title reveal">Where we <em>operate.</em></h2>
+    <div class="geo-grid">
+      <ul class="geo-list reveal">
+        <li class="geo-item"><span class="geo-name">Houston, Texas</span><span class="geo-tag">HQ</span></li>
+        <li class="geo-item"><span class="geo-name">Nigeria — Abuja & Lagos</span><span class="geo-tag">Active</span></li>
+        <li class="geo-item"><span class="geo-name">Ghana — Cape Coast</span><span class="geo-tag">Active</span></li>
+        <li class="geo-item"><span class="geo-name">Côte d'Ivoire</span><span class="geo-tag">Active</span></li>
+        <li class="geo-item"><span class="geo-name">Dubai & UAE</span><span class="geo-tag">Active</span></li>
+        <li class="geo-item"><span class="geo-name">Gulf Cooperation Council</span><span class="geo-tag">Priority</span></li>
+        <li class="geo-item"><span class="geo-name">Select Southeast Asia</span><span class="geo-tag">Pipeline</span></li>
+      </ul>
+      <div class="focus-tags reveal">
+        <div class="section-label" style="margin-bottom:20px;">Focus Areas</div>
+        <div class="focus-tag">Infrastructure Advisory</div>
+        <div class="focus-tag">Cross-Border Investment Strategy</div>
+        <div class="focus-tag">Capital Structuring</div>
+        <div class="focus-tag">Public–Private Partnerships</div>
+        <div class="focus-tag">Strategic Investment Planning</div>
+        <div class="focus-tag">AI Infrastructure Deployment</div>
+        <div class="focus-tag">Government Modernization</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="insights" id="insights">
+  <div class="insights-inner">
+    <div class="section-label reveal">Intelligence Briefs</div>
+    <h2 class="section-title reveal">Thinking from the<br><em>frontier of infrastructure.</em></h2>
+    <div class="insights-grid reveal">
+
+      <a href="article-ai-infrastructure-gap.html" class="insight-card">
+        <div class="insight-card-tag">AI Infrastructure · Emerging Markets</div>
+        <div class="insight-card-title">The AI Infrastructure Gap: Why West Africa and the GCC Are the Most Undervalued Compute Markets in the World</div>
+        <div class="insight-card-body">Everyone is building AI. Almost no one is building it where the demand is growing fastest and the infrastructure is thinnest. That gap is a revenue opportunity hiding in plain sight.</div>
+        <div class="insight-card-link">Read Brief →</div>
+        <div class="insight-card-date">February 2026</div>
+      </a>
+
+      <a href="article-pentagon-brief.html" class="insight-card">
+        <div class="insight-card-tag">Geopolitical Risk · AI Policy</div>
+        <div class="insight-card-title">When AI Meets the Pentagon: What the Anthropic Standoff Means for Global Infrastructure Strategy</div>
+        <div class="insight-card-body">The U.S. government's showdown with Anthropic is a geopolitical signal every sovereign AI investor and cross-border builder should be reading carefully.</div>
+        <div class="insight-card-link">Read Brief →</div>
+        <div class="insight-card-date">February 2026</div>
+      </a>
+
+      <a href="gba-article3-settlement-rails.html" class="insight-card">
+        <div class="insight-card-tag">Intelligence Brief · Infrastructure Strategy</div>
+        <div class="insight-card-title">The Next Global Infrastructure Race Is Not Roads or Oil. It Is Digital Settlement Rails.</div>
+        <div class="insight-card-body">The nations that control settlement infrastructure will hold economic leverage for the next fifty years. GoBeyond Advisory's thesis on where the next great infrastructure race is being fought.</div>
+        <div class="insight-card-link">Read Brief →</div>
+        <div class="insight-card-date">March 2026</div>
+      </a>
+
+      <a href="gba-article4-smart-capital.html" class="insight-card">
+        <div class="insight-card-tag">Intelligence Brief · Capital Strategy</div>
+        <div class="insight-card-title">Why Smart Capital Is Moving Toward Infrastructure, Not Just Startups</div>
+        <div class="insight-card-body">The distinction between venture capital speculation and infrastructure-backed capital deployment — and why the largest pools of patient capital in the world have already made their choice.</div>
+        <div class="insight-card-link">Read Brief →</div>
+        <div class="insight-card-date">March 2026</div>
+      </a>
+
+      <a href="gba-article6-aws-sovereign-ai.html" class="insight-card">
+        <div class="insight-card-tag">Intelligence Brief · AI Infrastructure</div>
+        <div class="insight-card-title">When Drones Hit Data Centers: What the AWS Strike Means for Sovereign AI Infrastructure</div>
+        <div class="insight-card-body">Iranian drones took AWS availability zones offline in Bahrain and the UAE. The first kinetic attack on major cloud infrastructure in history. What it means for sovereign AI architecture across Africa and the GCC.</div>
+        <div class="insight-card-link">Read Brief →</div>
+        <div class="insight-card-date">March 2026</div>
+      </a>
+
+      <a href="gba-article5-hormuz-sovereign-risk.html" class="insight-card">
+        <div class="insight-card-tag">Intelligence Brief · Geopolitical Risk</div>
+        <div class="insight-card-title">The Strait of Hormuz, the Senate, and the New Rules of Sovereign Risk</div>
+        <div class="insight-card-body">Day 7 is no longer just a Middle East crisis. It is a civilizational stress test actively rewriting the rules of cross-border capital, infrastructure positioning, and sovereign risk modeling.</div>
+        <div class="insight-card-link">Read Brief →</div>
+        <div class="insight-card-date">March 2026</div>
+      </a>
+
+      <a href="gba-article3-spr-v2.html" class="insight-card">
+        <div class="insight-card-tag">Energy &amp; Geopolitics · Historic First</div>
+        <div class="insight-card-title">When Nations Open the Oil Vault: What the Strategic Petroleum Reserve Release Really Signals</div>
+        <div class="insight-card-body">The largest coordinated IEA emergency petroleum reserve release in history — 400 million barrels across 32 nations. GoBeyond Advisory's intelligence brief on what this means for cross-border energy infrastructure capital.</div>
+        <div class="insight-card-link">Read Brief →</div>
+        <div class="insight-card-date">March 2026</div>
+      </a>
+
+      <a href="gba-article4-sahel-v2.html" class="insight-card">
+        <div class="insight-card-tag">Africa Strategy · Geopolitics</div>
+        <div class="insight-card-title">The Sahel Peace Accord: A Turning Point for Africa's Next Economic Chapter</div>
+        <div class="insight-card-body">The Alliance of Sahel States has launched its unified military force and pioneered the world's first Climate, Peace and Security Action Plans — with an $820M infrastructure pipeline. The sovereign signal every capital allocator should be reading.</div>
+        <div class="insight-card-link">Read Brief →</div>
+        <div class="insight-card-date">March 2026</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="engage">
+  <div class="contact-inner">
+    <div class="reveal">
+      <div class="section-label">Engage Advisory</div>
+      <h2 class="section-title" style="margin-bottom:20px;">Partner with<br><em>GoBeyond Advisory.</em></h2>
+      <p style="font-size:15px;line-height:1.8;color:var(--text-dim);margin-bottom:40px;">We work with institutions, fintechs, sovereign-adjacent programs, and enterprise partners. If your project requires disciplined infrastructure advisory and cross-border capital structuring, we want to hear from you.</p>
+      <div class="contact-detail">
+        <div class="contact-detail-label">General Inquiries</div>
+        <div class="contact-detail-value"><a href="/cdn-cgi/l/email-protection#c1a9a4adadae81a6aea3a4b8aeafa5a0a5b7a8b2aeb3b8efa2aeac" style="color:var(--gold);text-decoration:none;"><span class="__cf_email__" data-cfemail="69010c050506290e060b0c1006070d080d1f001a061b10470a0604">[email&#160;protected]</span></a></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-detail-label">Partnerships</div>
+        <div class="contact-detail-value"><a href="/cdn-cgi/l/email-protection#deaebfacaab0bbacad9eb9b1bcbba7b1b0babfbaa8b7adb1aca7f0bdb1b3" style="color:var(--gold);text-decoration:none;"><span class="__cf_email__" data-cfemail="5c2c3d2e2832392e2f1c3b333e39253332383d382a352f332e25723f3331">[email&#160;protected]</span></a></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-detail-label">Location</div>
+        <div class="contact-detail-value" style="font-size:16px;font-family:'Syne',sans-serif;font-weight:400;">Houston, TX · West Africa · Dubai</div>
+      </div>
+    </div>
+    <div class="contact-form reveal">
+      <form name="inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/success.html">
+        <input type="hidden" name="form-name" value="inquiry">
+        <p style="display:none;"><input name="bot-field"></p>
+        <div style="margin-bottom:18px;">
+          <div class="form-label">Full Name</div>
+          <input type="text" name="name" class="form-input" placeholder="Your name" required>
+        </div>
+        <div style="margin-bottom:18px;">
+          <div class="form-label">Organization</div>
+          <input type="text" name="organization" class="form-input" placeholder="Company or institution">
+        </div>
+        <div style="margin-bottom:18px;">
+          <div class="form-label">Email</div>
+          <input type="email" name="email" class="form-input" placeholder="your@email.com" required>
+        </div>
+        <div style="margin-bottom:18px;">
+          <div class="form-label">Nature of Inquiry</div>
+          <textarea name="message" class="form-input" placeholder="Infrastructure advisory, capital structuring, partnership, or other"></textarea>
+        </div>
+        <button type="submit" class="form-submit">Submit Inquiry</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">GoBeyond<span>Advisory</span></div>
+  <div class="footer-tagline">Strategic Capital Deployment for Emerging Infrastructure Markets</div>
+  <ul class="footer-links">
+    <li><a href="#focus">Focus</a></li>
+    <li><a href="#markets">Markets</a></li>
+    <li><a href="#insights">Insights</a></li>
+    <li><a href="#engage">Engage</a></li>
+    <li><a href="founders.html">Founders</a></li>
+  </ul>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window && location.protocol !== 'file:') {
+  reveals.forEach(el => el.classList.add('animate'));
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.remove('animate'); e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => obs.observe(el));
+} else {
+  reveals.forEach(el => el.classList.add('visible'));
+}
+</script>
+</body>
+</html>
