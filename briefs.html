@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelligence Briefs | GoBeyond Advisory</title>
+<meta name="description" content="GoBeyond Advisory's full archive of intelligence briefs covering AI infrastructure, geopolitical capital, Africa strategy, and sovereign risk across the GCC and West Africa.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #B8964A;
+  --gold-light: #D4AF6A;
+  --gold-dim: rgba(184,150,74,0.1);
+  --gold-border: rgba(184,150,74,0.18);
+  --bg: #F8F5F0;
+  --bg-2: #F2EDE6;
+  --bg-dark: #0C0A07;
+  --bg-dark2: #141209;
+  --text: #1A1710;
+  --text-dim: rgba(26,23,16,0.55);
+  --text-faint: rgba(26,23,16,0.25);
+  --white: #FDFBF8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-dark);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  padding:22px 64px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(12,10,7,0.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(184,150,74,0.15);
+}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:0.04em;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:40px;list-style:none;}
+.nav-links a{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(253,251,248,0.4);text-decoration:none;transition:color 0.3s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--bg-dark);background:var(--gold);padding:11px 26px;text-decoration:none;transition:background 0.3s;}
+.nav-cta:hover{background:var(--gold-light);}
+
+/* HERO BANNER */
+.page-hero{
+  padding:160px 64px 80px;
+  border-bottom:1px solid rgba(184,150,74,0.12);
+}
+.page-hero-inner{max-width:1100px;margin:0 auto;}
+.page-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:28px;
+  display:flex;align-items:center;gap:14px;
+}
+.page-eyebrow::before{content:'';width:32px;height:1px;background:var(--gold);}
+.page-headline{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(42px,5.5vw,72px);
+  font-weight:300;line-height:1.05;
+  color:var(--white);margin-bottom:24px;
+}
+.page-headline em{font-style:italic;color:var(--gold);}
+.page-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;line-height:1.7;
+  color:rgba(253,251,248,0.45);
+  max-width:560px;
+}
+.page-meta{
+  display:flex;align-items:center;gap:32px;margin-top:40px;
+  padding-top:32px;border-top:1px solid rgba(184,150,74,0.12);
+}
+.page-meta-item{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(253,251,248,0.25);}
+.page-meta-item span{color:var(--gold);display:block;font-size:18px;font-family:'Cormorant Garamond',serif;font-weight:300;letter-spacing:0;margin-bottom:4px;}
+
+/* BRIEFS GRID */
+.briefs{padding:80px 64px 120px;}
+.briefs-inner{max-width:1100px;margin:0 auto;}
+.briefs-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
+
+.brief-card{
+  background:rgba(248,245,240,0.04);
+  border-top:2px solid rgba(184,150,74,0.3);
+  border-bottom:1px solid rgba(184,150,74,0.1);
+  padding:40px 36px;
+  text-decoration:none;
+  display:flex;flex-direction:column;
+  min-height:300px;
+  transition:border-color 0.3s,background 0.3s;
+  position:relative;
+}
+.brief-card:hover{border-color:var(--gold);background:rgba(248,245,240,0.07);}
+.brief-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.brief-tag::before{content:'';width:20px;height:1px;background:var(--gold);}
+.brief-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;line-height:1.25;color:var(--white);margin-bottom:14px;}
+.brief-body{font-size:13px;line-height:1.75;color:rgba(253,251,248,0.4);margin-bottom:28px;flex:1;}
+.brief-link{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);}
+.brief-date{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:rgba(253,251,248,0.2);margin-top:24px;}
+
+/* DIVIDER — month label */
+.month-divider{
+  grid-column:1/-1;
+  padding:32px 0 16px;
+  border-bottom:1px solid rgba(184,150,74,0.12);
+  margin-bottom:3px;
+  display:flex;align-items:center;gap:20px;
+}
+.month-divider-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.22em;
+  text-transform:uppercase;color:rgba(184,150,74,0.5);
+}
+.month-divider-line{flex:1;height:1px;background:rgba(184,150,74,0.08);}
+
+/* BACK LINK */
+.back-bar{
+  max-width:1100px;margin:0 auto 48px;
+  padding-top:0;
+}
+.back-link{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;
+  text-transform:uppercase;color:rgba(253,251,248,0.3);text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;transition:color 0.3s;
+}
+.back-link:hover{color:var(--gold);}
+
+/* FOOTER */
+footer{padding:52px 64px;background:rgba(248,245,240,0.03);border-top:1px solid rgba(184,150,74,0.1);display:flex;justify-content:space-between;align-items:center;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:rgba(248,245,240,0.9);}
+.footer-logo span{color:var(--gold);}
+.footer-tagline{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(248,245,240,0.3);}
+.footer-links{display:flex;gap:28px;list-style:none;}
+.footer-links a{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(248,245,240,0.25);text-decoration:none;transition:color 0.3s;}
+.footer-links a:hover{color:var(--gold);}
+
+@media(max-width:900px){
+  nav{padding:18px 24px;}
+  .nav-links{display:none;}
+  .page-hero{padding:120px 24px 60px;}
+  .briefs{padding:48px 24px 80px;}
+  .briefs-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:20px;text-align:center;padding:40px 24px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">GoBeyond<span>Advisory</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#focus">Focus Areas</a></li>
+    <li><a href="index.html#markets">Markets</a></li>
+    <li><a href="briefs.html" style="color:var(--gold);">Intelligence Briefs</a></li>
+    <li><a href="index.html#engage">Engage</a></li>
+  </ul>
+  <a href="index.html#engage" class="nav-cta">Engage Advisory</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-eyebrow">GoBeyond Advisory</div>
+    <h1 class="page-headline">Intelligence<br><em>Briefs.</em></h1>
+    <p class="page-sub">Institutional analysis on AI infrastructure, geopolitical capital, African strategy, and sovereign risk — written for allocators operating at the frontier.</p>
+    <div class="page-meta">
+      <div class="page-meta-item"><span id="brief-count">10</span>Briefs Published</div>
+      <div class="page-meta-item"><span>Weekly</span>Cadence</div>
+      <div class="page-meta-item"><span>GCC + Africa</span>Primary Corridors</div>
+    </div>
+  </div>
+</div>
+
+<div class="briefs">
+  <div class="briefs-inner">
+
+    <div class="back-bar">
+      <a href="index.html" class="back-link">← Return to GoBeyond Advisory</a>
+    </div>
+
+    <div class="briefs-grid">
+
+      <!-- ── MARCH 2026 ── -->
+      <div class="month-divider">
+        <span class="month-divider-label">March 2026</span>
+        <span class="month-divider-line"></span>
+      </div>
+
+      <a href="gba-article8-ai-sees-light.html" class="brief-card">
+        <div class="brief-tag">Intelligence Brief · AI Infrastructure</div>
+        <div class="brief-title">Computers Just Learned to See Light: What Visual AI Intelligence Means for Sovereign Infrastructure Strategy</div>
+        <div class="brief-body">AI no longer renders images — it understands light. What the shift from generative rendering to visual intelligence means for sovereign AI infrastructure positioning across the GCC and West Africa.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">March 2026</div>
+      </a>
+
+      <a href="gba-article7-bomb-then-buy.html" class="brief-card">
+        <div class="brief-tag">Intelligence Brief · Geopolitical Capital</div>
+        <div class="brief-title">Bomb, Then Buy: The Week America Hit Iran and Institutional Capital Repositioned Across the Gulf</div>
+        <div class="brief-body">The same week America struck Iran, sophisticated capital was already repositioning across Gulf energy, defense, and infrastructure corridors. What sovereign allocators need to understand now.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">March 2026</div>
+      </a>
+
+      <a href="gba-article6-aws-sovereign-ai.html" class="brief-card">
+        <div class="brief-tag">Intelligence Brief · AI Infrastructure</div>
+        <div class="brief-title">When Drones Hit Data Centers: What the AWS Strike Means for Sovereign AI Infrastructure</div>
+        <div class="brief-body">Iranian drones took AWS availability zones offline in Bahrain and the UAE. The first kinetic attack on major cloud infrastructure in history. What it means for sovereign AI architecture across Africa and the GCC.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">March 2026</div>
+      </a>
+
+      <a href="gba-article5-hormuz-sovereign-risk.html" class="brief-card">
+        <div class="brief-tag">Intelligence Brief · Geopolitical Risk</div>
+        <div class="brief-title">The Strait of Hormuz, the Senate, and the New Rules of Sovereign Risk</div>
+        <div class="brief-body">Day 7 is no longer just a Middle East crisis. It is a civilizational stress test actively rewriting the rules of cross-border capital, infrastructure positioning, and sovereign risk modeling.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">March 2026</div>
+      </a>
+
+      <a href="gba-article4-smart-capital.html" class="brief-card">
+        <div class="brief-tag">Intelligence Brief · Capital Strategy</div>
+        <div class="brief-title">Why Smart Capital Is Moving Toward Infrastructure, Not Just Startups</div>
+        <div class="brief-body">The distinction between venture capital speculation and infrastructure-backed capital deployment — and why the largest pools of patient capital in the world have already made their choice.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">March 2026</div>
+      </a>
+
+      <a href="gba-article4-sahel-v2.html" class="brief-card">
+        <div class="brief-tag">Africa Strategy · Geopolitics</div>
+        <div class="brief-title">The Sahel Peace Accord: A Turning Point for Africa's Next Economic Chapter</div>
+        <div class="brief-body">The Alliance of Sahel States has launched its unified military force and pioneered the world's first Climate, Peace and Security Action Plans — with an $820M infrastructure pipeline. The sovereign signal every capital allocator should be reading.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">March 2026</div>
+      </a>
+
+      <a href="gba-article3-settlement-rails.html" class="brief-card">
+        <div class="brief-tag">Intelligence Brief · Infrastructure Strategy</div>
+        <div class="brief-title">The Next Global Infrastructure Race Is Not Roads or Oil. It Is Digital Settlement Rails.</div>
+        <div class="brief-body">The nations that control settlement infrastructure will hold economic leverage for the next fifty years. GoBeyond Advisory's thesis on where the next great infrastructure race is being fought.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">March 2026</div>
+      </a>
+
+      <a href="gba-article3-spr-v2.html" class="brief-card">
+        <div class="brief-tag">Energy &amp; Geopolitics · Historic First</div>
+        <div class="brief-title">When Nations Open the Oil Vault: What the Strategic Petroleum Reserve Release Really Signals</div>
+        <div class="brief-body">The largest coordinated IEA emergency petroleum reserve release in history — 400 million barrels across 32 nations. GoBeyond Advisory's intelligence brief on what this means for cross-border energy infrastructure capital.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">March 2026</div>
+      </a>
+
+      <!-- ── FEBRUARY 2026 ── -->
+      <div class="month-divider">
+        <span class="month-divider-label">February 2026</span>
+        <span class="month-divider-line"></span>
+      </div>
+
+      <a href="article-ai-infrastructure-gap.html" class="brief-card">
+        <div class="brief-tag">AI Infrastructure · Emerging Markets</div>
+        <div class="brief-title">The AI Infrastructure Gap: Why West Africa and the GCC Are the Most Undervalued Compute Markets in the World</div>
+        <div class="brief-body">Everyone is building AI. Almost no one is building it where the demand is growing fastest and the infrastructure is thinnest. That gap is a revenue opportunity hiding in plain sight.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">February 2026</div>
+      </a>
+
+      <a href="article-pentagon-brief.html" class="brief-card">
+        <div class="brief-tag">Geopolitical Risk · AI Policy</div>
+        <div class="brief-title">When AI Meets the Pentagon: What the Anthropic Standoff Means for Global Infrastructure Strategy</div>
+        <div class="brief-body">The U.S. government's showdown with Anthropic is a geopolitical signal every sovereign AI investor and cross-border builder should be reading carefully.</div>
+        <div class="brief-link">Read Brief →</div>
+        <div class="brief-date">February 2026</div>
+      </a>
+
+    </div><!-- end grid -->
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">GoBeyond<span>Advisory</span></div>
+  <div class="footer-tagline">Strategic Capital Deployment for Emerging Infrastructure Markets</div>
+  <ul class="footer-links">
+    <li><a href="index.html#focus">Focus</a></li>
+    <li><a href="index.html#markets">Markets</a></li>
+    <li><a href="briefs.html">Briefs</a></li>
+    <li><a href="index.html#engage">Engage</a></li>
+    <li><a href="founders.html">Founders</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
