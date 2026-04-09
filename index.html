@@ -1,548 +1,1157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="GoBeyond Advisory — Strategic investment and infrastructure advisory across West Africa, GCC, Europe, and the USA. Capital deployed where it creates lasting infrastructure."/>
+<meta name="keywords" content="GoBeyond Advisory, infrastructure advisory, cross-border capital, West Africa investment, GCC advisory, ECO Infrastructure, Mike Ogbebor"/>
+<meta property="og:title" content="GoBeyond Advisory | Strategic Investment & Infrastructure Advisory"/>
+<meta property="og:description" content="Capital deployed where it creates lasting infrastructure. Advisory across West Africa, GCC, Europe, and the USA."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://gobeyondadvisory.com"/>
 <title>GoBeyond Advisory | Strategic Investment & Infrastructure Advisory</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --gold: #B8964A;
-  --gold-light: #D4AF6A;
-  --gold-dim: rgba(184,150,74,0.1);
-  --gold-border: rgba(184,150,74,0.18);
-  --bg: #F8F5F0;
-  --bg-2: #F2EDE6;
-  --bg-dark: #0C0A07;
-  --bg-dark2: #141209;
-  --text: #1A1710;
-  --text-dim: rgba(26,23,16,0.55);
-  --text-faint: rgba(26,23,16,0.25);
-  --white: #FDFBF8;
+:root{
+  --bg:       #FAFAF8;
+  --white:    #FFFFFF;
+  --panel:    #F5F2ED;
+  --panel2:   #EDE8E0;
+  --ink:      #1A1714;
+  --dark:     #2E2925;
+  --navy:     #0B1F4B;
+  --gold:     #9A7A32;
+  --gold-lt:  #C9A84C;
+  --gold-dk:  #7A5E24;
+  --muted:    #7A756D;
+  --muted2:   #9A948C;
+  --border:   #D8D3CB;
+  --border2:  rgba(154,122,50,0.25);
+  --shadow:   rgba(26,23,20,0.06);
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+*{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;}
-
-/* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:500;
-  padding:22px 64px;
-  display:flex;justify-content:space-between;align-items:center;
-  background:rgba(248,245,240,0.96);backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(184,150,74,0.15);
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Syne',sans-serif;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
 }
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:0.04em;color:var(--text);}
-.nav-logo span{color:var(--gold);}
-.nav-links{display:flex;gap:40px;list-style:none;}
-.nav-links a{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color 0.3s;}
-.nav-links a:hover{color:var(--gold);}
-.nav-cta{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);background:var(--bg-dark);padding:11px 26px;text-decoration:none;transition:background 0.3s;}
-.nav-cta:hover{background:#2a2618;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--gold);}
 
-/* HERO */
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 60px;height:68px;
+  background:rgba(250,250,248,0.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;font-weight:700;letter-spacing:2px;
+  color:var(--ink);text-decoration:none;
+}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:500;letter-spacing:1.5px;
+  color:var(--muted);text-decoration:none;text-transform:uppercase;
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--gold);}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-linkedin{
+  display:flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:1px;color:var(--muted);
+  text-decoration:none;text-transform:uppercase;
+  transition:color .2s;
+}
+.nav-linkedin:hover{color:var(--gold);}
+.nav-linkedin svg{width:14px;height:14px;fill:currentColor;}
+.nav-cta{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  color:var(--white);background:var(--ink);
+  padding:10px 22px;text-decoration:none;text-transform:uppercase;
+  transition:background .2s;
+}
+.nav-cta:hover{background:var(--dark);}
+
+/* ── HERO ── */
 .hero{
   min-height:100vh;
-  display:grid;grid-template-rows:1fr auto;
-  padding-top:80px;
-  background:#F8F5F0;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:120px 60px 80px;
+  border-bottom:1px solid var(--border);
   position:relative;overflow:hidden;
+  background:var(--white);
 }
-.hero-inner{
-  padding:100px 64px 60px;
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:80px;align-items:center;
-  min-height:calc(100vh - 80px);
+.hero::before{
+  content:'';position:absolute;
+  top:0;right:0;width:50%;height:100%;
+  background:linear-gradient(135deg,transparent 0%,rgba(154,122,50,0.04) 100%);
+  pointer-events:none;
 }
-.hero-left{}
+.hero-bg-num{
+  position:absolute;right:60px;bottom:60px;
+  font-size:clamp(160px,20vw,280px);font-weight:800;
+  color:rgba(26,23,20,0.03);line-height:1;
+  pointer-events:none;letter-spacing:-8px;
+  font-family:'Syne',sans-serif;
+}
 .hero-eyebrow{
-  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;
-  text-transform:uppercase;color:var(--gold);margin-bottom:32px;
-  display:flex;align-items:center;gap:14px;
-  animation:fadeUp 0.7s ease 0.1s both;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:700;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:24px;display:inline-flex;align-items:center;gap:10px;
+  animation:fadeUp .7s ease both;
 }
-.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--gold);}
-.hero-headline{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(48px,6vw,82px);
-  font-weight:300;line-height:1.05;letter-spacing:-0.01em;
-  margin-bottom:28px;
-  animation:fadeUp 0.7s ease 0.25s both;
+.hero-eyebrow::before{content:'';display:inline-block;width:32px;height:1.5px;background:var(--gold);}
+.hero h1{
+  font-size:clamp(40px,5.5vw,80px);font-weight:800;
+  line-height:1.0;max-width:820px;margin-bottom:22px;
+  animation:fadeUp .7s ease .1s both;
 }
-.hero-headline em{font-style:italic;color:var(--gold);}
+.hero h1 em{
+  font-style:italic;font-family:'Cormorant Garamond',serif;
+  color:var(--gold);font-size:1.05em;
+}
 .hero-body{
-  font-size:16px;line-height:1.8;color:var(--text-dim);
-  max-width:440px;margin-bottom:48px;
-  animation:fadeUp 0.7s ease 0.4s both;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(17px,1.8vw,21px);
+  color:var(--muted);max-width:580px;line-height:1.65;
+  margin-bottom:14px;
+  animation:fadeUp .7s ease .15s both;
 }
-.hero-actions{
-  display:flex;align-items:center;gap:28px;
-  animation:fadeUp 0.7s ease 0.55s both;
+.hero-location{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:2px;color:var(--gold);
+  margin-bottom:40px;
+  animation:fadeUp .7s ease .2s both;
 }
-.btn-dark{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);background:var(--bg-dark);padding:16px 36px;text-decoration:none;transition:background 0.3s;}
-.btn-dark:hover{background:#2a2618;}
-.btn-ghost{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color 0.3s;}
-.btn-ghost:hover{color:var(--gold);}
-
-.hero-right{
-  animation:fadeUp 0.7s ease 0.35s both;
+.hero-btns{
+  display:flex;gap:12px;flex-wrap:wrap;
+  animation:fadeUp .7s ease .25s both;
 }
-.hero-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
-.hero-stat{
-  background:var(--bg-dark);padding:36px 28px;
+.btn-ink{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;
+  color:var(--white);background:var(--ink);
+  padding:14px 30px;text-decoration:none;text-transform:uppercase;
+  transition:background .2s,transform .15s;display:inline-block;
 }
-.hero-stat-num{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:10px;}
-.hero-stat-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(248,245,240,0.4);}
-
-/* MARQUEE */
-.marquee{background:var(--bg-dark);padding:16px 0;overflow:hidden;white-space:nowrap;}
-.marquee-track{display:inline-flex;gap:64px;animation:ticker 25s linear infinite;}
-.marquee-item{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(184,150,74,0.6);display:flex;align-items:center;gap:20px;}
-.marquee-dot{width:3px;height:3px;background:var(--gold);border-radius:50%;}
-
-/* FOCUS AREAS */
-.focus{padding:100px 64px;background:var(--white);}
-.focus-inner{max-width:1100px;margin:0 auto;}
-.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
-.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,54px);font-weight:300;line-height:1.1;margin-bottom:20px;}
-.section-title em{font-style:italic;color:var(--gold);}
-.section-body{font-size:15px;line-height:1.85;color:var(--text-dim);max-width:580px;margin-bottom:64px;}
-.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
-.pillar{
-  background:var(--bg-2);padding:44px 36px;
-  border-top:2px solid transparent;
-  transition:border-color 0.3s,background 0.3s;
-  position:relative;
+.btn-ink:hover{background:var(--dark);transform:translateY(-1px);}
+.btn-outline{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;
+  color:var(--ink);background:transparent;
+  border:1.5px solid var(--border);
+  padding:14px 30px;text-decoration:none;text-transform:uppercase;
+  transition:border-color .2s,color .2s;display:inline-block;
 }
-.pillar:hover{border-color:var(--gold);background:var(--bg);}
-.pillar-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;color:var(--text-faint);margin-bottom:28px;}
-.pillar-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;margin-bottom:14px;line-height:1.2;}
-.pillar-body{font-size:14px;line-height:1.7;color:var(--text-dim);}
-
-/* PHILOSOPHY — DARK SECTION */
-.philosophy{
-  padding:100px 64px;
-  background:var(--bg-dark);
-  color:var(--white);
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-gold{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;
+  color:var(--white);background:var(--gold);
+  padding:14px 30px;text-decoration:none;text-transform:uppercase;
+  transition:background .2s;display:inline-block;
 }
-.philosophy-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;}
-.phil-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
-.phil-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,44px);font-weight:300;font-style:italic;line-height:1.2;color:var(--white);margin-bottom:32px;}
-.phil-quote em{color:var(--gold);font-style:normal;}
-.phil-body{font-size:15px;line-height:1.8;color:rgba(253,251,248,0.5);}
-.phil-principles{display:flex;flex-direction:column;gap:3px;}
-.phil-principle{
-  background:rgba(248,245,240,0.04);
-  border-left:2px solid rgba(184,150,74,0.2);
-  padding:20px 24px;
-  font-size:14px;line-height:1.6;color:rgba(253,251,248,0.55);
-  transition:border-color 0.3s,background 0.3s;
+.btn-gold:hover{background:var(--gold-lt);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── TICKER ── */
+.ticker-wrap{
+  background:var(--ink);overflow:hidden;height:38px;
+  display:flex;align-items:center;
 }
-.phil-principle:hover{border-color:var(--gold);background:rgba(248,245,240,0.07);}
-.phil-principle strong{color:var(--white);font-weight:600;display:block;margin-bottom:4px;font-size:13px;letter-spacing:0.04em;}
-
-/* GEOGRAPHY */
-.geo{padding:100px 64px;background:var(--white);}
-.geo-inner{max-width:1100px;margin:0 auto;}
-.geo-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:60px;align-items:start;}
-.geo-list{list-style:none;display:flex;flex-direction:column;}
-.geo-item{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid rgba(26,23,16,0.06);transition:padding-left 0.3s;}
-.geo-item:hover{padding-left:8px;}
-.geo-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:600;color:var(--text);}
-.geo-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);}
-.focus-tags{display:flex;flex-direction:column;gap:12px;}
-.focus-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);padding:12px 20px;transition:background 0.3s;}
-.focus-tag:hover{background:rgba(184,150,74,0.18);}
-
-/* CONTACT */
-.contact{padding:100px 64px;background:var(--bg-2);}
-.contact-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start;}
-.contact-form{display:flex;flex-direction:column;gap:18px;}
-.form-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px;}
-.form-input{background:var(--white);border:1px solid rgba(26,23,16,0.1);border-bottom:1px solid var(--gold-border);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;padding:14px 16px;outline:none;transition:border-color 0.3s;width:100%;}
-.form-input:focus{border-color:var(--gold);}
-.form-input::placeholder{color:var(--text-faint);}
-textarea.form-input{resize:vertical;min-height:110px;}
-.form-submit{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);background:var(--bg-dark);border:none;padding:17px 40px;cursor:pointer;width:100%;margin-top:8px;transition:background 0.3s;}
-.form-submit:hover{background:#2a2618;}
-.contact-info{padding-top:8px;}
-.contact-detail{margin-bottom:36px;}
-.contact-detail-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
-.contact-detail-value{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text);}
-.contact-detail-value a{color:var(--gold);text-decoration:none;}
-
-/* FOOTER */
-footer{padding:52px 64px;background:var(--bg-dark);display:flex;justify-content:space-between;align-items:center;}
-.footer-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:rgba(248,245,240,0.9);}
-.footer-logo span{color:var(--gold);}
-.footer-tagline{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(248,245,240,0.3);}
-.footer-links{display:flex;gap:28px;list-style:none;}
-.footer-links a{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(248,245,240,0.25);text-decoration:none;transition:color 0.3s;}
-.footer-links a:hover{color:var(--gold);}
-
-/* INSIGHTS */
-.insights{padding:100px 64px;background:var(--bg-dark);}
-.insights-inner{max-width:1100px;margin:0 auto;}
-.insights .section-label{color:var(--gold);}
-.insights .section-title{color:var(--white);}
-.insights .section-title em{color:var(--gold);}
-.insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:48px;align-items:stretch;}
-.insight-card{
-  background:rgba(248,245,240,0.04);
-  border-top:2px solid rgba(184,150,74,0.3);
-  border-bottom:1px solid rgba(184,150,74,0.1);
-  padding:40px 36px;
-  text-decoration:none;
-  display:flex;
-  flex-direction:column;
-  min-height:320px;
-  transition:border-color 0.3s,background 0.3s;
-  position:relative;
+.ticker-track{
+  display:flex;animation:ticker 30s linear infinite;white-space:nowrap;
 }
-.insight-card:hover{border-color:var(--gold);background:rgba(248,245,240,0.07);}
-.insight-card-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
-.insight-card-tag::before{content:'';width:20px;height:1px;background:var(--gold);}
-.insight-card-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;line-height:1.25;color:var(--white);margin-bottom:16px;}
-.insight-card-body{font-size:13px;line-height:1.75;color:rgba(253,251,248,0.4);margin-bottom:28px;flex:1;}
-.insight-card-link{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);}
-.insight-card-date{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:rgba(253,251,248,0.2);margin-top:24px;}
-
-@media(max-width:900px){
-  .insights{padding-left:24px;padding-right:24px;}
-  .insights-grid{grid-template-columns:1fr;gap:16px;}
-  .insight-card{min-height:unset;}
+.ticker-item{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.35);
+  text-transform:uppercase;padding:0 28px;
+  border-right:1px solid rgba(255,255,255,0.08);
 }
-
+.ticker-item span{color:var(--gold-lt);}
 @keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.reveal{opacity:1;transform:translateY(0);transition:opacity 0.75s ease,transform 0.75s ease;}
-.reveal.visible{opacity:1;transform:translateY(0);}
-.reveal.animate{opacity:0;transform:translateY(24px);}
 
-@media(max-width:900px){
-  nav{padding:18px 24px;}
+/* ── MARKERS ── */
+.markers{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:1px solid var(--border);
+  background:var(--white);
+}
+.marker{
+  padding:36px 44px;border-right:1px solid var(--border);
+}
+.marker:last-child{border-right:none;}
+.marker-num{
+  font-size:clamp(26px,3vw,40px);font-weight:800;
+  color:var(--ink);display:block;margin-bottom:5px;line-height:1;
+}
+.marker-num span{color:var(--gold);}
+.marker-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;letter-spacing:1.5px;
+  color:var(--muted);text-transform:uppercase;line-height:1.5;
+}
+
+/* ── SECTIONS ── */
+.section{padding:88px 60px;border-bottom:1px solid var(--border);max-width:1400px;margin:0 auto;}
+.full-wrap{border-bottom:1px solid var(--border);}
+.full-inner{padding:88px 60px;max-width:1400px;margin:0 auto;}
+.section-alt{background:var(--panel);}
+.section-white{background:var(--white);}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:700;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:12px;display:block;
+}
+.section-title{
+  font-size:clamp(26px,3.2vw,44px);font-weight:800;line-height:1.1;margin-bottom:12px;
+}
+.section-title em{font-style:italic;font-family:'Cormorant Garamond',serif;color:var(--gold);}
+.section-body{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(16px,1.6vw,19px);color:var(--muted);
+  line-height:1.7;max-width:620px;
+}
+.gold-line{width:40px;height:2px;background:var(--gold);margin-bottom:24px;}
+.ink-line{width:40px;height:2px;background:var(--ink);margin-bottom:24px;}
+
+/* ── ECO BANNER ── */
+.eco-banner-wrap{background:var(--ink);}
+.eco-inner{
+  max-width:1400px;margin:0 auto;padding:56px 60px;
+  display:grid;grid-template-columns:1fr auto;
+  gap:60px;align-items:center;
+}
+.eco-eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;font-weight:700;letter-spacing:3px;
+  color:var(--gold-lt);text-transform:uppercase;
+  border:1px solid rgba(184,150,74,0.25);
+  padding:5px 14px;display:inline-block;margin-bottom:14px;
+}
+.eco-title{
+  font-size:clamp(20px,2.8vw,34px);font-weight:800;
+  color:var(--white);line-height:1.1;margin-bottom:10px;
+}
+.eco-title em{font-style:italic;font-family:'Cormorant Garamond',serif;color:var(--gold-lt);}
+.eco-desc{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(15px,1.5vw,17px);
+  color:rgba(255,255,255,0.55);line-height:1.65;
+  max-width:620px;margin-bottom:22px;
+}
+.eco-meta{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:1.5px;color:rgba(255,255,255,0.3);
+  text-transform:uppercase;margin-bottom:22px;
+}
+.eco-right{
+  display:flex;flex-direction:column;align-items:flex-end;gap:14px;
+  min-width:200px;
+}
+.eco-stat-num{
+  font-size:48px;font-weight:800;color:var(--gold-lt);
+  line-height:1;display:block;
+}
+.eco-stat-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;color:rgba(255,255,255,0.35);
+  text-transform:uppercase;text-align:right;
+}
+.eco-btn{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  color:var(--ink);background:var(--gold-lt);
+  padding:12px 24px;text-decoration:none;text-transform:uppercase;
+  transition:background .2s;white-space:nowrap;
+}
+.eco-btn:hover{background:var(--gold);}
+.eco-ghost{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  color:rgba(255,255,255,0.5);background:transparent;
+  border:1px solid rgba(255,255,255,0.15);
+  padding:12px 24px;text-decoration:none;text-transform:uppercase;
+  transition:border-color .2s,color .2s;white-space:nowrap;
+}
+.eco-ghost:hover{border-color:rgba(255,255,255,0.4);color:rgba(255,255,255,0.8);}
+
+/* ── PILLARS ── */
+.pillars-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);border:1px solid var(--border);
+  margin-top:48px;
+}
+.pillar-card{
+  background:var(--white);padding:38px 32px;
+  border-bottom:2px solid transparent;
+  transition:border-color .25s,background .2s;
+}
+.pillar-card:hover{border-bottom-color:var(--gold);background:var(--panel);}
+.pillar-num{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-weight:700;letter-spacing:2px;color:var(--muted2);margin-bottom:12px;
+}
+.pillar-icon{font-size:18px;margin-bottom:12px;display:block;opacity:.4;}
+.pillar-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:9px;line-height:1.25;}
+.pillar-body{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--muted);line-height:1.6;}
+
+/* ── INITIATIVES ── */
+.initiative-row{
+  display:grid;grid-template-columns:200px 1fr 160px;
+  border-bottom:1px solid var(--border);align-items:center;
+  min-height:120px;transition:background .2s;
+}
+.initiative-row:hover{background:var(--panel);}
+.initiative-row:last-child{border-bottom:none;}
+.initiative-row.featured{background:rgba(154,122,50,0.04);}
+.init-meta{
+  padding:24px 28px;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;justify-content:center;
+  height:100%;
+}
+.init-tag{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-weight:700;letter-spacing:2px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:5px;
+}
+.init-type{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  letter-spacing:1px;color:var(--muted2);text-transform:uppercase;
+}
+.active-dot{
+  display:inline-block;width:5px;height:5px;background:var(--gold);
+  border-radius:50%;margin-right:5px;animation:blink 1.5s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.init-content{padding:24px 32px;}
+.init-name{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.init-desc{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--muted);line-height:1.55;max-width:560px;}
+.init-link-cell{padding:24px 28px;border-left:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.init-link{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-weight:700;letter-spacing:1.5px;color:var(--gold);
+  text-decoration:none;text-transform:uppercase;transition:color .2s;
+  white-space:nowrap;
+}
+.init-link:hover{color:var(--gold-lt);}
+
+/* ── PHILOSOPHY ── */
+.philosophy-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:72px;margin-top:48px;align-items:start;
+}
+.phil-list{display:flex;flex-direction:column;}
+.phil-item{
+  padding:22px 0;border-bottom:1px solid var(--border);
+  display:grid;grid-template-columns:36px 1fr;gap:14px;
+}
+.phil-item:first-child{padding-top:0;}
+.phil-icon{font-size:15px;opacity:.35;padding-top:2px;}
+.phil-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;letter-spacing:.2px;}
+.phil-body{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--muted);line-height:1.55;}
+.phil-quote-block{
+  position:sticky;top:90px;padding:40px;
+  border:1px solid var(--border);background:var(--white);
+  box-shadow:0 4px 24px var(--shadow);
+}
+.pqb-mark{
+  font-family:'Cormorant Garamond',serif;font-size:56px;
+  color:var(--gold);line-height:.8;margin-bottom:10px;opacity:.3;display:block;
+}
+.pqb-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(17px,1.8vw,22px);font-style:italic;
+  color:var(--ink);line-height:1.45;margin-bottom:18px;
+}
+.pqb-attr{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:2px;color:var(--gold);text-transform:uppercase;
+}
+
+/* ── ENGAGE MODELS ── */
+.engage-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);border:1px solid var(--border);margin-top:48px;
+}
+.engage-card{
+  background:var(--white);padding:34px 28px;
+  border-top:2px solid transparent;
+  transition:border-top-color .25s,background .2s;
+}
+.engage-card:hover{border-top-color:var(--gold);background:var(--panel);}
+.engage-num{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:12px;
+}
+.engage-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+.engage-body{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+.engage-list{display:flex;flex-direction:column;gap:5px;}
+.engage-li{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.3px;color:var(--muted2);
+  padding-left:12px;position:relative;
+}
+.engage-li::before{content:'—';position:absolute;left:0;color:var(--gold);}
+
+/* ── MARKETS ── */
+.markets-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);border:1px solid var(--border);margin-top:48px;
+}
+.market-card{background:var(--white);padding:30px 26px;transition:background .2s;}
+.market-card:hover{background:var(--panel);}
+.market-region{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-weight:700;letter-spacing:2px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:7px;
+}
+.market-city{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.market-badge{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:8px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;padding:3px 8px;margin-bottom:9px;
+}
+.badge-active{background:rgba(154,122,50,0.1);color:var(--gold);border:1px solid rgba(154,122,50,0.2);}
+.badge-hq{background:var(--ink);color:var(--white);}
+.badge-pipeline{background:var(--panel2);color:var(--muted);border:1px solid var(--border);}
+.market-body{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--muted);line-height:1.55;}
+
+/* ── SOCIAL PROOF ── */
+.proof-banner{
+  background:var(--panel2);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);padding:48px 60px;text-align:center;
+}
+.proof-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(16px,1.9vw,21px);font-style:italic;
+  color:var(--muted);max-width:800px;margin:0 auto 12px;line-height:1.5;
+}
+.proof-attr{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:2px;color:var(--gold);text-transform:uppercase;
+}
+
+/* ── INSIGHTS ── */
+.insights-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);border:1px solid var(--border);margin-top:40px;
+}
+.insight-card{
+  background:var(--white);padding:28px 24px;
+  border-bottom:2px solid transparent;
+  transition:border-color .2s,background .2s;
+  text-decoration:none;display:block;
+}
+.insight-card:hover{border-bottom-color:var(--gold);background:var(--panel);}
+.insight-card.featured{
+  grid-column:span 3;background:var(--ink);
+  border-bottom-color:transparent;
+  display:grid;grid-template-columns:1fr auto;gap:36px;align-items:center;
+}
+.insight-card.featured:hover{background:var(--dark);}
+.insight-tag{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:9px;
+}
+.insight-card:not(.featured) .insight-tag{color:var(--gold);}
+.insight-card.featured .insight-tag{color:var(--gold-lt);}
+.insight-title{font-size:14px;font-weight:700;margin-bottom:7px;line-height:1.3;}
+.insight-card:not(.featured) .insight-title{color:var(--ink);}
+.insight-card.featured .insight-title{color:var(--white);font-size:clamp(17px,2vw,22px);}
+.insight-body{font-family:'Cormorant Garamond',serif;font-size:13px;line-height:1.55;}
+.insight-card:not(.featured) .insight-body{color:var(--muted);}
+.insight-card.featured .insight-body{color:rgba(255,255,255,0.5);font-size:15px;}
+.insight-date{
+  font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:10px;
+}
+.insight-card:not(.featured) .insight-date{color:var(--muted2);}
+.insight-card.featured .insight-date{color:rgba(255,255,255,0.3);}
+.insight-cta-btn{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  letter-spacing:1.5px;color:var(--ink);background:var(--gold-lt);
+  padding:12px 22px;text-decoration:none;text-transform:uppercase;
+  transition:background .2s;white-space:nowrap;align-self:center;
+}
+.insight-cta-btn:hover{background:var(--gold);}
+.insights-more{
+  margin-top:18px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  letter-spacing:1.5px;color:var(--gold);text-decoration:none;
+  text-transform:uppercase;border:1.5px solid var(--border);
+  padding:11px 22px;display:inline-block;transition:border-color .2s;
+}
+.insights-more:hover{border-color:var(--gold);}
+
+/* ── NEWSLETTER ── */
+.newsletter-wrap{background:var(--panel2);}
+.newsletter-inner{
+  max-width:1400px;margin:0 auto;padding:60px;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:60px;align-items:center;
+}
+.nl-left h3{
+  font-size:clamp(22px,2.8vw,34px);font-weight:800;
+  color:var(--ink);line-height:1.15;margin-bottom:10px;
+}
+.nl-left h3 em{font-style:italic;font-family:'Cormorant Garamond',serif;color:var(--gold);}
+.nl-left p{
+  font-family:'Cormorant Garamond',serif;font-size:16px;
+  color:var(--muted);line-height:1.65;
+}
+.nl-form{display:flex;flex-direction:column;gap:12px;}
+.nl-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.nl-field{display:flex;flex-direction:column;gap:5px;}
+.nl-field label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;
+}
+.nl-field input,.nl-field select{
+  background:var(--white);border:1.5px solid var(--border);
+  color:var(--ink);font-family:'Syne',sans-serif;font-size:13px;
+  padding:11px 13px;outline:none;transition:border-color .2s;
+  -webkit-appearance:none;
+}
+.nl-field input:focus,.nl-field select:focus{border-color:var(--gold);}
+.nl-submit{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;color:var(--white);background:var(--ink);
+  padding:13px 28px;border:none;cursor:pointer;
+  text-transform:uppercase;transition:background .2s;align-self:flex-start;
+}
+.nl-submit:hover{background:var(--dark);}
+.nl-note{
+  font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  letter-spacing:.5px;color:var(--muted2);
+}
+
+/* ── PRESS ── */
+.press-block{
+  margin-top:36px;padding:32px 36px;
+  border-left:2px solid var(--gold);
+  background:var(--white);border:1px solid var(--border);
+  max-width:660px;
+}
+.press-block p{
+  font-family:'Cormorant Garamond',serif;font-size:15px;
+  color:var(--muted);line-height:1.65;margin-bottom:10px;
+}
+.press-link{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:1.5px;color:var(--gold);text-decoration:none;
+  text-transform:uppercase;transition:color .2s;
+}
+.press-link:hover{color:var(--gold-lt);}
+
+/* ── LEADERSHIP SIGNAL ── */
+.ls-wrap{
+  background:var(--ink);padding:56px 60px;
+  display:flex;justify-content:space-between;
+  align-items:center;gap:40px;flex-wrap:wrap;
+}
+.ls-left{max-width:600px;}
+.ls-left h3{
+  font-size:clamp(20px,2.4vw,30px);font-weight:800;
+  color:var(--white);line-height:1.15;margin-bottom:10px;
+}
+.ls-left h3 em{font-style:italic;font-family:'Cormorant Garamond',serif;color:var(--gold-lt);}
+.ls-left p{font-family:'Cormorant Garamond',serif;font-size:16px;color:rgba(255,255,255,.5);line-height:1.6;}
+.ls-right{display:flex;gap:10px;flex-wrap:wrap;}
+
+/* ── CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;margin-top:48px;}
+.contact-items{display:flex;flex-direction:column;gap:24px;}
+.ci-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-weight:700;letter-spacing:2px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:4px;
+}
+.ci-val{font-size:14px;color:var(--ink);}
+.ci-val a{color:var(--ink);text-decoration:none;transition:color .2s;}
+.ci-val a:hover{color:var(--gold);}
+.contact-form{display:flex;flex-direction:column;gap:13px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-field{display:flex;flex-direction:column;gap:5px;}
+.form-field label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;
+}
+.form-field input,.form-field select,.form-field textarea{
+  background:var(--white);border:1.5px solid var(--border);
+  color:var(--ink);font-family:'Syne',sans-serif;font-size:13px;
+  padding:11px 13px;outline:none;transition:border-color .2s;
+  -webkit-appearance:none;
+}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--gold);}
+.form-field textarea{resize:vertical;min-height:88px;}
+.form-submit{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;color:var(--white);background:var(--ink);
+  padding:13px 28px;border:none;cursor:pointer;text-transform:uppercase;
+  transition:background .2s;align-self:flex-start;
+}
+.form-submit:hover{background:var(--dark);}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--ink);color:rgba(255,255,255,0.55);
+  padding:52px 60px 36px;
+}
+.footer-top{
+  display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;
+  gap:40px;margin-bottom:40px;
+  padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.footer-brand{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  font-weight:700;letter-spacing:2px;color:var(--white);margin-bottom:10px;
+}
+.footer-brand-desc{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:rgba(255,255,255,.35);letter-spacing:.8px;line-height:1.7;
+  margin-bottom:16px;
+}
+.footer-social{display:flex;gap:12px;align-items:center;}
+.footer-social a{
+  display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.4);text-decoration:none;
+  transition:border-color .2s,color .2s;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+}
+.footer-social a:hover{border-color:var(--gold-lt);color:var(--gold-lt);}
+.footer-col-title{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.5);
+  text-transform:uppercase;margin-bottom:14px;
+}
+.footer-col-links{display:flex;flex-direction:column;gap:8px;}
+.footer-col-links a{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:1px;color:rgba(255,255,255,.35);
+  text-decoration:none;text-transform:uppercase;transition:color .2s;
+}
+.footer-col-links a:hover{color:var(--gold-lt);}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-copy{
+  font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  color:rgba(255,255,255,.25);letter-spacing:.8px;margin-bottom:4px;
+}
+.footer-disclaimer{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  color:rgba(255,255,255,.18);letter-spacing:.4px;
+  line-height:1.6;max-width:500px;
+}
+.footer-legal-links{display:flex;gap:16px;}
+.footer-legal-links a{
+  font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  letter-spacing:1px;color:rgba(255,255,255,.25);
+  text-decoration:none;text-transform:uppercase;transition:color .2s;
+}
+.footer-legal-links a:hover{color:var(--gold-lt);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  nav{padding:0 24px;}
   .nav-links{display:none;}
-  .hero-inner{grid-template-columns:1fr;gap:40px;padding:60px 24px;}
-  .hero-right{display:none;}
-  .focus,.geo,.contact,.philosophy{padding-left:24px;padding-right:24px;}
-  .pillars,.philosophy-inner,.geo-grid,.contact-inner{grid-template-columns:1fr;gap:40px;}
-  footer{flex-direction:column;gap:20px;text-align:center;padding:40px 24px;}
+  .hero,.section,.full-inner{padding-left:24px;padding-right:24px;}
+  .markers{grid-template-columns:repeat(2,1fr);}
+  .pillars-grid,.engage-grid{grid-template-columns:1fr 1fr;}
+  .insights-grid{grid-template-columns:1fr 1fr;}
+  .insight-card.featured{grid-column:span 2;grid-template-columns:1fr;gap:20px;}
+  .philosophy-grid,.contact-grid,.newsletter-inner{grid-template-columns:1fr;}
+  .initiative-row{grid-template-columns:160px 1fr;min-height:auto;}
+  .init-link-cell{display:none;}
+  .eco-inner{grid-template-columns:1fr;gap:28px;}
+  .eco-right{align-items:flex-start;}
+  .eco-stat-label{text-align:left;}
+  .markets-grid{grid-template-columns:1fr 1fr;}
+  .ls-wrap{flex-direction:column;padding:40px 24px;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:28px;}
+  .footer-bottom{flex-direction:column;}
+  .proof-banner{padding:40px 24px;}
+}
+@media(max-width:640px){
+  .pillars-grid,.engage-grid,.markets-grid,.insights-grid{grid-template-columns:1fr;}
+  .insight-card.featured{grid-column:span 1;}
+  .form-row,.nl-row{grid-template-columns:1fr;}
+  .hero-btns{flex-direction:column;}
+  .markers{grid-template-columns:1fr 1fr;}
+  .footer-top{grid-template-columns:1fr;}
 }
 </style>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "name": "GoBeyond Advisory",
-  "url": "https://gobeyondadvisory.com",
-  "description": "Institutional advisory firm connecting capital, government, and emerging market infrastructure across West Africa, the Gulf Cooperation Council, and beyond.",
-  "founder": {
-    "@type": "Person",
-    "name": "Mike Ogbebor",
-    "url": "https://mikeogbebor.com",
-    "jobTitle": "Founder & Managing Director"
-  },
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Houston",
-    "addressRegion": "TX",
-    "addressCountry": "US"
-  },
-  "areaServed": ["United States","Nigeria","Ghana","Côte d'Ivoire","United Arab Emirates","Gulf Cooperation Council","Southeast Asia"],
-  "knowsAbout": ["Infrastructure Advisory","Cross-Border Capital Strategy","Public-Private Partnerships","Emerging Markets Investment","West Africa Capital Markets","GCC Investment Advisory","AI Infrastructure Deployment","Government Modernization","Digital Settlement Infrastructure"],
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "email": "hello@gobeyondadvisory.com",
-    "contactType": "General Inquiries"
-  },
-  "sameAs": ["https://mikeogbebor.com","https://eco-rails.com","https://gobeyondseries.com"]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Mike Ogbebor",
-  "url": "https://mikeogbebor.com",
-  "jobTitle": "Founder & Managing Director",
-  "worksFor": {
-    "@type": "Organization",
-    "name": "GoBeyond Advisory",
-    "url": "https://gobeyondadvisory.com"
-  },
-  "description": "Houston-based entrepreneur, strategic advisor, and infrastructure expert operating across West Africa, the GCC, and beyond.",
-  "address": {"@type": "PostalAddress","addressLocality": "Houston","addressRegion": "TX","addressCountry": "US"},
-  "sameAs": ["https://gobeyondadvisory.com","https://eco-rails.com","https://gobeyondseries.com","https://globalkidneyfoundation.com","https://newlineinvestors.com"]
-}
-</script>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo" style="text-decoration:none;">GoBeyond<span>Advisory</span></a>
-  <ul class="nav-links">
-    <li><a href="#focus">Focus Areas</a></li>
-    <li><a href="#philosophy">Philosophy</a></li>
-    <li><a href="#markets">Markets</a></li>
-    <li><a href="#insights">Insights</a></li>
-    <li><a href="#engage">Engage</a></li>
-  </ul>
-  <a href="#engage" class="nav-cta">Engage Advisory</a>
+  <a href="/" class="nav-logo">GOBEYOND <span>ADVISORY</span></a>
+  <div class="nav-links">
+    <a href="#initiatives">Initiatives</a>
+    <a href="#advisory">Advisory</a>
+    <a href="#engage-section">Engage</a>
+    <a href="#markets">Markets</a>
+    <a href="#insights">Insights</a>
+    <a href="/founders">Leadership</a>
+  </div>
+  <div class="nav-right">
+    <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" class="nav-linkedin" title="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="X / Twitter">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="YouTube">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+    </a>
+    <a href="#contact" class="nav-cta">Engage Advisory</a>
+  </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
-    <div class="hero-left">
-      <div class="hero-eyebrow">Strategic Investment & Infrastructure Advisory</div>
-      <h1 class="hero-headline">Capital deployed<br>where it creates<br><em>lasting infrastructure.</em></h1>
-      <p class="hero-body">GoBeyond Advisory advises, structures, and deploys capital into high-impact infrastructure and real-asset opportunities across growth markets. Houston. West Africa. Middle East.</p>
-      <div class="hero-actions">
-        <a href="#engage" class="btn-dark">Engage Advisory</a>
-        <a href="#focus" class="btn-ghost">View Focus Areas →</a>
-      </div>
-    </div>
-    <div class="hero-right">
-      <div class="hero-stat-grid">
-        <div class="hero-stat">
-          <div class="hero-stat-num">3</div>
-          <div class="hero-stat-label">Core Advisory Pillars</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">4+</div>
-          <div class="hero-stat-label">Active Markets</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">AI</div>
-          <div class="hero-stat-label">Infrastructure Integrated</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">∞</div>
-          <div class="hero-stat-label">Long-Term Horizon</div>
-        </div>
-      </div>
-    </div>
+  <div class="hero-bg-num">GBA</div>
+  <div class="hero-eyebrow">Strategic Investment & Infrastructure Advisory</div>
+  <h1>Capital deployed where<br/>it creates <em>lasting<br/>infrastructure.</em></h1>
+  <p class="hero-body">GoBeyond Advisory advises, structures, and deploys capital into high-impact infrastructure and real-asset opportunities across growth markets. We close.</p>
+  <p class="hero-location">Houston · West Africa · GCC · Europe</p>
+  <div class="hero-btns">
+    <a href="#initiatives" class="btn-ink">View Active Initiatives</a>
+    <a href="#engage-section" class="btn-outline">Engage Advisory</a>
   </div>
 </section>
 
-<div class="marquee">
-  <div class="marquee-track">
-    <span class="marquee-item"><span class="marquee-dot"></span>Infrastructure Advisory</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>Cross-Border Capital Strategy</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>Public–Private Structuring</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>West Africa</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>Middle East</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>AI Integration</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>Sovereign Markets</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>Infrastructure Advisory</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>Cross-Border Capital Strategy</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>Public–Private Structuring</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>West Africa</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>Middle East</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>AI Integration</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>Sovereign Markets</span>
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">ECO Infrastructure <span>Active</span></span>
+    <span class="ticker-item">Cape Coast New City <span>Active</span></span>
+    <span class="ticker-item">West Africa <span>Operational</span></span>
+    <span class="ticker-item">GCC Corridor <span>Phase 1</span></span>
+    <span class="ticker-item">Newline Investors <span>Capital Arm</span></span>
+    <span class="ticker-item">CBN Sandbox <span>In Progress</span></span>
+    <span class="ticker-item">Infrastructure Advisory <span>Core</span></span>
+    <span class="ticker-item">Cross-Border Capital <span>Active</span></span>
+    <span class="ticker-item">ECO Infrastructure <span>Active</span></span>
+    <span class="ticker-item">Cape Coast New City <span>Active</span></span>
+    <span class="ticker-item">West Africa <span>Operational</span></span>
+    <span class="ticker-item">GCC Corridor <span>Phase 1</span></span>
+    <span class="ticker-item">Newline Investors <span>Capital Arm</span></span>
+    <span class="ticker-item">CBN Sandbox <span>In Progress</span></span>
+    <span class="ticker-item">Infrastructure Advisory <span>Core</span></span>
+    <span class="ticker-item">Cross-Border Capital <span>Active</span></span>
   </div>
 </div>
 
-<section class="focus" id="focus">
-  <div class="focus-inner">
-    <div class="section-label reveal">Core Pillars</div>
-    <h2 class="section-title reveal">Advisory built around<br><em>structural impact.</em></h2>
-    <p class="section-body reveal">GoBeyond Advisory operates at the intersection of infrastructure, capital, and AI — advising institutions, sovereigns, and enterprises navigating complex cross-border growth.</p>
-    <div class="pillars reveal">
-      <div class="pillar">
+<!-- MARKERS -->
+<div class="markers">
+  <div class="marker"><span class="marker-num">3</span><span class="marker-label">Advisory<br/>Pillars</span></div>
+  <div class="marker"><span class="marker-num">5</span><span class="marker-label">Active<br/>Markets</span></div>
+  <div class="marker"><span class="marker-num">2</span><span class="marker-label">Flagship<br/>Initiatives</span></div>
+  <div class="marker"><span class="marker-num"><span>$2B</span>+</span><span class="marker-label">Project<br/>Pipeline</span></div>
+</div>
+
+<!-- ECO BANNER -->
+<div class="full-wrap eco-banner-wrap">
+  <div class="eco-inner">
+    <div>
+      <div class="eco-eyebrow">Flagship Initiative · Now Active</div>
+      <h2 class="eco-title">ECO Infrastructure —<br/><em>The Settlement Rail for the African Global Economy</em></h2>
+      <p class="eco-desc">GoBeyond Advisory's flagship digital infrastructure initiative. A commodity and fiat-backed stablecoin settlement layer serving West Africa, GCC, Europe, and the USA — replacing the foreign-owned infrastructure extracting billions annually from African corridors.</p>
+      <p class="eco-meta">Digital Settlement · FX Rails · CBN Sandbox · West Africa ↔ GCC ↔ Europe ↔ USA</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a href="https://eco-rails.com" class="eco-btn">Visit ECO Infrastructure →</a>
+        <a href="https://eco-settlement.com" class="eco-ghost">Settlement Explainer</a>
+      </div>
+    </div>
+    <div class="eco-right">
+      <div>
+        <span class="eco-stat-num">$200B+</span>
+        <span class="eco-stat-label">Total addressable<br/>market</span>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.3);text-transform:uppercase;text-align:right;line-height:1.7;">Founding partner window<br/>open now · Closes Q2 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ADVISORY PILLARS -->
+<div id="advisory" class="full-wrap section-white">
+  <div class="full-inner">
+    <span class="eyebrow">Core Advisory</span>
+    <div class="gold-line"></div>
+    <h2 class="section-title">Advisory built around<br/><em>structural impact.</em></h2>
+    <p class="section-body">GoBeyond operates at the intersection of infrastructure, capital, and institutional strategy — advising sovereigns, institutions, and enterprises navigating complex cross-border growth.</p>
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <span class="pillar-icon">⬡</span>
         <div class="pillar-num">Pillar 01</div>
         <div class="pillar-title">Infrastructure Advisory</div>
-        <div class="pillar-body">End-to-end advisory on infrastructure strategy, feasibility, and execution across real estate, digital infrastructure, energy, and public works in emerging markets.</div>
+        <div class="pillar-body">End-to-end advisory on strategy, feasibility, and execution across digital infrastructure, real estate, energy, and public works in emerging markets.</div>
       </div>
-      <div class="pillar">
+      <div class="pillar-card">
+        <span class="pillar-icon">◈</span>
         <div class="pillar-num">Pillar 02</div>
         <div class="pillar-title">Cross-Border Capital Strategy</div>
-        <div class="pillar-body">Structuring capital across sovereign boundaries — FX strategy, compliance alignment, and institutional-grade deal architecture for Africa, the GCC, and Southeast Asia.</div>
+        <div class="pillar-body">Structuring capital across sovereign boundaries — FX strategy, compliance alignment, and institutional-grade deal architecture for Africa, the GCC, and Europe.</div>
       </div>
-      <div class="pillar">
+      <div class="pillar-card">
+        <span class="pillar-icon">◎</span>
         <div class="pillar-num">Pillar 03</div>
         <div class="pillar-title">Public–Private & Institutional Structuring</div>
-        <div class="pillar-body">Bridging government mandates and private capital. Structuring PPP frameworks, government modernization proposals, and institutional partnership agreements.</div>
+        <div class="pillar-body">Bridging government mandates and private capital. PPP frameworks, government modernization proposals, and institutional partnership agreements at scale.</div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<section class="philosophy" id="philosophy">
-  <div class="philosophy-inner">
-    <div class="reveal">
-      <div class="phil-label">Our Philosophy</div>
-      <div class="phil-quote">Capital is most effective when aligned with <em>long-term infrastructure</em>, disciplined execution, and local market understanding.</div>
-      <p class="phil-body">GoBeyond Advisory does not pursue short-term speculation. We partner with institutions, governments, and enterprise clients to build the systems that generate lasting value across generations.</p>
-    </div>
-    <div class="phil-principles reveal">
-      <div class="phil-principle"><strong>Infrastructure Leads</strong>Capital follows infrastructure. We identify and build the foundational layer first.</div>
-      <div class="phil-principle"><strong>Institutional Tone, Boutique Access</strong>The discipline of an institution. The agility of a boutique.</div>
-      <div class="phil-principle"><strong>Company Captures Value</strong>Personal authority builds trust. The advisory platform converts it into lasting enterprise value.</div>
-      <div class="phil-principle"><strong>Disciplined Execution</strong>Strategy without execution is noise. We close.</div>
-      <div class="phil-principle"><strong>Long-Term Stewardship</strong>We measure success in decades, not quarters.</div>
-    </div>
-  </div>
-</section>
-
-<section class="geo" id="markets">
-  <div class="geo-inner">
-    <div class="section-label reveal">Geographic Focus</div>
-    <h2 class="section-title reveal">Where we <em>operate.</em></h2>
-    <div class="geo-grid">
-      <ul class="geo-list reveal">
-        <li class="geo-item"><span class="geo-name">Houston, Texas</span><span class="geo-tag">HQ</span></li>
-        <li class="geo-item"><span class="geo-name">Nigeria — Abuja & Lagos</span><span class="geo-tag">Active</span></li>
-        <li class="geo-item"><span class="geo-name">Ghana — Cape Coast</span><span class="geo-tag">Active</span></li>
-        <li class="geo-item"><span class="geo-name">Côte d'Ivoire</span><span class="geo-tag">Active</span></li>
-        <li class="geo-item"><span class="geo-name">Dubai & UAE</span><span class="geo-tag">Active</span></li>
-        <li class="geo-item"><span class="geo-name">Gulf Cooperation Council</span><span class="geo-tag">Priority</span></li>
-        <li class="geo-item"><span class="geo-name">Select Southeast Asia</span><span class="geo-tag">Pipeline</span></li>
-      </ul>
-      <div class="focus-tags reveal">
-        <div class="section-label" style="margin-bottom:20px;">Focus Areas</div>
-        <div class="focus-tag">Infrastructure Advisory</div>
-        <div class="focus-tag">Cross-Border Investment Strategy</div>
-        <div class="focus-tag">Capital Structuring</div>
-        <div class="focus-tag">Public–Private Partnerships</div>
-        <div class="focus-tag">Strategic Investment Planning</div>
-        <div class="focus-tag">AI Infrastructure Deployment</div>
-        <div class="focus-tag">Government Modernization</div>
+<!-- ACTIVE INITIATIVES -->
+<div id="initiatives" class="full-wrap section-alt">
+  <div class="full-inner">
+    <span class="eyebrow">Active Initiatives</span>
+    <div class="gold-line"></div>
+    <h2 class="section-title">What we're<br/><em>building now.</em></h2>
+    <p class="section-body" style="margin-bottom:44px;">GoBeyond Advisory is not a concept firm. These are the live initiatives currently under active development, capital structuring, and institutional engagement.</p>
+    <div style="border:1px solid var(--border);">
+      <div class="initiative-row featured">
+        <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Flagship</div><div class="init-type">Digital Infrastructure</div></div>
+        <div class="init-content">
+          <div class="init-name">ECO Infrastructure</div>
+          <div class="init-desc">Stablecoin settlement rail for the African global economy. Phase 1: West Africa ↔ GCC. Expanding to Europe and USA. CBN sandbox registration in progress. Founding partner window open now.</div>
+        </div>
+        <div class="init-link-cell"><a href="https://eco-rails.com" class="init-link">eco-rails.com →</a></div>
+      </div>
+      <div class="initiative-row">
+        <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Active</div><div class="init-type">Real Estate · Infrastructure</div></div>
+        <div class="init-content">
+          <div class="init-name">Cape Coast New City</div>
+          <div class="init-desc">$1B–$2B integrated coastal development in Cape Coast, Ghana. Mixed-use residential, commercial, and infrastructure development structured for institutional and DFI capital partnership.</div>
+        </div>
+        <div class="init-link-cell"><a href="#contact" class="init-link">Request Brief →</a></div>
+      </div>
+      <div class="initiative-row">
+        <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Capital Arm</div><div class="init-type">Investment · Deal Structuring</div></div>
+        <div class="init-content">
+          <div class="init-name">Newline Investors Inc.</div>
+          <div class="init-desc">GoBeyond Advisory's capital deployment arm. Structures institutional-grade investment vehicles, cross-border deal architecture, and emerging market capital partnerships across Africa and the GCC.</div>
+        </div>
+        <div class="init-link-cell"><a href="#contact" class="init-link">Inquire →</a></div>
+      </div>
+      <div class="initiative-row" style="border-bottom:none;">
+        <div class="init-meta"><div class="init-tag">Active</div><div class="init-type">Healthcare · Infrastructure</div></div>
+        <div class="init-content">
+          <div class="init-name">West Africa Healthcare Infrastructure</div>
+          <div class="init-desc">Medical equipment, facility advisory, and training infrastructure across Côte d'Ivoire and West African healthcare corridors. Structured under GoBeyond Advisory and Newline Investors.</div>
+        </div>
+        <div class="init-link-cell"><a href="#contact" class="init-link">Inquire →</a></div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-
-<section class="insights" id="insights">
-  <div class="insights-inner">
-    <div class="section-label reveal">Intelligence Briefs</div>
-    <h2 class="section-title reveal">Thinking from the<br><em>frontier of infrastructure.</em></h2>
-    <div class="insights-grid reveal">
-
-      <a href="gba-article8-ai-sees-light.html" class="insight-card">
-        <div class="insight-card-tag">Intelligence Brief · AI Infrastructure</div>
-        <div class="insight-card-title">Computers Just Learned to See Light: What Visual AI Intelligence Means for Sovereign Infrastructure Strategy</div>
-        <div class="insight-card-body">AI no longer renders images — it understands light. What the shift from generative rendering to visual intelligence means for sovereign AI infrastructure positioning across the GCC and West Africa.</div>
-        <div class="insight-card-link">Read Brief →</div>
-        <div class="insight-card-date">March 2026</div>
-      </a>
-
-      <a href="gba-article7-bomb-then-buy.html" class="insight-card">
-        <div class="insight-card-tag">Intelligence Brief · Geopolitical Capital</div>
-        <div class="insight-card-title">Bomb, Then Buy: The Week America Hit Iran and Institutional Capital Repositioned Across the Gulf</div>
-        <div class="insight-card-body">The same week America struck Iran, sophisticated capital was already repositioning across Gulf energy, defense, and infrastructure corridors. What sovereign allocators need to understand now.</div>
-        <div class="insight-card-link">Read Brief →</div>
-        <div class="insight-card-date">March 2026</div>
-      </a>
-
-      <a href="gba-article6-aws-sovereign-ai.html" class="insight-card">
-        <div class="insight-card-tag">Intelligence Brief · AI Infrastructure</div>
-        <div class="insight-card-title">When Drones Hit Data Centers: What the AWS Strike Means for Sovereign AI Infrastructure</div>
-        <div class="insight-card-body">Iranian drones took AWS availability zones offline in Bahrain and the UAE. The first kinetic attack on major cloud infrastructure in history. What it means for sovereign AI architecture across Africa and the GCC.</div>
-        <div class="insight-card-link">Read Brief →</div>
-        <div class="insight-card-date">March 2026</div>
-      </a>
-
-      <a href="gba-article5-hormuz-sovereign-risk.html" class="insight-card">
-        <div class="insight-card-tag">Intelligence Brief · Geopolitical Risk</div>
-        <div class="insight-card-title">The Strait of Hormuz, the Senate, and the New Rules of Sovereign Risk</div>
-        <div class="insight-card-body">Day 7 is no longer just a Middle East crisis. It is a civilizational stress test actively rewriting the rules of cross-border capital, infrastructure positioning, and sovereign risk modeling.</div>
-        <div class="insight-card-link">Read Brief →</div>
-        <div class="insight-card-date">March 2026</div>
-      </a>
-
-      <a href="gba-article4-smart-capital.html" class="insight-card">
-        <div class="insight-card-tag">Intelligence Brief · Capital Strategy</div>
-        <div class="insight-card-title">Why Smart Capital Is Moving Toward Infrastructure, Not Just Startups</div>
-        <div class="insight-card-body">The distinction between venture capital speculation and infrastructure-backed capital deployment — and why the largest pools of patient capital in the world have already made their choice.</div>
-        <div class="insight-card-link">Read Brief →</div>
-        <div class="insight-card-date">March 2026</div>
-      </a>
-
-      <a href="gba-article4-sahel-v2.html" class="insight-card">
-        <div class="insight-card-tag">Africa Strategy · Geopolitics</div>
-        <div class="insight-card-title">The Sahel Peace Accord: A Turning Point for Africa's Next Economic Chapter</div>
-        <div class="insight-card-body">The Alliance of Sahel States has launched its unified military force and pioneered the world's first Climate, Peace and Security Action Plans — with an $820M infrastructure pipeline.</div>
-        <div class="insight-card-link">Read Brief →</div>
-        <div class="insight-card-date">March 2026</div>
-      </a>
-
-    </div>
-    <div class="reveal" style="text-align:center;margin-top:48px;">
-      <a href="briefs.html" class="btn-dark" style="display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);background:transparent;border:1px solid rgba(184,150,74,0.4);padding:18px 48px;text-decoration:none;transition:border-color 0.3s,background 0.3s;">View All Intelligence Briefs &rarr;</a>
+<!-- PHILOSOPHY -->
+<div id="philosophy" class="full-wrap section-white">
+  <div class="full-inner">
+    <span class="eyebrow">Our Philosophy</span>
+    <div class="gold-line"></div>
+    <h2 class="section-title">Capital is most effective<br/>when <em>infrastructure leads.</em></h2>
+    <div class="philosophy-grid">
+      <div class="phil-list">
+        <div class="phil-item"><div class="phil-icon">⬡</div><div><div class="phil-title">Infrastructure Leads</div><div class="phil-body">Capital follows infrastructure. We identify and build the foundational layer first — settlement rails, development frameworks, compliance architecture — before capital deployment begins.</div></div></div>
+        <div class="phil-item"><div class="phil-icon">◈</div><div><div class="phil-title">Institutional Tone, Boutique Access</div><div class="phil-body">The discipline of an institution. The agility of a boutique. Clients get direct access to decision-makers — not a team of analysts insulated from the actual work.</div></div></div>
+        <div class="phil-item"><div class="phil-icon">◎</div><div><div class="phil-title">Operators, Not Theorists</div><div class="phil-body">GoBeyond is built by people who have operated in these corridors — not studied them. Houston, West Africa, and Dubai are operating contexts, not target markets.</div></div></div>
+        <div class="phil-item"><div class="phil-icon">⬡</div><div><div class="phil-title">Disciplined Execution</div><div class="phil-body">Strategy without execution is noise. Every engagement is structured around a defined outcome — not an open-ended advisory relationship with no accountability.</div></div></div>
+        <div class="phil-item"><div class="phil-icon">◈</div><div><div class="phil-title">Long-Term Stewardship</div><div class="phil-body">We measure success in decades, not quarters. The infrastructure we help build is designed to outlast any single transaction and generate lasting value across generations.</div></div></div>
+      </div>
+      <div class="phil-quote-block">
+        <span class="pqb-mark">"</span>
+        <p class="pqb-text">We do not pursue short-term speculation. We partner with institutions, governments, and enterprise clients to build the systems that generate lasting value across generations.</p>
+        <span class="pqb-attr">— GoBeyond Advisory · Founding Principle</span>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
-<section class="contact" id="engage">
-  <div class="contact-inner">
-    <div class="reveal">
-      <div class="section-label">Engage Advisory</div>
-      <h2 class="section-title" style="margin-bottom:20px;">Partner with<br><em>GoBeyond Advisory.</em></h2>
-      <p style="font-size:15px;line-height:1.8;color:var(--text-dim);margin-bottom:40px;">We work with institutions, fintechs, sovereign-adjacent programs, and enterprise partners. If your project requires disciplined infrastructure advisory and cross-border capital structuring, we want to hear from you.</p>
-      <div class="contact-detail">
-        <div class="contact-detail-label">General Inquiries</div>
-        <div class="contact-detail-value"><a href="/cdn-cgi/l/email-protection#c1a9a4adadae81a6aea3a4b8aeafa5a0a5b7a8b2aeb3b8efa2aeac" style="color:var(--gold);text-decoration:none;"><span class="__cf_email__" data-cfemail="69010c050506290e060b0c1006070d080d1f001a061b10470a0604">[email&#160;protected]</span></a></div>
+<!-- SOCIAL PROOF -->
+<div class="proof-banner full-wrap">
+  <p class="proof-text">"In active institutional engagement with Tier 1 West African banking relationships, GCC-corridor financial partners, development finance-adjacent institutions, and sovereign-adjacent programs across three regions."</p>
+  <span class="proof-attr">— GoBeyond Advisory · April 2026 · Active Pipeline</span>
+</div>
+
+<!-- HOW TO ENGAGE -->
+<div id="engage-section" class="full-wrap section-white">
+  <div class="full-inner">
+    <span class="eyebrow">How to Engage</span>
+    <div class="gold-line"></div>
+    <h2 class="section-title">Three ways to work<br/>with <em>GoBeyond.</em></h2>
+    <p class="section-body">Every engagement is structured around a defined outcome. Here are the three ways institutions, enterprises, and capital partners engage GoBeyond Advisory.</p>
+    <div class="engage-grid">
+      <div class="engage-card">
+        <div class="engage-num">01</div>
+        <div class="engage-title">Infrastructure Advisory</div>
+        <div class="engage-body">Project-based mandates. GoBeyond advises on strategy, feasibility, structuring, and execution for specific infrastructure and real-asset opportunities.</div>
+        <div class="engage-list">
+          <span class="engage-li">Development feasibility & structuring</span>
+          <span class="engage-li">Cross-border capital strategy</span>
+          <span class="engage-li">Government & PPP framework advisory</span>
+          <span class="engage-li">Market entry & corridor navigation</span>
+        </div>
       </div>
-      <div class="contact-detail">
-        <div class="contact-detail-label">Partnerships</div>
-        <div class="contact-detail-value"><a href="/cdn-cgi/l/email-protection#deaebfacaab0bbacad9eb9b1bcbba7b1b0babfbaa8b7adb1aca7f0bdb1b3" style="color:var(--gold);text-decoration:none;"><span class="__cf_email__" data-cfemail="5c2c3d2e2832392e2f1c3b333e39253332383d382a352f332e25723f3331">[email&#160;protected]</span></a></div>
+      <div class="engage-card">
+        <div class="engage-num">02</div>
+        <div class="engage-title">Initiative Partnership</div>
+        <div class="engage-body">Partner directly into a GoBeyond flagship initiative as a founding capital partner, institutional co-developer, or strategic ally at the founding layer.</div>
+        <div class="engage-list">
+          <span class="engage-li">ECO Infrastructure founding partner</span>
+          <span class="engage-li">Cape Coast New City co-developer</span>
+          <span class="engage-li">Newline Investors capital partner</span>
+          <span class="engage-li">Healthcare infrastructure advisory</span>
+        </div>
       </div>
-      <div class="contact-detail">
-        <div class="contact-detail-label">Location</div>
-        <div class="contact-detail-value" style="font-size:16px;font-family:'Syne',sans-serif;font-weight:400;">Houston, TX · West Africa · Dubai</div>
+      <div class="engage-card">
+        <div class="engage-num">03</div>
+        <div class="engage-title">Intelligence & Research</div>
+        <div class="engage-body">Access GoBeyond's cross-border intelligence briefings, corridor research, and infrastructure market analysis for institutional decision-making.</div>
+        <div class="engage-list">
+          <span class="engage-li">Corridor intelligence briefs</span>
+          <span class="engage-li">Infrastructure market analysis</span>
+          <span class="engage-li">Geopolitical risk briefings</span>
+          <span class="engage-li">Sovereign capital strategy reports</span>
+        </div>
       </div>
     </div>
-    <div class="contact-form reveal">
-      <form name="inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/success.html">
-        <input type="hidden" name="form-name" value="inquiry">
-        <p style="display:none;"><input name="bot-field"></p>
-        <div style="margin-bottom:18px;">
-          <div class="form-label">Full Name</div>
-          <input type="text" name="name" class="form-input" placeholder="Your name" required>
+  </div>
+</div>
+
+<!-- MARKETS -->
+<div id="markets" class="full-wrap section-alt">
+  <div class="full-inner">
+    <span class="eyebrow">Geographic Focus</span>
+    <div class="gold-line"></div>
+    <h2 class="section-title">Where we <em>operate.</em></h2>
+    <div class="markets-grid">
+      <div class="market-card"><div class="market-region">HQ · USA</div><div class="market-city">Houston, Texas</div><span class="market-badge badge-hq">Headquarters</span><div class="market-body">Primary operations base. Cross-border deal structuring, institutional outreach, and African diaspora corridor entry for the US market.</div></div>
+      <div class="market-card"><div class="market-region">West Africa · Primary</div><div class="market-city">Nigeria — Abuja & Lagos</div><span class="market-badge badge-active">Active</span><div class="market-body">Primary West African market. CBN sandbox navigation, ECO Phase 1 anchor, institutional banking relationships active.</div></div>
+      <div class="market-card"><div class="market-region">West Africa · Active</div><div class="market-city">Ghana — Cape Coast & Accra</div><span class="market-badge badge-active">Active</span><div class="market-body">Cape Coast New City development. ECO GHS corridor. Cross-border settlement architecture active.</div></div>
+      <div class="market-card"><div class="market-region">West Africa · Active</div><div class="market-city">Côte d'Ivoire</div><span class="market-badge badge-active">Active</span><div class="market-body">XOF corridor for ECO Phase 1. Healthcare infrastructure advisory active under Newline Investors.</div></div>
+      <div class="market-card"><div class="market-region">GCC · Priority</div><div class="market-city">Dubai & UAE</div><span class="market-badge badge-active">Active</span><div class="market-body">Primary GCC market. ECO Phase 1 receive corridor. Capital structuring and institutional partnerships.</div></div>
+      <div class="market-card"><div class="market-region">Europe · Phase 2</div><div class="market-city">UK / Europe</div><span class="market-badge badge-pipeline">Phase 2 · 2027</span><div class="market-body">ECO Phase 2 corridor. African diaspora in UK. Post-Brexit infrastructure opportunity mapped for 2027.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- INSIGHTS -->
+<div id="insights" class="full-wrap section-white">
+  <div class="full-inner">
+    <span class="eyebrow">Intelligence Briefs</span>
+    <div class="gold-line"></div>
+    <h2 class="section-title">Thinking from the<br/><em>frontier of infrastructure.</em></h2>
+    <p class="section-body" style="margin-bottom:0;">Original intelligence briefings on infrastructure, cross-border capital, geopolitical risk, and the emerging market landscape.</p>
+    <div class="insights-grid">
+      <a href="https://www.gobeyondadvisory.com/gba-article3-settlement-rails" class="insight-card featured">
+        <div>
+          <div class="insight-tag">⭐ Featured · Infrastructure Strategy</div>
+          <div class="insight-title">The Next Global Infrastructure Race Is Not Roads or Oil. It Is Digital Settlement Rails.</div>
+          <div class="insight-body">The founding thesis behind ECO Infrastructure — and why the nations and institutions that control settlement rails will hold economic leverage for the next fifty years.</div>
+          <div class="insight-date">March 2026 · gobeyondadvisory.com</div>
         </div>
-        <div style="margin-bottom:18px;">
-          <div class="form-label">Organization</div>
-          <input type="text" name="organization" class="form-input" placeholder="Company or institution">
+        <a href="https://www.gobeyondadvisory.com/gba-article3-settlement-rails" class="insight-cta-btn" onclick="event.stopPropagation()">Read Brief →</a>
+      </a>
+      <a href="https://www.gobeyondadvisory.com/article-ai-infrastructure-gap" class="insight-card"><div class="insight-tag">AI Infrastructure · Emerging Markets</div><div class="insight-title">The AI Infrastructure Gap: Why West Africa and the GCC Are the Most Undervalued Compute Markets</div><div class="insight-body">Everyone is building AI. Almost no one is building it where the demand is growing fastest.</div><div class="insight-date">February 2026</div></a>
+      <a href="https://www.gobeyondadvisory.com/gba-article4-smart-capital" class="insight-card"><div class="insight-tag">Capital Strategy</div><div class="insight-title">Why Smart Capital Is Moving Toward Infrastructure, Not Just Startups</div><div class="insight-body">The distinction between venture speculation and infrastructure-backed capital deployment.</div><div class="insight-date">March 2026</div></a>
+      <a href="https://www.gobeyondadvisory.com/article-pentagon-brief" class="insight-card"><div class="insight-tag">Geopolitical Risk · AI Policy</div><div class="insight-title">When AI Meets the Pentagon: What the Anthropic Standoff Means for Global Infrastructure</div><div class="insight-body">A signal every sovereign AI investor and cross-border builder should read carefully.</div><div class="insight-date">February 2026</div></a>
+      <a href="https://www.gobeyondadvisory.com/gba-article6-aws-sovereign-ai" class="insight-card"><div class="insight-tag">AI Infrastructure</div><div class="insight-title">When Drones Hit Data Centers: What the AWS Strike Means for Sovereign AI Infrastructure</div><div class="insight-body">The first kinetic attack on major cloud infrastructure. What it means for sovereign architecture.</div><div class="insight-date">March 2026</div></a>
+      <a href="https://www.gobeyondadvisory.com/gba-article5-hormuz-sovereign-risk" class="insight-card"><div class="insight-tag">Geopolitical Risk</div><div class="insight-title">The Strait of Hormuz, the Senate, and the New Rules of Sovereign Risk</div><div class="insight-body">Rewriting the rules of cross-border capital and sovereign risk modeling.</div><div class="insight-date">March 2026</div></a>
+    </div>
+    <div style="margin-top:16px;">
+      <a href="/briefs" class="insights-more">View All Intelligence Briefs →</a>
+    </div>
+
+    <!-- Hidden articles still accessible via direct URL - all exist in repo -->
+    <!-- gba-article3-spr-v2.html | gba-article4-sahel-v2.html -->
+    <!-- gba-article7-bomb-then-buy.html | gba-article8-ai-sees-light.html -->
+    <!-- briefs.html - accessible at /briefs -->
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="full-wrap newsletter-wrap">
+  <div class="newsletter-inner">
+    <div class="nl-left">
+      <h3>Subscribe to<br/><em>GoBeyond Intelligence.</em></h3>
+      <p>Receive original infrastructure intelligence briefs, corridor research, and geopolitical risk analysis — delivered directly to your inbox. No noise. Institutional-grade insight only.</p>
+    </div>
+    <form name="newsletter" netlify action="/success" method="POST">
+      <div class="nl-row">
+        <div class="nl-field"><label>Full Name</label><input type="text" placeholder="Your name"/></div>
+        <div class="nl-field"><label>Organization</label><input type="text" placeholder="Institution or firm"/></div>
+      </div>
+      <div class="nl-field"><label>Email Address</label><input type="email" placeholder="your@organization.com"/></div>
+      <div class="nl-field">
+        <label>Interest Area</label>
+        <select>
+          <option value="">Select area of focus</option>
+          <option>Infrastructure Advisory</option>
+          <option>ECO Infrastructure / Settlement Rails</option>
+          <option>Cross-Border Capital Strategy</option>
+          <option>West Africa Markets</option>
+          <option>GCC & Middle East</option>
+          <option>Geopolitical Risk Intelligence</option>
+          <option>All Briefs</option>
+        </select>
+      </div>
+      <button type="submit" class="nl-submit">Subscribe to Intelligence Briefs</button>
+      <p class="nl-note">No spam. No sales cadence. Intelligence briefs only — published when there is something worth reading.</p>
+    </form>
+  </div>
+</div>
+
+<!-- PRESS -->
+<div class="full-wrap section-white">
+  <div class="full-inner">
+    <span class="eyebrow">Media & Press</span>
+    <div class="gold-line"></div>
+    <h2 class="section-title">Press &<br/><em>Intelligence Access.</em></h2>
+    <div class="press-block">
+      <p>GoBeyond Advisory research briefs, infrastructure intelligence reports, and press materials are available to accredited media, institutional researchers, and registered organizations upon request.</p>
+      <p>For editorial inquiries, speaking engagements, or institutional briefing requests — contact the GoBeyond partnerships team directly.</p>
+      <a href="mailto:partners@gobeyondadvisory.com" class="press-link">Request Press or Research Access →</a>
+    </div>
+  </div>
+</div>
+
+<!-- LEADERSHIP SIGNAL -->
+<div class="full-wrap">
+  <div class="ls-wrap">
+    <div class="ls-left">
+      <h3>Not a concept firm.<br/><em>A practitioner firm.</em></h3>
+      <p>Built at the intersection of cloud infrastructure, cross-border capital, and sovereign markets — by people who have operated there, not just studied it. Houston, West Africa, and Dubai are not target markets. They are operating contexts.</p>
+    </div>
+    <div class="ls-right">
+      <a href="/founders" class="eco-btn">Meet the Leadership →</a>
+      <a href="#contact" class="eco-ghost">Engage Advisory</a>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="full-wrap section-alt">
+  <div class="full-inner">
+    <span class="eyebrow">Engage Advisory</span>
+    <div class="gold-line"></div>
+    <h2 class="section-title">Partner with<br/><em>GoBeyond Advisory.</em></h2>
+    <p class="section-body" style="margin-bottom:0;">We work with institutions, fintechs, sovereign-adjacent programs, and enterprise partners solving structural inefficiencies at scale.</p>
+    <div class="contact-grid">
+      <div class="contact-items">
+        <div><div class="ci-label">General Inquiries</div><div class="ci-val"><a href="mailto:info@gobeyondadvisory.com">info@gobeyondadvisory.com</a></div></div>
+        <div><div class="ci-label">Partnerships</div><div class="ci-val"><a href="mailto:partners@gobeyondadvisory.com">partners@gobeyondadvisory.com</a></div></div>
+        <div><div class="ci-label">ECO Infrastructure</div><div class="ci-val"><a href="https://eco-rails.com">eco-rails.com →</a></div></div>
+        <div><div class="ci-label">LinkedIn</div><div class="ci-val"><a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener">linkedin.com/company/gobeyond-advisory →</a></div></div>
+        <div><div class="ci-label">Location</div><div class="ci-val" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.5px;color:var(--muted);">Houston, TX · Lagos · Accra · Abidjan · Dubai</div></div>
+        <div><div class="ci-label">Leadership</div><div class="ci-val"><a href="/founders">gobeyondadvisory.com/founders →</a></div></div>
+      </div>
+      <form name="contact" netlify action="/success" method="POST">
+        <div class="form-row">
+          <div class="form-field"><label>Full Name</label><input type="text" placeholder="Your name"/></div>
+          <div class="form-field"><label>Organization</label><input type="text" placeholder="Institution or company"/></div>
         </div>
-        <div style="margin-bottom:18px;">
-          <div class="form-label">Email</div>
-          <input type="email" name="email" class="form-input" placeholder="your@email.com" required>
+        <div class="form-field"><label>Email Address</label><input type="email" placeholder="your@organization.com"/></div>
+        <div class="form-field">
+          <label>Nature of Inquiry</label>
+          <select>
+            <option value="">Select inquiry type</option>
+            <option>ECO Infrastructure Partnership</option>
+            <option>Cape Coast New City</option>
+            <option>Newline Investors / Capital Partnership</option>
+            <option>Infrastructure Advisory Mandate</option>
+            <option>Institutional / Government Engagement</option>
+            <option>Research / Media / Press</option>
+            <option>General Inquiry</option>
+          </select>
         </div>
-        <div style="margin-bottom:18px;">
-          <div class="form-label">Nature of Inquiry</div>
-          <textarea name="message" class="form-input" placeholder="Infrastructure advisory, capital structuring, partnership, or other"></textarea>
-        </div>
+        <div class="form-field"><label>Message</label><textarea placeholder="Brief overview of your inquiry, project, or organization..."></textarea></div>
         <button type="submit" class="form-submit">Submit Inquiry</button>
       </form>
     </div>
   </div>
-</section>
+</div>
 
+<!-- FOOTER -->
 <footer>
-  <div class="footer-logo">GoBeyond<span>Advisory</span></div>
-  <div class="footer-tagline">Strategic Capital Deployment for Emerging Infrastructure Markets</div>
-  <ul class="footer-links">
-    <li><a href="#focus">Focus</a></li>
-    <li><a href="#markets">Markets</a></li>
-    <li><a href="#insights">Insights</a></li>
-    <li><a href="#engage">Engage</a></li>
-    <li><a href="founders.html">Founders</a></li>
-  </ul>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">GOBEYOND ADVISORY</div>
+      <div class="footer-brand-desc">Strategic Investment & Infrastructure Advisory<br/>Houston · West Africa · GCC · Europe</div>
+      <div class="footer-social">
+        <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" title="LinkedIn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" title="X / Twitter">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" title="YouTube">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+        <a href="mailto:partners@gobeyondadvisory.com" title="Email">✉</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Advisory</div>
+      <div class="footer-col-links">
+        <a href="#advisory">Pillars</a>
+        <a href="#initiatives">Initiatives</a>
+        <a href="#engage-section">How to Engage</a>
+        <a href="#markets">Markets</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Ecosystem</div>
+      <div class="footer-col-links">
+        <a href="https://eco-rails.com">ECO Infrastructure</a>
+        <a href="https://eco-settlement.com">Settlement Explainer</a>
+        <a href="/founders">Leadership</a>
+        <a href="#insights">Intelligence Briefs</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <div class="footer-col-links">
+        <a href="mailto:info@gobeyondadvisory.com">info@gobeyondadvisory.com</a>
+        <a href="mailto:partners@gobeyondadvisory.com">partners@gobeyondadvisory.com</a>
+        <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>
+      <div class="footer-copy">© 2026 GoBeyond Advisory · All Rights Reserved</div>
+      <div class="footer-disclaimer">This website contains information about investment and infrastructure advisory services provided by GoBeyond Advisory. Nothing on this website constitutes financial advice, a solicitation to invest, or an offer of securities. All investment decisions should be made with appropriate professional advice.</div>
+    </div>
+    <div class="footer-legal-links">
+      <a href="#contact" title="Privacy Policy - Coming Soon">Privacy Policy</a>
+      <a href="#contact" title="Terms of Use - Coming Soon">Terms of Use</a>
+      <a href="#contact" title="Legal - Coming Soon">Legal</a>
+    </div>
+  </div>
 </footer>
 
-<script>
-const reveals = document.querySelectorAll('.reveal');
-if ('IntersectionObserver' in window && location.protocol !== 'file:') {
-  reveals.forEach(el => el.classList.add('animate'));
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.remove('animate'); e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.08 });
-  reveals.forEach(el => obs.observe(el));
-} else {
-  reveals.forEach(el => el.classList.add('visible'));
-}
-</script>
 </body>
 </html>
