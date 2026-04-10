@@ -1,0 +1,320 @@
+<!--
+  ════════════════════════════════════════════════════════════
+  GoBeyond Advisory — Intelligence Brief Subscription Form
+  REPLACEMENT for the existing broken mailing list form
+  ════════════════════════════════════════════════════════════
+
+  HOW THIS WORKS (GitHub → Netlify deploy):
+  1. Replace your existing subscribe form HTML with this block
+  2. Push to GitHub → Netlify detects the netlify attribute automatically
+  3. Go to Netlify Dashboard → Forms → gba-intelligence-subscribe
+  4. Click "Form notifications" → Add email notification → enter your email
+  5. Every new subscriber triggers an instant email to you
+  6. All submissions stored in Netlify Dashboard → Forms → viewable/exportable anytime
+
+  OPTIONAL UPGRADE (when ready):
+  - Export Netlify subscribers CSV → import into Mailchimp/Kit
+  - Or connect via Zapier: Netlify Form → Mailchimp (auto-add subscriber)
+  ════════════════════════════════════════════════════════════
+-->
+
+<section id="intelligence-subscribe" style="
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 48px;
+">
+
+  <div style="
+    background: #1A1710;
+    border: 1px solid rgba(184,150,74,0.18);
+    border-top: 3px solid #B8964A;
+    padding: 56px 52px;
+    position: relative;
+    overflow: hidden;
+  ">
+
+    <!-- Subtle background detail -->
+    <div style="
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      border: 1px solid rgba(184,150,74,0.06);
+      border-radius: 50%;
+      pointer-events: none;
+    "></div>
+
+    <div style="
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #B8964A;
+      margin-bottom: 20px;
+    ">GoBeyond Intelligence</div>
+
+    <h3 style="
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: clamp(20px, 2.5vw, 26px);
+      color: #F8F5F0;
+      letter-spacing: -0.01em;
+      margin: 0 0 12px;
+    ">Subscribe to GoBeyond Intelligence.</h3>
+
+    <p style="
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      color: #7A7060;
+      line-height: 1.7;
+      margin: 0 0 40px;
+      max-width: 480px;
+    ">Original infrastructure intelligence briefs, corridor research, and geopolitical risk analysis — delivered when there is something worth reading. No noise.</p>
+
+    <!-- ★ NETLIFY FORM — detected automatically on deploy ★ -->
+    <form
+      name="gba-intelligence-subscribe"
+      method="POST"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      id="gba-sub-form"
+      style="display: flex; flex-direction: column; gap: 16px;"
+    >
+      <!-- Hidden fields required by Netlify -->
+      <input type="hidden" name="form-name" value="gba-intelligence-subscribe" />
+      <p style="display:none">
+        <input name="bot-field" />
+      </p>
+
+      <!-- Name + Org row -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label style="
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #5A5248;
+            display: block;
+            margin-bottom: 8px;
+          ">Full Name</label>
+          <input
+            type="text"
+            name="full-name"
+            placeholder="Your name"
+            required
+            style="
+              width: 100%;
+              background: #0C0A07;
+              border: 1px solid rgba(184,150,74,0.2);
+              border-radius: 0;
+              padding: 12px 16px;
+              font-family: 'Cormorant Garamond', serif;
+              font-size: 16px;
+              color: #F8F5F0;
+              outline: none;
+              transition: border-color 0.2s;
+              box-sizing: border-box;
+            "
+            onfocus="this.style.borderColor='rgba(184,150,74,0.55)'"
+            onblur="this.style.borderColor='rgba(184,150,74,0.2)'"
+          />
+        </div>
+        <div>
+          <label style="
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #5A5248;
+            display: block;
+            margin-bottom: 8px;
+          ">Organization</label>
+          <input
+            type="text"
+            name="organization"
+            placeholder="Optional"
+            style="
+              width: 100%;
+              background: #0C0A07;
+              border: 1px solid rgba(184,150,74,0.2);
+              border-radius: 0;
+              padding: 12px 16px;
+              font-family: 'Cormorant Garamond', serif;
+              font-size: 16px;
+              color: #F8F5F0;
+              outline: none;
+              transition: border-color 0.2s;
+              box-sizing: border-box;
+            "
+            onfocus="this.style.borderColor='rgba(184,150,74,0.55)'"
+            onblur="this.style.borderColor='rgba(184,150,74,0.2)'"
+          />
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label style="
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #5A5248;
+          display: block;
+          margin-bottom: 8px;
+        ">Email Address *</label>
+        <input
+          type="email"
+          name="email"
+          placeholder="your@email.com"
+          required
+          style="
+            width: 100%;
+            background: #0C0A07;
+            border: 1px solid rgba(184,150,74,0.2);
+            border-radius: 0;
+            padding: 12px 16px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            color: #F8F5F0;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+          "
+          onfocus="this.style.borderColor='rgba(184,150,74,0.55)'"
+          onblur="this.style.borderColor='rgba(184,150,74,0.2)'"
+        />
+      </div>
+
+      <!-- Interest Area -->
+      <div>
+        <label style="
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #5A5248;
+          display: block;
+          margin-bottom: 8px;
+        ">Primary Interest</label>
+        <select
+          name="interest-area"
+          style="
+            width: 100%;
+            background: #0C0A07;
+            border: 1px solid rgba(184,150,74,0.2);
+            border-radius: 0;
+            padding: 12px 16px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            color: #7A7060;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+            cursor: pointer;
+          "
+          onfocus="this.style.borderColor='rgba(184,150,74,0.55)'"
+          onblur="this.style.borderColor='rgba(184,150,74,0.2)'"
+        >
+          <option value="">Select area of focus</option>
+          <option value="infrastructure-advisory">Infrastructure Advisory</option>
+          <option value="eco-infrastructure">ECO Infrastructure / Settlement Rails</option>
+          <option value="cross-border-capital">Cross-Border Capital Strategy</option>
+          <option value="west-africa">West Africa Markets</option>
+          <option value="gcc-middle-east">GCC &amp; Middle East</option>
+          <option value="ai-infrastructure">AI Infrastructure</option>
+          <option value="geopolitical-risk">Geopolitical Risk Intelligence</option>
+          <option value="all-briefs">All Briefs</option>
+        </select>
+      </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        id="gba-sub-btn"
+        style="
+          margin-top: 8px;
+          padding: 16px 40px;
+          background: #B8964A;
+          color: #0C0A07;
+          border: none;
+          font-family: 'Syne', sans-serif;
+          font-weight: 700;
+          font-size: 12px;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: background 0.2s, transform 0.15s;
+          align-self: flex-start;
+        "
+        onmouseover="this.style.background='#D4B06A'"
+        onmouseout="this.style.background='#B8964A'"
+      >Subscribe to Intelligence Briefs</button>
+
+    </form>
+
+    <!-- Success message (shown via JS after submit) -->
+    <div id="gba-sub-success" style="display:none; padding: 24px 0;">
+      <div style="
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #B8964A;
+        margin-bottom: 12px;
+      ">✓ Subscription Confirmed</div>
+      <p style="
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 18px;
+        color: #EDE8E0;
+        margin: 0;
+        line-height: 1.6;
+      ">You're now on the GoBeyond Intelligence list. The next brief lands in your inbox.</p>
+    </div>
+
+    <p style="
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: #3A3530;
+      margin: 20px 0 0;
+    ">No spam. No sales cadence. Intelligence only — published when there is something worth reading.</p>
+
+  </div>
+
+</section>
+
+<script>
+  /* Intercept submit → show success state without page reload */
+  (function() {
+    var form = document.getElementById('gba-sub-form');
+    var success = document.getElementById('gba-sub-success');
+    var btn = document.getElementById('gba-sub-btn');
+    if (!form) return;
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      btn.textContent = 'Submitting...';
+      btn.disabled = true;
+
+      var data = new FormData(form);
+
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data).toString()
+      })
+      .then(function() {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      })
+      .catch(function() {
+        /* Fallback: let native submit handle it */
+        btn.textContent = 'Subscribe to Intelligence Briefs';
+        btn.disabled = false;
+        form.submit();
+      });
+    });
+  })();
+</script>

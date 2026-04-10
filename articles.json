@@ -1,0 +1,72 @@
+[
+  {
+    "id": "gba-article2-stop-building-ai-from-scratch",
+    "featured": true,
+    "category": "AI Infrastructure · Strategy",
+    "title": "Stop Building AI From Scratch: The $18B Lesson Most Founders Are Missing",
+    "excerpt": "Most founders are wasting time building models instead of building distribution, data access, and infrastructure leverage. The real value has moved.",
+    "date": "April 2026",
+    "url": "/gba-article2-stop-building-ai-from-scratch",
+    "new": true
+  },
+  {
+    "id": "gba-article3-settlement-rails",
+    "featured": true,
+    "category": "Infrastructure Strategy",
+    "title": "The Next Global Infrastructure Race Is Not Roads or Oil. It Is Digital Settlement Rails.",
+    "excerpt": "The founding thesis behind ECO Infrastructure — and why the nations and institutions that control settlement rails will hold economic leverage for the next fifty years.",
+    "date": "March 2026",
+    "url": "/gba-article3-settlement-rails",
+    "new": false
+  },
+  {
+    "id": "gba-article4-smart-capital",
+    "featured": false,
+    "category": "Capital Strategy",
+    "title": "Why Smart Capital Is Moving Toward Infrastructure, Not Just Startups",
+    "excerpt": "The distinction between venture speculation and infrastructure-backed capital deployment — and why the shift is permanent.",
+    "date": "March 2026",
+    "url": "/gba-article4-smart-capital",
+    "new": false
+  },
+  {
+    "id": "gba-article6-aws-sovereign-ai",
+    "featured": false,
+    "category": "AI Infrastructure",
+    "title": "When Drones Hit Data Centers: What the AWS Strike Means for Sovereign AI Infrastructure",
+    "excerpt": "The first kinetic attack on major cloud infrastructure. What it means for sovereign architecture and cross-border AI strategy.",
+    "date": "March 2026",
+    "url": "/gba-article6-aws-sovereign-ai",
+    "new": false
+  },
+  {
+    "id": "gba-article5-hormuz-sovereign-risk",
+    "featured": false,
+    "category": "Geopolitical Risk",
+    "title": "The Strait of Hormuz, the Senate, and the New Rules of Sovereign Risk",
+    "excerpt": "Rewriting the rules of cross-border capital and sovereign risk modeling for West Africa and GCC infrastructure investors.",
+    "date": "March 2026",
+    "url": "/gba-article5-hormuz-sovereign-risk",
+    "new": false
+  },
+  {
+    "id": "article-ai-infrastructure-gap",
+    "featured": false,
+    "category": "AI Infrastructure · Emerging Markets",
+    "title": "The AI Infrastructure Gap: Why West Africa and the GCC Are the Most Undervalued Compute Markets",
+    "excerpt": "Everyone is building AI. Almost no one is building it where the demand is growing fastest.",
+    "date": "February 2026",
+    "url": "/article-ai-infrastructure-gap",
+    "new": false
+  },
+  {
+    "id": "article-pentagon-brief",
+    "featured": false,
+    "category": "Geopolitical Risk · AI Policy",
+    "title": "When AI Meets the Pentagon: What the Anthropic Standoff Means for Global Infrastructure",
+    "excerpt": "A signal every sovereign AI investor and cross-border builder should read carefully.",
+    "date": "February 2026",
+    "url": "/article-pentagon-brief",
+    "new": false
+  }
+]
