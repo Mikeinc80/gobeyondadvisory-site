@@ -1,4 +1,13 @@
-[
+[{
+    "id": "gba-article2-stop-building-ai-from-scratch",
+    "featured": true,
+    "category": "AI Infrastructure · Strategy",
+    "title": "Stop Building AI From Scratch: The $18B Lesson Most Founders Are Missing",
+    "excerpt": "The model race is settled. Anthropic just passed OpenAI at $30B ARR. The real value has moved to distribution, proprietary data, and integration. Here is what every founder needs to understand right now.",
+    "date": "April 2026",
+    "url": "/gba-article2-stop-building-ai-from-scratch",
+    "new": true
+  },
   {
     "id": "gba-article2-stop-building-ai-from-scratch",
     "featured": true,
