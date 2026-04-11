@@ -1,214 +1,184 @@
 /**
- * GoBeyond Advisory — Dynamic Article Card Loader
- * Drop this file in repo root as: article-loader.js
- * Add <script src="/article-loader.js"></script> before </body> in index.html
- * Add <div id="gba-articles-grid"></div> inside your #insights section
- *
- * To publish a new article:
- *   1. Add article HTML file to repo root
- *   2. Add one entry to articles.json
- *   3. Push to GitHub → Netlify auto-deploys → card appears instantly
+ * GoBeyond Advisory — Dynamic Article Card Loader v2
+ * Matches "Where We Operate" 3-column horizontal grid layout
  */
 
 (function () {
-  const CONTAINER_ID = 'gba-articles-grid';
-  const JSON_PATH = '/articles.json';
+  var CONTAINER_ID = 'gba-articles-grid';
+  var JSON_PATH = '/articles.json';
 
-  /* ── Card HTML builder ── */
   function buildCard(article, index) {
-    const featuredBadge = article.featured
-      ? `<span class="ab-badge">⭐ Featured</span>`
-      : '';
-    const newBadge = article.new
-      ? `<span class="ab-badge ab-badge--new">New</span>`
-      : '';
+    var newBadge = article.new ? '<span class="ab-new">New</span>' : '';
+    var featuredClass = article.featured ? ' ab-card--featured' : '';
 
-    return `
-      <a class="ab-card${article.featured ? ' ab-card--featured' : ''}" href="${article.url}" style="animation-delay:${index * 80}ms">
-        <div class="ab-card__header">
-          <div class="ab-badges">${featuredBadge}${newBadge}</div>
-          <span class="ab-category">${article.category}</span>
-        </div>
-        <h3 class="ab-title">${article.title}</h3>
-        <p class="ab-excerpt">${article.excerpt}</p>
-        <div class="ab-footer">
-          <span class="ab-date">${article.date}</span>
-          <span class="ab-cta">Read Brief →</span>
-        </div>
-      </a>
-    `;
+    return '<a class="ab-card' + featuredClass + '" href="' + article.url + '" style="animation-delay:' + (index * 80) + 'ms">' +
+      '<div class="ab-card-top">' +
+        (article.new || article.featured ? '<div class="ab-badges">' + (article.featured ? '<span class="ab-feat">⭐ Featured</span>' : '') + newBadge + '</div>' : '') +
+        '<span class="ab-cat">' + article.category + '</span>' +
+      '</div>' +
+      '<h3 class="ab-title">' + article.title + '</h3>' +
+      '<p class="ab-body">' + article.excerpt + '</p>' +
+      '<div class="ab-foot">' +
+        '<span class="ab-date">' + article.date + '</span>' +
+        '<span class="ab-cta">Read Brief →</span>' +
+      '</div>' +
+    '</a>';
   }
 
-  /* ── Inject styles ── */
   function injectStyles() {
     if (document.getElementById('ab-styles')) return;
-    const style = document.createElement('style');
-    style.id = 'ab-styles';
-    style.textContent = `
-      #gba-articles-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 2px;
-        background: rgba(184,150,74,0.12);
-      }
-      .ab-card {
-        display: flex;
-        flex-direction: column;
-        background: #111009;
-        padding: 36px 32px;
-        text-decoration: none;
-        color: inherit;
-        opacity: 0;
-        transform: translateY(16px);
-        animation: abFadeIn 0.55s ease forwards;
-        transition: background 0.2s;
-        border-bottom: 2px solid transparent;
-      }
-      .ab-card:hover {
-        background: #1A1710;
-        border-bottom-color: #B8964A;
-      }
-      .ab-card--featured {
-        grid-column: 1 / -1;
-        background: #161310;
-      }
-      @media (min-width: 900px) {
-        .ab-card--featured { grid-column: span 2; }
-      }
-      .ab-card__header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
-      }
-      .ab-badges { display: flex; gap: 6px; }
-      .ab-badge {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 10px;
-        letter-spacing: 0.1em;
-        padding: 4px 10px;
-        background: rgba(184,150,74,0.12);
-        color: #B8964A;
-        border: 1px solid rgba(184,150,74,0.25);
-      }
-      .ab-badge--new {
-        background: rgba(184,150,74,0.2);
-        color: #D4B06A;
-      }
-      .ab-category {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 10px;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: #7A7060;
-      }
-      .ab-title {
-        font-family: 'Syne', sans-serif;
-        font-size: 18px;
-        font-weight: 700;
-        color: #F8F5F0;
-        line-height: 1.3;
-        margin: 0 0 12px;
-        letter-spacing: -0.01em;
-      }
-      .ab-card--featured .ab-title { font-size: 22px; }
-      .ab-excerpt {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 16px;
-        color: #9A9080;
-        line-height: 1.7;
-        flex: 1;
-        margin: 0 0 20px;
-      }
-      .ab-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: auto;
-      }
-      .ab-date {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 10px;
-        letter-spacing: 0.1em;
-        color: #5A5248;
-        text-transform: uppercase;
-      }
-      .ab-cta {
-        font-family: 'Syne', sans-serif;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        color: #B8964A;
-        transition: letter-spacing 0.2s;
-      }
-      .ab-card:hover .ab-cta { letter-spacing: 0.18em; }
+    var s = document.createElement('style');
+    s.id = 'ab-styles';
+    s.textContent = [
+      /* Force full width breakout matching site's section width */
+      '#gba-articles-grid {',
+      '  display: grid;',
+      '  grid-template-columns: repeat(3, 1fr);',
+      '  gap: 0;',
+      '  width: 100%;',
+      '  border: 1px solid rgba(255,255,255,0.08);',
+      '}',
 
-      /* Loading skeleton */
-      .ab-skeleton {
-        background: #111009;
-        padding: 36px 32px;
-        min-height: 180px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .ab-skeleton::after {
-        content: '';
-        width: 32px;
-        height: 32px;
-        border: 2px solid rgba(184,150,74,0.15);
-        border-top-color: #B8964A;
-        border-radius: 50%;
-        animation: abSpin 0.8s linear infinite;
-      }
+      /* Featured card spans all 3 columns */
+      '.ab-card--featured {',
+      '  grid-column: 1 / -1;',
+      '  border-bottom: 1px solid rgba(255,255,255,0.08);',
+      '}',
 
-      @keyframes abFadeIn {
-        to { opacity: 1; transform: none; }
-      }
-      @keyframes abSpin {
-        to { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(style);
+      /* Base card */
+      '.ab-card {',
+      '  display: flex;',
+      '  flex-direction: column;',
+      '  padding: 32px 28px;',
+      '  text-decoration: none;',
+      '  color: inherit;',
+      '  background: #111;',
+      '  border-right: 1px solid rgba(255,255,255,0.08);',
+      '  border-bottom: 1px solid rgba(255,255,255,0.08);',
+      '  opacity: 0;',
+      '  transform: translateY(12px);',
+      '  animation: abIn 0.5s ease forwards;',
+      '  transition: background 0.2s;',
+      '  min-height: 220px;',
+      '}',
+      '.ab-card:last-child { border-right: none; }',
+      '.ab-card:hover { background: #1a1a1a; }',
+      '.ab-card--featured { background: #0e0e0e; padding: 40px 36px; min-height: auto; }',
+      '.ab-card--featured:hover { background: #141414; }',
+
+      /* Top meta */
+      '.ab-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }',
+      '.ab-badges { display: flex; gap: 6px; }',
+      '.ab-feat, .ab-new {',
+      '  font-size: 10px;',
+      '  font-weight: 600;',
+      '  letter-spacing: 0.1em;',
+      '  padding: 3px 9px;',
+      '  border: 1px solid rgba(184,150,74,0.3);',
+      '  color: #B8964A;',
+      '  background: rgba(184,150,74,0.08);',
+      '  font-family: monospace;',
+      '}',
+      '.ab-new { color: #D4B06A; background: rgba(184,150,74,0.14); }',
+      '.ab-cat {',
+      '  font-size: 10px;',
+      '  letter-spacing: 0.15em;',
+      '  text-transform: uppercase;',
+      '  color: #888;',
+      '  font-family: monospace;',
+      '}',
+
+      /* Title */
+      '.ab-title {',
+      '  font-size: 17px;',
+      '  font-weight: 700;',
+      '  line-height: 1.3;',
+      '  color: #f0ece6;',
+      '  margin: 0 0 12px;',
+      '  letter-spacing: -0.01em;',
+      '}',
+      '.ab-card--featured .ab-title { font-size: 22px; max-width: 680px; }',
+
+      /* Body */
+      '.ab-body {',
+      '  font-size: 14px;',
+      '  color: #888;',
+      '  line-height: 1.7;',
+      '  flex: 1;',
+      '  margin: 0 0 20px;',
+      '}',
+      '.ab-card--featured .ab-body { font-size: 15px; max-width: 600px; color: #999; }',
+
+      /* Footer */
+      '.ab-foot { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }',
+      '.ab-date { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #555; font-family: monospace; }',
+      '.ab-cta { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #B8964A; transition: letter-spacing 0.2s; }',
+      '.ab-card:hover .ab-cta { letter-spacing: 0.16em; }',
+
+      /* Loading */
+      '.ab-skeleton { background: #111; min-height: 180px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.06); }',
+      '.ab-skeleton::after { content: ""; width: 24px; height: 24px; border: 2px solid rgba(184,150,74,0.15); border-top-color: #B8964A; border-radius: 50%; animation: abSpin 0.8s linear infinite; }',
+
+      /* Responsive */
+      '@media (max-width: 900px) {',
+      '  #gba-articles-grid { grid-template-columns: repeat(2, 1fr); }',
+      '  .ab-card--featured { grid-column: 1 / -1; }',
+      '}',
+      '@media (max-width: 600px) {',
+      '  #gba-articles-grid { grid-template-columns: 1fr; }',
+      '}',
+
+      '@keyframes abIn { to { opacity: 1; transform: none; } }',
+      '@keyframes abSpin { to { transform: rotate(360deg); } }'
+    ].join('\n');
+    document.head.appendChild(s);
   }
 
-  /* ── Render error state ── */
-  function renderError(container) {
-    container.innerHTML = `
-      <div class="ab-skeleton" style="color:#7A7060;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;">
-        BRIEFS LOADING — CHECK BACK SHORTLY
-      </div>`;
-  }
-
-  /* ── Main init ── */
   function init() {
-    const container = document.getElementById(CONTAINER_ID);
+    var container = document.getElementById(CONTAINER_ID);
     if (!container) return;
 
     injectStyles();
 
-    // Show loading state
-    container.innerHTML = `<div class="ab-skeleton"></div><div class="ab-skeleton"></div><div class="ab-skeleton"></div>`;
+    /* Force container to break out of any width constraints */
+    container.style.cssText = 'width:100%;display:block;';
+
+    /* Also force parent insights-grid to full width */
+    var parent = container.parentElement;
+    if (parent) {
+      parent.style.cssText = 'width:100%;max-width:100%;padding:0;display:block;';
+    }
+
+    container.innerHTML =
+      '<div class="ab-skeleton" style="grid-column:1/-1"></div>' +
+      '<div class="ab-skeleton"></div>' +
+      '<div class="ab-skeleton"></div>';
 
     fetch(JSON_PATH)
-      .then(function (res) {
-        if (!res.ok) throw new Error('fetch failed');
-        return res.json();
-      })
-      .then(function (articles) {
-        if (!Array.isArray(articles) || articles.length === 0) {
-          renderError(container);
+      .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+      .then(function(articles) {
+        if (!Array.isArray(articles) || !articles.length) {
+          container.innerHTML = '<div class="ab-skeleton" style="grid-column:1/-1;color:#555;font-family:monospace;font-size:11px;letter-spacing:.1em;">BRIEFS LOADING</div>';
           return;
         }
         container.innerHTML = articles.map(buildCard).join('');
       })
-      .catch(function () {
-        renderError(container);
+      .catch(function() {
+        container.innerHTML = '<div class="ab-skeleton" style="grid-column:1/-1;"></div>';
       });
   }
 
-  /* Run after DOM ready */
+  /* Bulletproof reveal fallback */
+  (function revealAll() {
+    var fallback = setTimeout(function() {
+      document.querySelectorAll('.ab-card').forEach(function(el) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }, 2000);
+    window._abFallback = fallback;
+  })();
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
