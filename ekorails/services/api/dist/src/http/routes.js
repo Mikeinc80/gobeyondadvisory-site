@@ -26,7 +26,7 @@ import * as notify from '../modules/notification/notify.js';
 import { explainAssessment, recordDecision } from '../modules/compliance/engine.js';
 import { RULES } from '../modules/compliance/rules.js';
 import { verifyAuditChain, buildAuditExportManifest, recordAudit } from '../audit/audit.js';
-import { registeredAdapters } from '../modules/partners/adapters.js';
+import { registeredAdapters, SIMULATION_SCENARIOS } from '../modules/partners/adapters.js';
 import * as reports from '../modules/reporting/reports.js';
 import * as learning from '../modules/learning/content.js';
 import { toCsv, toXlsx, toPdf } from '../modules/reporting/export.js';
@@ -246,7 +246,13 @@ export function buildRouter() {
         tags: ['auth'],
         handler: async (ctx) => {
             const user = requireUser(ctx);
-            const org = await withReadOnlyContext(contextFor(ctx), (db) => one(db, 'SELECT legal_name, display_code, onboarding_status, suspended_at FROM organization WHERE id = $1', [user.organizationId]));
+            const { org, mfaEnrolled } = await withReadOnlyContext(contextFor(ctx), async (db) => ({
+                org: await one(db, 'SELECT legal_name, display_code, onboarding_status, suspended_at FROM organization WHERE id = $1', [user.organizationId]),
+                // The client needs this to know whether to offer enrolment or verification after a
+                // page reload on a pre-MFA session. It is a boolean about the caller's own account,
+                // not a secret: the enrolment secret itself is never returned by this route.
+                mfaEnrolled: (await one(db, 'SELECT mfa_enrolled FROM app_user WHERE id = $1', [user.userId])).mfa_enrolled,
+            }));
             return {
                 user_id: user.userId,
                 email: user.email,
@@ -263,6 +269,7 @@ export function buildRouter() {
                 scope: user.scope,
                 masking_profile: maskingProfileForRoles(user.roles),
                 mfa_satisfied: user.mfaSatisfied,
+                mfa_enrolled: mfaEnrolled,
                 step_up_valid: user.stepUpValidUntil !== null && user.stepUpValidUntil.getTime() > Date.now(),
                 organization: {
                     id: user.organizationId,
@@ -860,7 +867,7 @@ export function buildRouter() {
             const decisions = await many(db, `SELECT d.decision, d.reason, d.decided_by_role, d.decided_at, u.display_name AS decided_by_name
              FROM compliance_decision d LEFT JOIN app_user u ON u.id = d.decided_by
             WHERE d.compliance_case_id = $1 ORDER BY d.decided_at`, [c['id']]);
-            const screening = await many(db, `SELECT sc.reference, sc.subject_type, sc.status, sc.disposition, sc.disposition_reason,
+            const screening = await many(db, `SELECT sc.id, sc.reference, sc.subject_type, sc.status, sc.disposition, sc.disposition_reason,
                   sc.provider, sc.is_simulated, sc.requested_at,
                   (SELECT json_agg(json_build_object(
                      'type', r.screening_type, 'matched_name', r.matched_name,
@@ -1392,7 +1399,7 @@ export function buildRouter() {
         handler: async (ctx) => {
             const user = requireUser(ctx);
             const body = (ctx.body ?? {});
-            const scenario = field(body, 'scenario', isNonEmptyString, 'a scenario name');
+            const scenario = field(body, 'scenario', (v) => typeof v === 'string' && SIMULATION_SCENARIOS.includes(v), `one of: ${SIMULATION_SCENARIOS.join(', ')}`);
             return withContext(contextFor(ctx), async (db) => {
                 const row = await one(db, `INSERT INTO simulation_directive (
              partner_id, transaction_id, operation, scenario, parameters, remaining_uses, created_by
@@ -1420,7 +1427,7 @@ export function buildRouter() {
         permissions: ['admin.integration.manage', 'controls.read', 'treasury.liquidity.read', 'audit.read'],
         summary: 'Partner registry: role, what they would do live, and what is simulated.',
         tags: ['admin'],
-        handler: async (ctx) => withReadOnlyContext(contextFor(ctx), (db) => many(db, `SELECT p.code, p.display_name, p.partner_role, p.live_responsibility, p.licensed_activity,
+        handler: async (ctx) => withReadOnlyContext(contextFor(ctx), (db) => many(db, `SELECT p.id, p.code, p.display_name, p.partner_role, p.live_responsibility, p.licensed_activity,
                   p.jurisdiction, p.is_simulated, p.contract_reference, p.adapter_key,
                   p.adapter_version, p.status, p.last_health_check_at,
                   (SELECT count(*)::text FROM integration_event ie WHERE ie.partner_id = p.id) AS event_count,

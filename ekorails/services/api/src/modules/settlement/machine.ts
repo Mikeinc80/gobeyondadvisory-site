@@ -667,11 +667,65 @@ export async function history(db: Queryable, transactionId: string): Promise<Arr
 }
 
 /** Machine description for documentation, the regulator view and the Learning Center. */
+/**
+ * What each state means, in the words you would use to explain it to somebody who does not
+ * work in payments. Kept here rather than in the web client so the Founder Learning Center,
+ * the operations queue and any future export all describe a state the same way.
+ */
+export const STATE_MEANING: Record<TransactionState, string> = {
+  draft:
+    'Created but not yet submitted. Nothing has been checked and nothing is owed.',
+  pending_business_approval:
+    'Waiting for a second person at the customer to authorise it. The person who created it cannot be that person.',
+  pending_compliance:
+    'With compliance. No transaction reaches a partner without a recorded compliance decision.',
+  additional_information_required:
+    'Compliance has asked the customer a question and is waiting for the answer.',
+  compliance_approved:
+    'Compliance cleared it. It now needs a rate before the customer can commit.',
+  quote_issued:
+    'An indicative rate has been offered. It is indicative until accepted, and it expires.',
+  quote_accepted:
+    'The customer accepted the rate. This is the point at which an obligation is recognised in the ledger.',
+  awaiting_funding:
+    'Waiting for the customer to send funds to the partner institution. The funds go to the partner, never to EKORails.',
+  funding_confirmed:
+    'The partner reports holding the customer\'s funds. Conversion and positioning come next.',
+  ready_for_settlement:
+    'Currency converted and liquidity positioned. The instruction can be sent.',
+  submitted_to_partner:
+    'The instruction has been sent. The idempotency key means sending it again cannot cause a second payment.',
+  partner_processing:
+    'The partner accepted the instruction and has not yet reported an outcome.',
+  settled:
+    'The partner reported the payment as made. This is not settlement finality, which is a legal property conferred by a settlement system operator and which nothing in this build can produce.',
+  beneficiary_confirmed:
+    'The destination bank confirmed the beneficiary was credited.',
+  reconciled:
+    'Our record and the partner\'s record agree, with no unexplained difference.',
+  completed:
+    'Finished. A transaction cannot be completed while an open break stands against it.',
+  rejected:
+    'Refused — by the customer\'s own approver, by compliance or by the partner. No value moved.',
+  cancelled:
+    'Withdrawn by the customer before funding. Nothing had moved yet.',
+  expired:
+    'A quote or an approval window lapsed before the next step happened.',
+  failed:
+    'Settlement was attempted and did not succeed. The funding is still with the partner.',
+  returned:
+    'The destination bank sent the money back. The original settlement is NOT reversed: a return is a new event, and erasing the first would hide what happened.',
+  under_investigation:
+    'Something happened that the system will not resolve on its own — no partner response, or less settled than instructed. Automatic action is deliberately disabled here until a person establishes the true position.',
+};
+
 export function describeStateMachine(): Array<Record<string, unknown>> {
   const states = new Set<string>();
   for (const t of TRANSITIONS) { states.add(t.from); states.add(t.to); }
   return [...states].sort().map((state) => ({
     state,
+    plain_english: STATE_MEANING[state as TransactionState]
+      ?? 'No plain-English description is recorded for this state.',
     is_terminal: TERMINAL_STATES.includes(state as TransactionState),
     outbound_transitions: transitionsFrom(state as TransactionState).map((t) => ({
       event: t.event,

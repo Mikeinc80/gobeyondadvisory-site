@@ -25,6 +25,26 @@ import { Decimal } from '../../core/money.js';
 import { randomHex, canonicalHash } from '../../core/crypto.js';
 import { redact } from '../../core/redact.js';
 import { environment } from '../../core/env.js';
+/**
+ * The failure modes a partner simulator can be asked to produce.
+ *
+ * Exported as a value, not only as a type, so the API can refuse a directive naming a
+ * scenario no adapter implements. A directive that silently never fires is worse than a
+ * rejected one: it looks like the system survived a failure it never actually saw.
+ */
+export const SIMULATION_SCENARIOS = [
+    'success',
+    'delayed_funding',
+    'compliance_failure',
+    'insufficient_liquidity',
+    'invalid_beneficiary',
+    'partner_timeout',
+    'duplicate_response',
+    'failed_settlement',
+    'partial_settlement',
+    'returned_payment',
+    'reconciliation_mismatch',
+];
 // ---------------------------------------------------------------------------
 // Simulation directives
 // ---------------------------------------------------------------------------

@@ -15,6 +15,14 @@ export EKORAILS_LOG_LEVEL="${EKORAILS_LOG_LEVEL:-error}"
 echo "==> Building"
 npx tsc -p services/api/tsconfig.json
 
+# The web client has no build step, so nothing else would notice a renamed export or a
+# menu item pointing at a route that no longer exists. This does that job.
+echo "==> Checking the web client"
+node scripts/check-web.mjs
+
+echo "==> Checking user-facing claims"
+node scripts/lint-claims.mjs
+
 TOTAL_PASS=0
 TOTAL_FAIL=0
 FAILED_SUITES=()
