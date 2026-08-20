@@ -137,7 +137,16 @@ class Client {
   address(): string { return this.forwardedFor; }
 }
 
+/** The code for the NEXT step. Valid now within the drift window, and not yet used. */
+async function nextTotp(email: string): Promise<string> {
+  return totpFor(email, totpStep() + 1);
+}
+
 async function currentTotp(email: string): Promise<string> {
+  return totpFor(email, totpStep());
+}
+
+async function totpFor(email: string, step: number): Promise<string> {
   const secret = await db.asOwner(SYSTEM, async (q) => {
     const row = await q.query<{ mfa_secret_encrypted: string | null }>(
       'SELECT mfa_secret_encrypted FROM app_user WHERE email_normalised = $1', [email.toLowerCase()],
@@ -145,7 +154,7 @@ async function currentTotp(email: string): Promise<string> {
     return row.rows[0]?.mfa_secret_encrypted ?? null;
   });
   if (!secret) throw new Error(`${email} has no MFA secret`);
-  return totpCodeForStep(decryptField(secret), totpStep());
+  return totpCodeForStep(decryptField(secret), step);
 }
 
 /** Signs in and completes MFA where the account has it enrolled. */
@@ -158,6 +167,41 @@ async function signIn(email: string): Promise<Client> {
     const verify = await client.post('/api/auth/mfa/verify', { code: await currentTotp(email) });
     assert.equal(verify.status, 200, `mfa failed for ${email}`);
   }
+  return client;
+}
+
+/**
+ * Signs in and additionally re-asserts the second factor.
+ *
+ * Authorising a payment is a step-up action: holding the permission is not enough, the
+ * approver has to prove they are still at the keyboard. The fixture's users are created
+ * without MFA enrolled, so this enrols first — which is itself the path a new approver
+ * walks, since an account with no second factor can never satisfy a step-up.
+ */
+async function signInWithStepUp(email: string): Promise<Client> {
+  const client = await signIn(email);
+
+  const enrolled = await db.asOwner(SYSTEM, async (q) => {
+    const row = await q.query<{ mfa_enrolled: boolean }>(
+      'SELECT mfa_enrolled FROM app_user WHERE email_normalised = $1', [email.toLowerCase()],
+    );
+    return row.rows[0]?.mfa_enrolled === true;
+  });
+
+  if (!enrolled) {
+    const enrolment = await client.post('/api/auth/mfa/enrol');
+    assert.equal(enrolment.status, 200, `enrolment failed for ${email}`);
+    const confirm = await client.post('/api/auth/mfa/confirm', { code: await currentTotp(email) });
+    assert.equal(confirm.status, 200, `enrolment confirmation failed for ${email}`);
+  }
+
+  // Not the same code that confirmed enrolment. The replay guard refuses a code at or
+  // below the step it last accepted, which is the point of it: a code observed once —
+  // over the shoulder, in a screenshot, in a log — must not work a second time. The
+  // verifier accepts one step of drift either way, so the next step's code is valid now
+  // and has not been used.
+  const stepUp = await client.post('/api/auth/step-up', { code: await nextTotp(email) });
+  assert.equal(stepUp.status, 200, `step-up failed for ${email}: ${JSON.stringify(stepUp.json)}`);
   return client;
 }
 
@@ -663,5 +707,167 @@ describe('Founder Learning Center over HTTP', () => {
         `${rule['rule_key']} must state how it can be wrong`,
       );
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('The customer journey, driven entirely over HTTP', () => {
+  /**
+   * Every other test in this repository drives the services directly, in the SYSTEM
+   * security context. That is convenient and it hid a defect for the whole of the build:
+   * the compliance engine resolved a service account out of app_user to author the note
+   * it writes when it opens a case, and row-level security hides that account from a
+   * customer's organisation scope. The subselect returned NULL, the NOT NULL constraint
+   * rejected the insert, and every authorisation by an actual customer failed with a 500.
+   *
+   * The seeded demonstration data was full of compliance cases regardless, because the
+   * seeder also runs in system scope — so the database looked exactly as it should while
+   * the path that produces it was broken.
+   *
+   * These tests therefore do the whole journey the way a customer does: over HTTP, signed
+   * in, in their own organisation's scope, touching nothing directly.
+   */
+
+  test('an initiator can create a payment and send it for authorisation', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+
+    const corridors = await client.get('/api/corridors');
+    assert.equal(corridors.status, 200, 'a customer must be able to discover the corridor they send on');
+    const corridorList = corridors.json['data'] as Array<Record<string, unknown>>;
+    assert.ok(corridorList.length > 0, 'at least one corridor must be open');
+
+    const created = await client.post('/api/transactions', {
+      beneficiary_id: fx.beneficiaryA,
+      corridor_id: corridorList[0]!['id'],
+      send_amount: '2500000.000000',
+      send_currency: corridorList[0]!['origin_currency'],
+      receive_currency: corridorList[0]!['destination_currency'],
+      purpose: 'Settlement of supplier invoice for goods received',
+      source_of_funds: 'Export receipts collected into the operating account during the period.',
+    });
+    assert.equal(created.status, 201, `create failed: ${JSON.stringify(created.json)}`);
+    const transaction = created.json['data'] as Record<string, string>;
+
+    const submitted = await client.post(`/api/transactions/${transaction['id']}/submit`);
+    assert.equal(submitted.status, 200, `submit failed: ${JSON.stringify(submitted.json)}`);
+    assert.equal(
+      (submitted.json['data'] as Record<string, unknown>)['state'], 'pending_business_approval',
+      'a submitted payment waits for a second authorisation',
+    );
+  });
+
+  test('an approver authorising in their own organisation scope opens a compliance case', async () => {
+    const initiator = await signIn('initiator.a@testalpha.invalid');
+    const corridors = (await initiator.get('/api/corridors')).json['data'] as Array<Record<string, unknown>>;
+
+    const created = await initiator.post('/api/transactions', {
+      beneficiary_id: fx.beneficiaryA,
+      corridor_id: corridors[0]!['id'],
+      send_amount: '1750000.000000',
+      send_currency: corridors[0]!['origin_currency'],
+      receive_currency: corridors[0]!['destination_currency'],
+      purpose: 'Settlement of supplier invoice for packaging materials',
+      source_of_funds: 'Trading revenue received from confirmed export contracts in the period.',
+    });
+    assert.equal(created.status, 201);
+    const id = (created.json['data'] as Record<string, string>)['id']!;
+    await initiator.post(`/api/transactions/${id}/submit`);
+
+    const approver = await signInWithStepUp('approver.a@testalpha.invalid');
+    const approved = await approver.post(`/api/transactions/${id}/approve`, {
+      approve: true,
+      reason: 'Authorised. Supplier and amount verified against the purchase order.',
+    });
+
+    // The assertion that would have caught the defect: not merely "not a 500", but that
+    // the compliance evaluation the approval triggers actually completed.
+    assert.equal(
+      approved.status, 200,
+      `authorisation by a customer's own approver must succeed: ${JSON.stringify(approved.json)}`,
+    );
+    assert.equal(
+      (approved.json['data'] as Record<string, unknown>)['state'], 'pending_compliance',
+      'authorising sends the payment to compliance',
+    );
+
+    const detail = await approver.get(`/api/transactions/${id}`);
+    assert.equal(detail.status, 200);
+  });
+
+  test('the case the engine opened carries its reasoning, authored by the engine and not by a person', async () => {
+    const analyst = await signIn('analyst@ekorails.invalid');
+    const cases = (await analyst.get('/api/compliance/cases')).json['data'] as Array<Record<string, unknown>>;
+    assert.ok(cases.length > 0, 'authorising a payment must have opened a compliance case');
+
+    const detail = await analyst.get(`/api/compliance/cases/${cases[0]!['reference']}`);
+    assert.equal(detail.status, 200);
+    const notes = (detail.json['data'] as Record<string, unknown>)['notes'] as Array<Record<string, unknown>>;
+    assert.ok(notes.length > 0, 'a case must open with a note explaining why');
+
+    const opening = notes[0]!;
+    assert.equal(
+      opening['authored_by'], 'compliance_engine',
+      'a note written by software must say so rather than name a service account',
+    );
+    assert.match(
+      String(opening['body']), /Rules triggered/,
+      'the opening note must record which rules fired',
+    );
+  });
+
+  test('there is no platform service account to sign in as', async () => {
+    // A loginable service account used to exist so the engines could name an author for
+    // the notes they write. It carried the demonstration passphrase and no second factor.
+    // Engine-authored notes now record the engine, so nothing creates it, and migration
+    // 014 disables any that a previous deployment created.
+    const client = new Client();
+    const attempt = await client.post('/api/auth/login', {
+      email: 'system@ekorails.invalid', password: TEST_PASSWORD,
+    });
+    assert.equal(attempt.status, 401, 'no session may be issued for a service account');
+    assert.ok(!client.hasCookie('ekorails_session'), 'no session cookie may be issued for it');
+  });
+
+  test('a payment can be withdrawn while it is a draft, and the withdrawal needs a reason', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const corridors = (await client.get('/api/corridors')).json['data'] as Array<Record<string, unknown>>;
+
+    const created = await client.post('/api/transactions', {
+      beneficiary_id: fx.beneficiaryA,
+      corridor_id: corridors[0]!['id'],
+      send_amount: '900000.000000',
+      send_currency: corridors[0]!['origin_currency'],
+      receive_currency: corridors[0]!['destination_currency'],
+      purpose: 'Settlement of supplier invoice, subsequently withdrawn',
+      source_of_funds: 'Operating receipts from confirmed export contracts in the period.',
+    });
+    const id = (created.json['data'] as Record<string, string>)['id']!;
+
+    const noReason = await client.post(`/api/transactions/${id}/cancel`, {});
+    assert.equal(noReason.status, 400, 'withdrawing without a reason must be refused');
+
+    const cancelled = await client.post(`/api/transactions/${id}/cancel`, {
+      reason: 'The supplier cancelled the order before shipment.',
+    });
+    assert.equal(cancelled.status, 200, `withdrawal failed: ${JSON.stringify(cancelled.json)}`);
+    assert.equal((cancelled.json['data'] as Record<string, unknown>)['to'], 'cancelled',
+      `withdrawal returned: ${JSON.stringify(cancelled.json)}`);
+  });
+
+  test('a customer can run a report of their own activity', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+
+    const catalogue = await client.get('/api/reports');
+    const definitions = catalogue.json['data'] as Array<Record<string, unknown>>;
+    assert.ok(
+      definitions.length > 0,
+      'report.own.read must grant access to at least one report, or it grants access to nothing',
+    );
+
+    const report = await client.get(`/api/reports/${definitions[0]!['key']}?format=json`);
+    assert.equal(report.status, 200, `report failed: ${JSON.stringify(report.json)}`);
+    const data = report.json['data'] as Record<string, unknown>;
+    assert.ok(Array.isArray(data['columns']), 'a report must describe its columns');
+    assert.ok(Array.isArray(data['rows']), 'a report must return rows');
   });
 });

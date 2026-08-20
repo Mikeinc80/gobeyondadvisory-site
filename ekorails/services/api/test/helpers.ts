@@ -149,7 +149,6 @@ export interface Fixture {
     finance: string;
     finance2: string;
     admin: string;
-    system: string;
   };
   corridorId: string;
   partners: {
@@ -190,7 +189,6 @@ export async function buildFixture(db: TestDb): Promise<Fixture> {
         password: 'Kx7-Harbour-Lantern-2026', roles, enrolMfa: false,
       })).userId;
 
-    const system = await mk('system@ekorails.invalid', 'System', [], internalOrgId);
     const analyst = await mk('analyst@ekorails.invalid', 'Test Analyst', ['compliance_analyst'], internalOrgId);
     const manager = await mk('manager@ekorails.invalid', 'Test Manager', ['compliance_manager'], internalOrgId);
     const treasury = await mk('treasury@ekorails.invalid', 'Test Treasury', ['treasury_operator'], internalOrgId);
@@ -306,7 +304,7 @@ export async function buildFixture(db: TestDb): Promise<Fixture> {
       internalOrgId, orgAId, orgBId, corridorId,
       users: {
         initiatorA, approverA, initiatorB, analyst, manager, treasury,
-        finance, finance2, admin, system,
+        finance, finance2, admin,
       },
       partners: {
         originBank: partners.originBank,

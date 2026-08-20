@@ -23,6 +23,7 @@ export type NotificationEvent =
   | 'organization_approved'
   | 'organization_rejected'
   | 'transaction_awaiting_approval'
+  | 'transaction_cancelled'
   | 'compliance_review_required'
   | 'quote_issued'
   | 'quote_expiring'

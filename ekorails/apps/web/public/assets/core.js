@@ -101,6 +101,26 @@ export function setStepUpHandler(handler) {
   stepUpHandler = handler;
 }
 
+/**
+ * The permissions the server reported for this session.
+ *
+ * Used by views to decide whether to ASK for something, not whether to allow it. Those are
+ * different questions: the API and the database decide the second one, and would refuse
+ * regardless of what this says. Consulting it first stops the console firing requests it
+ * knows will be refused — which fills a user's browser console with 403s and makes a real
+ * authorisation failure impossible to spot among them.
+ */
+let heldPermissions = new Set();
+
+export function setPermissions(permissions) {
+  heldPermissions = new Set(permissions ?? []);
+}
+
+/** True if the session holds ANY of the named permissions. */
+export function can(...permissions) {
+  return permissions.some((permission) => heldPermissions.has(permission));
+}
+
 export async function api(path, options = {}) {
   const { method = 'GET', body, headers = {} } = options;
 

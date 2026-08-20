@@ -251,8 +251,15 @@ async function address(city: string, country: string): Promise<Record<string, un
 export async function seedInternalUsers(
   db: Queryable, internalOrgId: string,
 ): Promise<Record<string, string>> {
+  // There is deliberately no platform service account here.
+  //
+  // One used to exist so that the engines could name an author for the notes they write.
+  // It was an ACTIVE account with the demonstration passphrase and no second factor —
+  // that is, a loginable account whose credential is printed in this seeder's own output.
+  // Migration 013 made engine-authored notes carry the engine rather than a user, which
+  // removed the only thing it was for. Software actors are recorded as an actor TYPE on
+  // the record; they are not rows in app_user.
   const staff: Array<{ key: string; email: string; name: string; roles: string[] }> = [
-    { key: 'system', email: 'system@ekorails.invalid', name: 'EKORails System', roles: [] },
     { key: 'analyst', email: 'compliance.analyst@ekorails.invalid', name: 'Adaeze Nwachukwu-Ijeoma', roles: ['compliance_analyst'] },
     { key: 'analyst2', email: 'compliance.analyst2@ekorails.invalid', name: 'Segun Adeyinka-Talabi', roles: ['compliance_analyst'] },
     { key: 'manager', email: 'compliance.manager@ekorails.invalid', name: 'Halima Bello-Usman', roles: ['compliance_manager'] },

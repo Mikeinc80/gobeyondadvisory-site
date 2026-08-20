@@ -60,9 +60,11 @@ export async function openExceptionCase(
     ],
   );
 
+  // Authored as the engine rather than as a service account: resolving one out of app_user
+  // fails under row-level security whenever this runs inside a customer's scope.
   await db.query(
-    `INSERT INTO exception_case_note (exception_case_id, author_id, body)
-     VALUES ($1, (SELECT id FROM app_user WHERE email_normalised = 'system@ekorails.invalid'), $2)`,
+    `INSERT INTO exception_case_note (exception_case_id, author_id, authored_by, body)
+     VALUES ($1, NULL, 'reconciliation_engine', $2)`,
     [row.id, `Opened automatically.\n\n${input.detail}`],
   );
 
@@ -291,7 +293,8 @@ export async function getException(db: Queryable, reference: string): Promise<Re
 
   exc['notes'] = await many<Record<string, unknown>>(
     db,
-    `SELECT n.body, n.evidence_refs, n.created_at, u.full_name AS author_name
+    `SELECT n.body, n.evidence_refs, n.created_at, n.authored_by,
+            COALESCE(u.full_name, 'Reconciliation engine') AS author_name
        FROM exception_case_note n LEFT JOIN app_user u ON u.id = n.author_id
       WHERE n.exception_case_id = $1 ORDER BY n.created_at`,
     [exc['id']],

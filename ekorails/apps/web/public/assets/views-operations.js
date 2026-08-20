@@ -477,7 +477,14 @@ export async function exceptionDetail(ctx) {
 
     card('Investigation notes', table([
       { key: 'created_at', label: 'When', render: (n) => dateTime(n.created_at) },
-      { key: 'author_name', label: 'Author' },
+      { key: 'author_name', label: 'Author',
+        render: (n) => (n.authored_by === 'user'
+          ? n.author_name
+          : h('span', {}, n.author_name, ' ',
+              h('span', {
+                class: 'chip chip-neutral',
+                title: 'Written by software. No person authored this note.',
+              }, 'Automated'))) },
       { key: 'body', label: 'Note' },
       { key: 'evidence_refs', label: 'Evidence',
         render: (n) => ((n.evidence_refs ?? []).length > 0

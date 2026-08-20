@@ -13,7 +13,8 @@
  */
 
 import { readFile, stat } from 'node:fs/promises';
-import { join, normalize, extname } from 'node:path';
+import { existsSync } from 'node:fs';
+import { join, normalize, extname, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHttpServer } from './http/router.js';
 import { buildRouter } from './http/routes.js';
@@ -26,7 +27,36 @@ import { verifyAuditChain } from './audit/audit.js';
 import { startWorker } from './jobs/worker.js';
 
 const HERE = fileURLToPath(new URL('.', import.meta.url));
-const WEB_ROOT = join(HERE, '..', '..', '..', 'apps', 'web', 'public');
+
+/**
+ * Locates the web client by walking up from this file until `apps/web/public` appears.
+ *
+ * A fixed number of `..` segments is wrong in one of the two layouts this file runs in:
+ * the sources sit at `services/api/src/`, the build output at `services/api/dist/src/`,
+ * one level deeper. Counting worked in development and silently served a 404 for every
+ * page of the console in the built server — which is the layout that gets deployed. So it
+ * searches instead, and refuses to start if it finds nothing, rather than starting up as
+ * an API with no interface attached.
+ */
+function locateWebRoot(): string {
+  const override = process.env['EKORAILS_WEB_ROOT'];
+  if (override) return resolve(override);
+
+  let directory = HERE;
+  for (let depth = 0; depth < 8; depth += 1) {
+    const candidate = join(directory, 'apps', 'web', 'public');
+    if (existsSync(join(candidate, 'index.html'))) return candidate;
+    const parent = dirname(directory);
+    if (parent === directory) break;
+    directory = parent;
+  }
+  throw new Error(
+    'Could not locate apps/web/public/index.html by searching upward from ' + HERE +
+    '. Set EKORAILS_WEB_ROOT to the directory containing the built web client.',
+  );
+}
+
+const WEB_ROOT = locateWebRoot();
 
 const CONTENT_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',

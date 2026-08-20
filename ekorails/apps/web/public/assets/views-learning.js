@@ -21,7 +21,7 @@
 import {
   h, get, post, card, stat, table, notice, keyValues, stateChip, simulatedChip,
   money, dateTime, dateOnly, titleCase, valueOrPlaceholder, placeholderChip,
-  toast, reportError, modal, field, input, textarea, select, tabs, spinner,
+  toast, reportError, modal, field, input, textarea, select, tabs, spinner, can,
 } from './core.js';
 
 // ---------------------------------------------------------------------------
@@ -175,6 +175,31 @@ export async function productMap(ctx) {
 // ---------------------------------------------------------------------------
 
 export async function walkthroughPicker(ctx) {
+  // Reading transactions is a permission in its own right, and the administrative roles
+  // do not hold it — deliberately, since an administrator has no business reading
+  // customer payments. They reach the Learning Center all the same, so ask only if the
+  // permission is held rather than firing a request that will be refused.
+  if (!can('txn.read', 'txn.read.any')) {
+    return h('div', {},
+      h('div', { class: 'page-head' },
+        h('div', {},
+          h('h1', { class: 'page-title', text: 'Transaction walkthrough' }),
+          h('p', { class: 'page-sub', text: 'Not available to your roles' }),
+        ),
+      ),
+      notice('info', 'Your roles cannot read transactions',
+        h('p', {
+          text:
+            'Walking through a payment means reading one, and neither of the administrative roles ' +
+            'holds that permission. That separation is intentional: administering the platform and ' +
+            'seeing customer payments are different jobs.',
+        }),
+        h('p', {}, h('button', { class: 'btn', onclick: () => ctx.navigate('/learning/state-machine') },
+          'Read the state machine instead')),
+      ),
+    );
+  }
+
   const transactions = await get('/api/transactions?limit=100');
   const completed = transactions.filter((t) => t.state === 'completed');
   const interesting = transactions.filter((t) =>
@@ -322,10 +347,14 @@ export async function walkthrough(ctx) {
 // ---------------------------------------------------------------------------
 
 export async function ledgerExplorer(ctx) {
-  const [accounts, tb] = await Promise.all([
-    get('/api/ledger/accounts').catch(() => []),
-    get('/api/ledger/trial-balance').catch(() => null),
-  ]);
+  // Reading the ledger is a sensitive permission and several roles that can reach the
+  // Learning Center do not hold it. The explanation below is the point of this screen and
+  // is worth showing to everyone; the live figures are only shown to those entitled to
+  // them, and are not requested at all otherwise.
+  const readable = can('ledger.read');
+  const [accounts, tb] = readable
+    ? await Promise.all([get('/api/ledger/accounts'), get('/api/ledger/trial-balance')])
+    : [[], null];
 
   const byCategory = new Map();
   for (const account of accounts) {
@@ -399,10 +428,14 @@ export async function ledgerExplorer(ctx) {
       ], rows),
     ))),
 
-    accounts.length === 0
-      ? notice('info', 'The ledger is not readable with your permissions',
-          h('p', { text: 'Reading the ledger requires the ledger.read permission, which your roles do not include.' }))
-      : null,
+    readable
+      ? null
+      : notice('info', 'The live figures are not shown to your roles',
+          h('p', {
+            text:
+              'Reading account balances requires the ledger.read permission, which your roles do not ' +
+              'include. Everything above explains how the ledger works and applies regardless.',
+          })),
   );
 }
 

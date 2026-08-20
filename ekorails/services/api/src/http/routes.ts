@@ -130,6 +130,30 @@ export function buildRouter(): Router {
   });
 
   router.register({
+    method: 'GET', pattern: '/api/corridors', auth: 'session',
+    summary: 'The corridors a transaction can be created against.',
+    tags: ['system'],
+    // No special permission. A customer has to know which corridor they are sending on in
+    // order to send at all, and the alternative — reading it out of the admin
+    // configuration route — would mean granting every business user the right to read
+    // system configuration. Corridor scope and limits are product facts, not secrets;
+    // they are stated publicly in the supervisory view.
+    handler: async (ctx) =>
+      withReadOnlyContext(contextFor(ctx), (db) =>
+        many<Record<string, unknown>>(
+          db,
+          `SELECT id, code, origin_country, destination_country, origin_currency,
+                  destination_currency, status, is_placeholder,
+                  per_transaction_limit::text AS per_transaction_limit,
+                  daily_limit::text AS daily_limit,
+                  monthly_limit::text AS monthly_limit,
+                  limit_currency, notes
+             FROM corridor WHERE status = 'enabled' ORDER BY code`,
+        ),
+      ),
+  });
+
+  router.register({
     method: 'GET', pattern: '/api/system/health', auth: 'none',
     summary: 'Liveness and dependency health.',
     tags: ['system'],
@@ -763,6 +787,19 @@ export function buildRouter(): Router {
   });
 
   router.register({
+    method: 'POST', pattern: '/api/transactions/:id/cancel', auth: 'session',
+    permissions: ['txn.cancel'],
+    summary: 'Withdraws a draft, or a payment awaiting funding. Never after funding.',
+    tags: ['transactions'],
+    handler: async (ctx) => {
+      const reason = field(ctx.body, 'reason', isNonEmptyString, 'a written reason')!;
+      return withContext(contextFor(ctx), (db) =>
+        txnService.cancelTransaction(db, ctx.params['id']!, reason, approvalActor(ctx)),
+      );
+    },
+  });
+
+  router.register({
     method: 'POST', pattern: '/api/transactions/:id/approve', auth: 'session',
     permissions: ['txn.approve'],
     summary: 'The second business authorisation. Refuses self-approval.',
@@ -1044,7 +1081,8 @@ export function buildRouter(): Router {
           ? await explainAssessment(db, c['risk_assessment_id'] as string) : null;
         const notes = await many<Record<string, unknown>>(
           db,
-          `SELECT n.body, n.visibility, n.created_at, u.display_name AS author_name
+          `SELECT n.body, n.visibility, n.created_at, n.authored_by,
+                  COALESCE(u.display_name, 'Compliance engine') AS author_name
              FROM compliance_case_note n LEFT JOIN app_user u ON u.id = n.author_id
             WHERE n.compliance_case_id = $1 ORDER BY n.created_at`,
           [c['id']],

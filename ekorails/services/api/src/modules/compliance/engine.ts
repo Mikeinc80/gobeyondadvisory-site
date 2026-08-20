@@ -327,9 +327,13 @@ async function openCaseForAssessment(
 
   // The case opens with a note summarising exactly why, so an analyst picking it up
   // does not have to reconstruct the engine's reasoning.
+  //
+  // Authored as the engine, not as a user. Naming a service account here used to resolve
+  // it out of app_user, which row-level security hides from a customer's organisation
+  // scope — so this insert failed for every case opened by an actual customer action.
   await db.query(
-    `INSERT INTO compliance_case_note (compliance_case_id, author_id, visibility, body)
-     VALUES ($1, (SELECT id FROM app_user WHERE email_normalised = 'system@ekorails.invalid'), 'internal', $2)`,
+    `INSERT INTO compliance_case_note (compliance_case_id, author_id, authored_by, visibility, body)
+     VALUES ($1, NULL, 'compliance_engine', 'internal', $2)`,
     [
       row.id,
       `Opened automatically by the compliance engine (v${ENGINE_VERSION}).\n` +

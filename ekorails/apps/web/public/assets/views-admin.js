@@ -17,7 +17,7 @@
 import {
   h, get, post, card, stat, table, notice, keyValues, stateChip, simulatedChip,
   money, dateTime, dateOnly, titleCase, valueOrPlaceholder, placeholderChip,
-  toast, reportError, modal, field, input, textarea, select, tabs,
+  toast, reportError, modal, field, input, textarea, select, tabs, can,
 } from './core.js';
 
 // ---------------------------------------------------------------------------
@@ -348,9 +348,13 @@ const SCENARIOS = [
 
 
 export async function simulationControl(ctx) {
+  // A System Administrator can direct a simulator but cannot read transactions — the role
+  // has no txn.read permission, deliberately. So the transaction picker is offered only to
+  // whoever can actually see the list, and everyone else targets a partner instead.
+  const canSeeTransactions = can('txn.read', 'txn.read.any');
   const [partners, transactions] = await Promise.all([
     get('/api/admin/partners'),
-    get('/api/transactions?limit=100').catch(() => []),
+    canSeeTransactions ? get('/api/transactions?limit=100') : Promise.resolve([]),
   ]);
 
   const scenario = select(SCENARIOS.map((s) => ({ value: s.value, label: s.label })), { id: 'sim-scenario' });
@@ -366,6 +370,10 @@ export async function simulationControl(ctx) {
     ],
     { id: 'sim-transaction' },
   );
+  const transactionHint = canSeeTransactions
+    ? 'Restrict the directive to one transaction.'
+    : 'Your roles cannot read transactions, so no list is offered. The directive will apply to '
+      + 'whichever transaction reaches the partner next.';
   const operation = input({ placeholder: 'Optional: restrict to one operation, e.g. submit_settlement', id: 'sim-operation' });
   const uses = input({ type: 'number', min: '1', value: '1', id: 'sim-uses' });
 
@@ -395,7 +403,7 @@ export async function simulationControl(ctx) {
     field('Scenario', scenario),
     explanation,
     field('Partner', partner, 'Leave as "any" to affect whichever partner is called next.'),
-    field('Transaction', transaction, 'Restrict the directive to one transaction.'),
+    field('Transaction', transaction, transactionHint),
     field('Operation', operation),
     field('How many times it applies', uses),
     h('div', { style: 'margin-top:.8rem' },

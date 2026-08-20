@@ -223,6 +223,67 @@ export interface ApprovalActor {
 }
 
 /** Submits a draft for a colleague's authorisation. */
+/**
+ * Withdraws a payment the customer no longer wants to make.
+ *
+ * Two edges lead here, and they are not the same thing. From `draft` nothing has happened
+ * yet and the cancellation has no accounting consequence. From `awaiting_funding` an
+ * obligation has already been recognised in the ledger, so the state machine posts a
+ * REVERSAL of it — the obligation is undone, not erased, and the ledger continues to show
+ * both that it existed and that it was withdrawn.
+ *
+ * There is no cancellation after funding. Once the customer's money is with the partner,
+ * withdrawing is a return, which is a different event with a different accounting
+ * treatment, and pretending otherwise would let a payment be quietly un-made.
+ */
+export async function cancelTransaction(
+  db: Queryable, transactionId: string, reason: string, actor: ApprovalActor,
+) {
+  const txn = await one<{ organization_id: string; reference: string; state: string }>(
+    db, 'SELECT organization_id, reference, state FROM transaction WHERE id = $1', [transactionId],
+  );
+
+  const event = txn.state === 'draft' ? 'cancel_draft'
+    : txn.state === 'awaiting_funding' ? 'cancel_before_funding'
+    : null;
+
+  if (event === null) {
+    throw precondition(
+      'CANCELLATION_NOT_AVAILABLE',
+      `A payment can be withdrawn while it is a draft or awaiting funding. This one is ` +
+      `"${txn.state}". Once funds are with the partner, withdrawing is a return, which is a ` +
+      `separate event with its own accounting treatment.`,
+    );
+  }
+
+  const result = await transition(db, {
+    transactionId,
+    event,
+    actorType: 'user',
+    actorUserId: actor.userId,
+    actorRole: actor.role,
+    actorPermissions: actor.permissions,
+    stepUpValid: actor.stepUpValid,
+    reason,
+  });
+
+  if (event === 'cancel_before_funding') {
+    await queueNotification(db, {
+      organizationId: txn.organization_id,
+      recipientRole: 'treasury_operator',
+      channel: 'in_app',
+      eventType: 'transaction_cancelled',
+      subject: `${txn.reference} was withdrawn before funding`,
+      body:
+        `The customer withdrew ${txn.reference} before funding it. The obligation recognised for ` +
+        `it has been reversed. No funding is expected.`,
+      actionUrl: `/transactions/${transactionId}`,
+    });
+  }
+
+  return result;
+}
+
 export async function submitForApproval(
   db: Queryable, transactionId: string, actor: ApprovalActor,
 ): Promise<{ state: string }> {

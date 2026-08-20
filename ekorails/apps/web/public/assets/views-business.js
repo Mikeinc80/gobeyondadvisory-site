@@ -173,6 +173,13 @@ export async function transactionDetail(ctx) {
   const me = await get('/api/me');
   const txn = data.transaction;
 
+  // The initiator's own two actions. They were missing until a browser test walked the
+  // journey a customer actually walks: the API had /submit all along, and no screen
+  // reached it, so a draft could be created and never sent anywhere.
+  const canSubmit = me.permissions.includes('txn.initiate') && txn.state === 'draft';
+  const canCancel = me.permissions.includes('txn.cancel')
+    && ['draft', 'awaiting_funding'].includes(txn.state);
+
   const canApprove = me.permissions.includes('txn.approve')
     && txn.state === 'pending_business_approval';
   const canComplianceDecide = me.permissions.includes('compliance.alert.clear')
@@ -190,6 +197,10 @@ export async function transactionDetail(ctx) {
         ),
       ),
       h('div', { class: 'page-actions' },
+        canSubmit ? h('button', { class: 'btn btn-primary',
+          onclick: () => submitDialog(ctx, txn) }, 'Submit for authorisation') : null,
+        canCancel ? h('button', { class: 'btn btn-danger',
+          onclick: () => cancelDialog(ctx, txn) }, 'Withdraw') : null,
         canApprove ? h('button', { class: 'btn btn-primary',
           onclick: () => approveDialog(ctx, txn) }, 'Authorise') : null,
         canApprove ? h('button', { class: 'btn btn-danger',
@@ -323,6 +334,75 @@ function toneForState(state) {
 // ---------------------------------------------------------------------------
 // Actions
 // ---------------------------------------------------------------------------
+
+/**
+ * Sends a draft for its second authorisation.
+ *
+ * No reason is asked for: submitting is not a decision about the payment, it is the
+ * initiator saying they have finished preparing it. The decision — and the reason for it —
+ * belongs to whoever authorises next, and asking for a justification here would just
+ * produce a field full of "submitting".
+ */
+async function submitDialog(ctx, txn) {
+  const result = await modal({
+    title: `Submit ${txn.reference} for authorisation`,
+    confirmLabel: 'Submit',
+    body: h('div', {},
+      h('p', {
+        text:
+          'This goes to a colleague for a second authorisation. You cannot provide that ' +
+          'authorisation yourself — the database refuses it — so somebody else has to look at it ' +
+          'before it goes any further.',
+      }),
+      h('p', {
+        class: 'footnote',
+        text:
+          'Once submitted, the details cannot be edited. Withdraw it and start again if something ' +
+          'is wrong.',
+      }),
+    ),
+    onConfirm: () => post(`/api/transactions/${txn.id}/submit`, {}),
+  });
+  if (result) {
+    toast('ok', 'Sent for authorisation', 'Your approver has been notified.');
+    ctx.reload();
+  }
+}
+
+/**
+ * Withdraws a payment before it settles.
+ *
+ * Available while the payment is a draft, and while it is awaiting funding. Not after: at
+ * that point the customer's money is with the partner, and unwinding is a return — a
+ * different event, with its own accounting treatment and its own record.
+ */
+async function cancelDialog(ctx, txn) {
+  const reason = textarea({ placeholder: 'Why is this payment being withdrawn?' });
+  const afterObligation = txn.state === 'awaiting_funding';
+
+  const result = await modal({
+    title: `Withdraw ${txn.reference}`,
+    confirmLabel: 'Withdraw the payment',
+    tone: 'danger',
+    body: h('div', {},
+      h('p', {
+        text: afterObligation
+          ? 'An obligation has already been recorded for this payment. Withdrawing posts a reversal '
+            + 'of it: the obligation is undone, not erased, and the ledger will continue to show both '
+            + 'that it existed and that it was withdrawn.'
+          : 'Nothing has happened yet, so withdrawing this draft has no effect on the ledger.',
+      }),
+      h('p', { class: 'footnote', text: 'This cannot be undone. Create a new payment instead.' }),
+      field('Reason', reason),
+    ),
+    onConfirm: () => post(`/api/transactions/${txn.id}/cancel`, { reason: reason.value.trim() }),
+  });
+
+  if (result) {
+    toast('ok', 'Payment withdrawn');
+    ctx.reload();
+  }
+}
 
 async function approveDialog(ctx, txn, approve = true) {
   const reason = textarea({
@@ -476,10 +556,13 @@ function treasuryActions(ctx, txn) {
 // ---------------------------------------------------------------------------
 
 export async function newTransaction(ctx) {
-  const [me, beneficiaries, admin] = await Promise.all([
+  const [me, beneficiaries, corridors] = await Promise.all([
     get('/api/me'),
     get('/api/beneficiaries'),
-    get('/api/admin/configuration').catch(() => null),
+    // Corridors come from /api/corridors, not from the admin configuration route: a
+    // customer needs to know which corridor they are sending on, and reading it out of
+    // system configuration would mean granting every business user that right.
+    get('/api/corridors'),
   ]);
 
   const approved = beneficiaries.filter((b) => b.status === 'approved' && !b.requires_rereview);
@@ -508,8 +591,21 @@ export async function newTransaction(ctx) {
       'due-diligence requirement, not a formality.',
   });
 
-  const corridor = admin?.corridors?.[0];
+  const corridor = corridors[0] ?? null;
   const errorBox = h('div', { class: 'form-error' });
+
+  if (!corridor) {
+    return h('div', {},
+      h('h1', { class: 'page-title', text: 'New transaction' }),
+      notice('warning', 'No corridor is open',
+        h('p', {
+          text:
+            'A transaction has to be created against a corridor, and none is currently active. ' +
+            'Nothing can be sent until one is configured.',
+        }),
+      ),
+    );
+  }
 
   const form = h('form', {
     onsubmit: async (event) => {
@@ -518,10 +614,10 @@ export async function newTransaction(ctx) {
       try {
         const created = await post('/api/transactions', {
           beneficiary_id: beneficiary.value,
-          corridor_id: corridor?.id ?? ctx.state.corridorId,
+          corridor_id: corridor.id,
           send_amount: amount.value.trim(),
-          send_currency: corridor?.origin_currency ?? 'NGN',
-          receive_currency: corridor?.destination_currency ?? 'USD',
+          send_currency: corridor.origin_currency,
+          receive_currency: corridor.destination_currency,
           purpose: purpose.value.trim(),
           source_of_funds: sourceOfFunds.value.trim(),
           invoice_number: invoiceNumber.value.trim() || null,
@@ -930,7 +1026,29 @@ async function raiseCaseDialog(ctx) {
 
 export async function reportsPage(ctx) {
   const definitions = await get('/api/reports');
-  const state = { active: definitions[0]?.key ?? null, data: null };
+
+  // An empty catalogue is a real state — a role can hold a reporting permission that no
+  // report currently carries. Say so, rather than requesting /api/reports/null and
+  // showing the user a 404 for a report nobody asked for.
+  if (definitions.length === 0) {
+    return h('div', {},
+      h('div', { class: 'page-head' },
+        h('div', {},
+          h('h1', { class: 'page-title', text: 'Reports' }),
+          h('p', { class: 'page-sub', text: 'Nothing available to your roles' }),
+        ),
+      ),
+      notice('info', 'No report is available to you',
+        h('p', {
+          text:
+            'Your roles carry a reporting permission, but no report in the catalogue currently ' +
+            'requires it. This is a gap in the catalogue rather than a restriction on you.',
+        }),
+      ),
+    );
+  }
+
+  const state = { active: definitions[0].key, data: null };
 
   const body = h('div', {});
 

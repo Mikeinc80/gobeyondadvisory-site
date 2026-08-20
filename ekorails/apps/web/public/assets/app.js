@@ -19,8 +19,8 @@
 
 import {
   h, mount, clear, get, post, api, ApiError, card, notice, spinner, toast, reportError,
-  modal, field, input, titleCase, verifyBannerIntegrity, setStepUpHandler, table, stateChip,
-  relativeTime,
+  modal, field, input, titleCase, verifyBannerIntegrity, setStepUpHandler, setPermissions,
+  table, stateChip, relativeTime,
 } from './core.js';
 
 import * as business from './views-business.js';
@@ -196,6 +196,12 @@ const session = {
   /** Values views may read but must not depend on for authorisation. */
   state: {},
 };
+
+/** Records the principal and keeps core.js's permission oracle in step with it. */
+function setSession(me) {
+  session.me = me;
+  setPermissions(me?.permissions ?? []);
+}
 
 function permits(route) {
   if (!route.any || route.any.length === 0) return true;
@@ -432,7 +438,7 @@ async function signOut() {
   } catch {
     // Signing out locally matters even if the server call fails.
   }
-  session.me = null;
+  setSession(null);
   await bootstrap();
 }
 
@@ -452,7 +458,7 @@ async function navigationCounts() {
       .then((rows) => { if (rows.length) counts['/ops/exceptions'] = rows.length; })
       .catch(() => {}));
   }
-  if (held.includes('txn.read') || held.includes('txn.read.any')) {
+  if (held.includes('txn.read')) {
     jobs.push(get('/api/transactions/requiring-action')
       .then((rows) => { if (rows.length) counts['/transactions'] = rows.length; })
       .catch(() => {}));
@@ -648,10 +654,10 @@ async function bootstrap(message) {
   }
 
   try {
-    session.me = await get('/api/me');
+    setSession(await get('/api/me'));
   } catch (error) {
     if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
-      session.me = null;
+      setSession(null);
     } else {
       mount(root, notice('danger', 'The console cannot reach the API',
         h('p', { text: 'The service is not answering. Nothing has been signed in or changed.' }),
@@ -671,13 +677,13 @@ async function bootstrap(message) {
   if (!session.me.mfa_satisfied) {
     const completed = session.me.mfa_enrolled ? await verifyMfa() : await enrolMfa();
     if (!completed) {
-      session.me = null;
+      setSession(null);
       mount(root, loginScreen('Sign-in was not completed. Your second factor is still required.'));
       return;
     }
-    session.me = await get('/api/me');
+    setSession(await get('/api/me'));
     if (!session.me.mfa_satisfied) {
-      session.me = null;
+      setSession(null);
       mount(root, loginScreen('Your second factor was not accepted.'));
       return;
     }

@@ -1,0 +1,19 @@
+# Build output. Reproduced by `npm run build`; committing it means reviewing a diff of
+# generated JavaScript alongside the source that generated it, and the two drifting apart
+# the first time somebody forgets to rebuild.
+dist/
+*.tsbuildinfo
+
+# Dependencies.
+node_modules/
+
+# Local environment. .env.example is committed; .env is not, because it is where a real
+# credential would end up.
+.env
+.env.*
+!.env.example
+
+# Runtime and local artefacts.
+*.log
+coverage/
+.DS_Store

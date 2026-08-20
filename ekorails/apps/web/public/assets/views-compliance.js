@@ -18,7 +18,7 @@
 import {
   h, get, post, card, stat, table, notice, keyValues, stateChip, simulatedChip,
   money, dateTime, dateOnly, relativeTime, titleCase, toast, reportError, modal, field,
-  input, textarea, select, valueOrPlaceholder, tabs,
+  input, textarea, select, valueOrPlaceholder, tabs, can,
 } from './core.js';
 
 // ---------------------------------------------------------------------------
@@ -252,7 +252,14 @@ export async function caseDetail(ctx) {
 
       card('Notes', table([
         { key: 'created_at', label: 'When', render: (n) => dateTime(n.created_at) },
-        { key: 'author_name', label: 'Author' },
+        { key: 'author_name', label: 'Author',
+          render: (n) => (n.authored_by === 'user'
+            ? n.author_name
+            : h('span', {}, n.author_name, ' ',
+                h('span', {
+                  class: 'chip chip-neutral',
+                  title: 'Written by software. No person authored this note.',
+                }, 'Automated'))) },
         { key: 'visibility', label: 'Visible to', render: (n) => titleCase(n.visibility) },
         { key: 'body', label: 'Note' },
       ], data.notes, { empty: 'No notes.' })),
@@ -427,9 +434,15 @@ async function decisionDialog(ctx, c, isManager) {
 // ---------------------------------------------------------------------------
 
 export async function kybQueue(ctx) {
-  const overview = await get('/api/regulator/overview').catch(() => null);
+  // The platform-wide participant list lives on the supervisory route, which a Compliance
+  // Analyst cannot read. Ask only if the permission is held: firing the request anyway and
+  // catching the 403 works, but it fills the browser console with authorisation failures
+  // and buries the one that would matter.
+  const [cases, overview] = await Promise.all([
+    get('/api/compliance/cases'),
+    can('controls.read') ? get('/api/regulator/overview') : Promise.resolve(null),
+  ]);
   const participants = overview?.approved_participants ?? [];
-  const cases = await get('/api/compliance/cases');
   const kybCases = cases.filter((c) => c.case_type === 'kyb' || c.subject_type === 'organization');
 
   return h('div', {},
@@ -462,7 +475,14 @@ export async function kybQueue(ctx) {
       { key: 'opened_at', label: 'Opened', render: (c) => dateTime(c.opened_at) },
     ], kybCases, { empty: 'No onboarding cases are open.' })),
 
-    card('Every business on the platform', table([
+    overview === null
+      ? notice('info', 'The platform-wide participant list is not shown',
+          h('p', {
+            text:
+              'Listing every registered business requires the controls.read permission, which your ' +
+              'roles do not include. The cases assigned to you are above and are unaffected.',
+          }))
+      : card('Every business on the platform', table([
       { key: 'display_code', label: 'Code', className: 'mono' },
       { key: 'onboarding_status', label: 'Status', render: (p) => stateChip(p.onboarding_status) },
       { key: 'risk_rating', label: 'Risk', render: (p) => stateChip(p.risk_rating) },

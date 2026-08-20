@@ -49,6 +49,105 @@ const dateWindow = (f: ReportFilters): [string | null, string | null] => [f.from
 
 export const REPORT_DEFINITIONS: ReportDefinition[] = [
   // -------------------------------------------------------------------------
+  // Customer
+  //
+  // These carry `report.own.read`, which is the only reporting permission the business
+  // roles hold. Without them that permission would grant access to nothing, and the
+  // Reports screen would be empty for every customer — which is how it was found.
+  //
+  // No organisation filter is honoured here even though the query accepts one: the route
+  // overrides organizationId with the caller's own for any org-scoped user, so a customer
+  // cannot widen the scope by asking.
+  // -------------------------------------------------------------------------
+  {
+    key: 'my-transactions',
+    title: 'Your transactions',
+    family: 'operational',
+    description: 'Every payment your organisation has initiated, with its charges and final state.',
+    permission: 'report.own.read',
+    filters: ['from', 'to'],
+    run: async (db, f) => {
+      const [from, to] = dateWindow(f);
+      const rows = await many<Record<string, unknown>>(
+        db,
+        `SELECT t.reference, t.created_at, t.completed_at, t.state, t.purpose, t.invoice_number,
+                b.legal_name AS beneficiary_name, b.country AS beneficiary_country,
+                c.code AS corridor, t.send_currency, t.send_amount::text,
+                t.receive_currency, t.expected_receive_amount::text AS expected_receive_amount,
+                t.actual_receive_amount::text AS actual_receive_amount,
+                q.provider_rate::text AS rate,
+                (q.ekorails_fee + q.partner_fee + q.tax_or_levy)::text AS total_charges,
+                q.is_simulated AS rate_simulated
+           FROM transaction t
+           JOIN beneficiary b ON b.id = t.beneficiary_id
+           JOIN corridor c ON c.id = t.corridor_id
+           LEFT JOIN fx_quote q ON q.id = t.fx_quote_id
+          WHERE ($1::timestamptz IS NULL OR t.created_at >= $1)
+            AND ($2::timestamptz IS NULL OR t.created_at < $2)
+            AND ($3::uuid IS NULL OR t.organization_id = $3)
+          ORDER BY t.created_at DESC LIMIT 5000`,
+        [from, to, f.organizationId ?? null],
+      );
+      return {
+        columns: [
+          'reference', 'created_at', 'completed_at', 'state', 'beneficiary_name',
+          'beneficiary_country', 'corridor', 'send_currency', 'send_amount', 'receive_currency',
+          'expected_receive_amount', 'actual_receive_amount', 'rate', 'total_charges',
+          'rate_simulated', 'purpose', 'invoice_number',
+        ],
+        rows,
+        summary: {
+          transactions: rows.length,
+          note:
+            'Every payment listed here was settled through a simulator and no real funds moved. ' +
+            'Rates shown are simulated and were indicative until accepted.',
+        },
+      };
+    },
+  },
+  {
+    key: 'my-charges',
+    title: 'Your charges',
+    family: 'operational',
+    description: 'What each payment cost you, broken into its parts.',
+    permission: 'report.own.read',
+    filters: ['from', 'to'],
+    run: async (db, f) => {
+      const [from, to] = dateWindow(f);
+      const rows = await many<Record<string, unknown>>(
+        db,
+        `SELECT t.reference, t.created_at, t.send_currency, t.send_amount::text,
+                q.provider_rate::text AS rate_applied,
+                q.ekorails_fee::text AS ekorails_fee,
+                q.partner_fee::text AS partner_fee,
+                q.tax_or_levy::text AS tax_or_levy,
+                (q.ekorails_fee + q.partner_fee + q.tax_or_levy)::text AS total_charges,
+                q.is_simulated AS rate_simulated, t.state
+           FROM transaction t
+           JOIN fx_quote q ON q.id = t.fx_quote_id
+          WHERE ($1::timestamptz IS NULL OR t.created_at >= $1)
+            AND ($2::timestamptz IS NULL OR t.created_at < $2)
+            AND ($3::uuid IS NULL OR t.organization_id = $3)
+          ORDER BY t.created_at DESC LIMIT 5000`,
+        [from, to, f.organizationId ?? null],
+      );
+      return {
+        columns: [
+          'reference', 'created_at', 'send_currency', 'send_amount', 'rate_applied',
+          'ekorails_fee', 'partner_fee', 'tax_or_levy', 'total_charges', 'rate_simulated', 'state',
+        ],
+        rows,
+        summary: {
+          payments_with_a_quote: rows.length,
+          note:
+            'Charges are shown in full and separately: what EKORails charged, what the partner ' +
+            'charged, and any levy. A payment appears here only once a quote has been issued for it.',
+        },
+      };
+    },
+  },
+
+  // -------------------------------------------------------------------------
   // Operational
   // -------------------------------------------------------------------------
   {
