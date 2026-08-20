@@ -3,3 +3,6 @@ __pycache__/
 .DS_Store
 .netlify/
 node_modules/
+
+# Drag-and-drop deploy bundles are regenerated on demand
+preview/deploy/

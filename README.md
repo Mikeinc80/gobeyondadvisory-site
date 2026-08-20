@@ -75,7 +75,17 @@ dist/                        Build output (generated; committed so it can be pre
 4. **No statistic without a source register entry.** See `docs/08-source-register.md`.
 5. **No claim removed by the brief reappears.** See `docs/07-regulatory-claim-register.md` §7.2.
 
-## Before you deploy
+## Deploying
+
+Two Netlify projects already exist — `ekorails-preview` and `ekoinfrastructure-preview` — with forms
+enabled and a preview access password set, but not yet deployed. Linking them to GitHub is the
+remaining step: see `docs/18-deploying-to-netlify.md` for the exact build settings.
+
+Both sites are gated by `netlify/edge-functions/preview-gate.ts` while `PREVIEW_PASSWORD` is set,
+because the build still carries unresolved placeholders and an unevidenced regulatory status
+statement. Delete the variable to open a site; delete the function before going to a real domain.
+
+## Before you launch
 
 Read `docs/15-deployment-checklist.md` and `docs/16-prelaunch-review-checklist.md`. Several items block
 launch — in particular, confirming that the sandbox application has been *submitted*, and resolving
@@ -102,6 +112,7 @@ every placeholder.
 | `docs/15-deployment-checklist.md` | Netlify, DNS, email, sign-off, verification, rollback |
 | `docs/16-prelaunch-review-checklist.md` | Regulatory and factual review, with sign-off table |
 | `docs/17-red-team-review.md` | Six adversarial reviews and the consolidated action list |
+| `docs/18-deploying-to-netlify.md` | Netlify projects, GitHub build settings, the preview gate, domains |
 
 ## Previewing without a server
 

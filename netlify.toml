@@ -1,0 +1,22 @@
+# ==========================================================================
+# Repository-root Netlify configuration.
+#
+# Two sites are built from this one repository, so the per-site build command
+# and publish directory are NOT set here — netlify.toml would override the UI
+# and the two sites need different values. Set them per site instead:
+#
+#   ekorails.com          build: python3 build.py ekorails
+#                         publish: dist/ekorails
+#   ekoinfrastructure.com build: python3 build.py ekoinfrastructure
+#                         publish: dist/ekoinfrastructure
+#
+# Security headers and the 301 redirect map are NOT here either: build.py emits
+# them as _headers and _redirects inside each publish directory, so they apply
+# identically whether a site is deployed from a folder or built from Git.
+#
+# What does belong here is the preview access gate, which applies to both sites
+# and is switched on by setting the PREVIEW_PASSWORD environment variable.
+# ==========================================================================
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
