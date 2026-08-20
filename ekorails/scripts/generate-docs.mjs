@@ -689,7 +689,18 @@ const REQUIREMENTS = [
       'the login endpoint is rate limited',
       'an oversized body is refused',
       'a malformed JSON body is rejected cleanly',
+      'an untrusted caller cannot choose its own identity',
+      'varying the header does not vary the identity',
+      'a header from a configured proxy IS believed',
+      'only the first hop of a forwarded chain is taken',
+      'a proxy that sends no header falls back to its own address',
+      'an unknown socket address resolves to nothing rather than to the header',
+      'trusting a proxy does not trust every caller that claims to be it',
     ],
+    note:
+      'A red-team pass found the rate limiter fully bypassable by varying X-Forwarded-For, '
+      + 'which the service believed unconditionally. It is now believed only from an address '
+      + 'named in EKORAILS_TRUSTED_PROXIES, and seven tests cover the resolution.',
   },
   {
     id: 'REQ-13', area: 'Logging',
@@ -926,6 +937,10 @@ function generateTraceability() {
       lines.push(`**Verified by ${requirement.verifiedBy.length} test(s):**`);
       lines.push('');
       for (const name of requirement.verifiedBy) lines.push(`- \`${name}\``);
+      lines.push('');
+    }
+    if (requirement.note) {
+      lines.push(`**Note:** ${requirement.note}`);
       lines.push('');
     }
     if (requirement.gap) {

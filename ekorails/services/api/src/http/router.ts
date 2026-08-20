@@ -124,6 +124,54 @@ interface Bucket { count: number; resetAt: number; }
  * it: a multi-instance deployment needs a shared store, which is a named item in the
  * pilot readiness report.
  */
+/**
+ * The set of proxy addresses whose X-Forwarded-For header may be believed.
+ *
+ * Read once, from EKORAILS_TRUSTED_PROXIES, as a comma-separated list of addresses.
+ */
+const TRUSTED_PROXIES = new Set(
+  (process.env['EKORAILS_TRUSTED_PROXIES'] ?? '')
+    .split(',').map((entry) => entry.trim()).filter(Boolean),
+);
+
+/**
+ * Resolves who a request came from.
+ *
+ * X-Forwarded-For is set by the CLIENT unless a proxy in front overwrites it, and a
+ * limiter keyed on it is therefore a limiter an attacker turns off by varying a header.
+ * Verified against this service before the check existed: ten wrong passwords from one
+ * address were refused with 429; the same ten with a different address each time were all
+ * answered, indefinitely.
+ *
+ * The header is believed only when the socket it arrived on belongs to a proxy named in
+ * EKORAILS_TRUSTED_PROXIES. With none configured — the default, and the right default —
+ * the socket address is used and the header is ignored entirely.
+ *
+ * The cost of getting this wrong in the other direction is real and smaller: behind an
+ * unconfigured proxy every request appears to come from one address, so the limits bite
+ * far too early. That fails loudly and is fixed by configuration. Trusting the header
+ * fails silently and is not fixed by anything.
+ */
+export function resolveClientAddress(
+  socketAddress: string | null,
+  forwardedForHeader: string | undefined,
+  trustedProxies: ReadonlySet<string>,
+): string | null {
+  if (socketAddress !== null && trustedProxies.has(socketAddress)) {
+    const forwarded = forwardedForHeader?.split(',')[0]?.trim();
+    if (forwarded) return forwarded;
+  }
+  return socketAddress;
+}
+
+function clientAddress(req: IncomingMessage): string | null {
+  return resolveClientAddress(
+    req.socket.remoteAddress ?? null,
+    req.headers['x-forwarded-for'] as string | undefined,
+    TRUSTED_PROXIES,
+  );
+}
+
 export class RateLimiter {
   private readonly buckets = new Map<string, Bucket>();
 
@@ -270,8 +318,7 @@ export function createHttpServer(options: ServerOptions): Server {
     const path = url.pathname;
     const method = (req.method ?? 'GET').toUpperCase();
 
-    const forwarded = (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim();
-    const ip = forwarded || req.socket.remoteAddress || null;
+    const ip = clientAddress(req);
     const ipHash = ip ? sha256Hex(ip) : null;
     const userAgent = req.headers['user-agent'];
     const userAgentHash = userAgent ? sha256Hex(String(userAgent)) : null;

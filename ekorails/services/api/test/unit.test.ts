@@ -29,6 +29,7 @@ import { toCsv, escapeCsvCell, toXlsx, toPdf } from '../src/modules/reporting/ex
 import { assertSafeForChannel, UnsafeNotificationError } from '../src/modules/notification/notify.js';
 import { computeSpreadBps, bps } from '../src/modules/fx/quotes.js';
 import { assertBalanced, ACCOUNT_SHAPE, LedgerError } from '../src/modules/ledger/ledger.js';
+import { resolveClientAddress } from '../src/http/router.js';
 
 // ---------------------------------------------------------------------------
 describe('Money: fixed-precision arithmetic', () => {
@@ -786,6 +787,81 @@ describe('Notification safety', () => {
     assertSafeForChannel(
       'sms', 'EKORails',
       'You have an update on your EKORails account. Sign in to view it.',
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('Who a request is attributed to', () => {
+  /**
+   * A red-team pass against this service found the rate limiter fully bypassable: ten wrong
+   * passwords from one address were refused with 429, and the same ten with a different
+   * X-Forwarded-For each time were all answered, indefinitely. The header is set by the
+   * CLIENT unless something in front overwrites it, so a limiter keyed on it is a limiter an
+   * attacker turns off by varying a header.
+   *
+   * These tests exist so it cannot come back quietly.
+   */
+
+  test('an untrusted caller cannot choose its own identity', () => {
+    const noProxies = new Set<string>();
+    assert.equal(
+      resolveClientAddress('203.0.113.5', '198.51.100.1', noProxies), '203.0.113.5',
+      'with no trusted proxy, the socket address wins and the header is ignored',
+    );
+  });
+
+  test('varying the header does not vary the identity', () => {
+    const noProxies = new Set<string>();
+    const identities = new Set(
+      ['198.51.100.1', '198.51.100.2', '198.51.100.3', '10.0.0.1'].map(
+        (spoofed) => resolveClientAddress('203.0.113.5', spoofed, noProxies),
+      ),
+    );
+    assert.equal(
+      identities.size, 1,
+      'four different headers from one socket must resolve to ONE identity, or the limiter is decorative',
+    );
+  });
+
+  test('a header from a configured proxy IS believed', () => {
+    const proxies = new Set(['10.0.0.4']);
+    assert.equal(
+      resolveClientAddress('10.0.0.4', '198.51.100.1', proxies), '198.51.100.1',
+      'behind a proxy we run, the forwarded address is the real caller',
+    );
+  });
+
+  test('only the first hop of a forwarded chain is taken', () => {
+    // A client can prepend entries to the chain. The leftmost is the one the trusted proxy
+    // observed; everything after it is whatever the client sent.
+    const proxies = new Set(['10.0.0.4']);
+    assert.equal(
+      resolveClientAddress('10.0.0.4', '198.51.100.1, 172.16.0.9, 10.0.0.4', proxies),
+      '198.51.100.1',
+    );
+  });
+
+  test('a proxy that sends no header falls back to its own address', () => {
+    const proxies = new Set(['10.0.0.4']);
+    assert.equal(resolveClientAddress('10.0.0.4', undefined, proxies), '10.0.0.4');
+    assert.equal(resolveClientAddress('10.0.0.4', '', proxies), '10.0.0.4');
+    assert.equal(resolveClientAddress('10.0.0.4', '   ', proxies), '10.0.0.4');
+  });
+
+  test('an unknown socket address resolves to nothing rather than to the header', () => {
+    // A caller with no socket address must not be able to supply one. Nothing is a safer
+    // identity than an attacker-chosen one.
+    assert.equal(resolveClientAddress(null, '198.51.100.1', new Set(['10.0.0.4'])), null);
+    assert.equal(resolveClientAddress(null, '198.51.100.1', new Set()), null);
+  });
+
+  test('trusting a proxy does not trust every caller that claims to be it', () => {
+    // The trust is in the SOCKET the request arrived on, not in anything the request says.
+    const proxies = new Set(['10.0.0.4']);
+    assert.equal(
+      resolveClientAddress('203.0.113.5', '10.0.0.4', proxies), '203.0.113.5',
+      'a caller naming the proxy in its own header is still an untrusted caller',
     );
   });
 });

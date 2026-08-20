@@ -12,6 +12,12 @@ cd "$ROOT"
 export EKORAILS_ENV_MODE="${EKORAILS_ENV_MODE:-TEST}"
 export EKORAILS_LOG_LEVEL="${EKORAILS_LOG_LEVEL:-error}"
 
+# The API suite gives each client a distinct X-Forwarded-For so that one test's rate-limit
+# assertions do not starve every test after it. That header is believed only from a
+# configured proxy — so the loopback is declared as one here, which also exercises the
+# trusted-proxy path rather than leaving it untested.
+export EKORAILS_TRUSTED_PROXIES="127.0.0.1,::ffff:127.0.0.1,::1"
+
 echo "==> Building"
 npx tsc -p services/api/tsconfig.json
 

@@ -9,7 +9,7 @@
 # 10 — Requirements traceability
 
 25 requirements. 24 carry at least one automated test.
-112 named tests across 173 in the suites.
+119 named tests across 180 in the suites.
 
 ## Why this document checks itself
 
@@ -45,7 +45,7 @@ the bottom of.
 | `REQ-09` | Access control | The nine specified roles exist, each with its stated permissions and its explicit denials. | 8 |
 | `REQ-10` | Access control | The person who initiates a transaction cannot authorise it. | 4 |
 | `REQ-11` | Authentication | Multi-factor authentication, with re-authentication before value-moving actions. | 7 |
-| `REQ-12` | Web security | CSRF protection, strict security headers, and rate limiting. | 7 |
+| `REQ-12` | Web security | CSRF protection, strict security headers, and rate limiting. | 14 |
 | `REQ-13` | Logging | Passwords, tokens, complete identification numbers, bank credentials, private keys and unmasked documents are never logged. | 3 |
 | `REQ-14` | Compliance | Every applicable rule is evaluated and recorded, whether or not it fires, and a decision can be reconstructed later. | 7 |
 | `REQ-15` | Compliance | A transaction cannot bypass compliance review, and prohibited outcomes block rather than warn. | 8 |
@@ -248,7 +248,7 @@ the bottom of.
 
 **Enforced by:** Double-submit CSRF token; CSP with a nonce and no inline script; per-identity rate limits.
 
-**Verified by 7 test(s):**
+**Verified by 14 test(s):**
 
 - `a state-changing request without the CSRF header is refused`
 - `a request with the WRONG CSRF token is refused`
@@ -257,6 +257,15 @@ the bottom of.
 - `the login endpoint is rate limited`
 - `an oversized body is refused`
 - `a malformed JSON body is rejected cleanly`
+- `an untrusted caller cannot choose its own identity`
+- `varying the header does not vary the identity`
+- `a header from a configured proxy IS believed`
+- `only the first hop of a forwarded chain is taken`
+- `a proxy that sends no header falls back to its own address`
+- `an unknown socket address resolves to nothing rather than to the header`
+- `trusting a proxy does not trust every caller that claims to be it`
+
+**Note:** A red-team pass found the rate limiter fully bypassable by varying X-Forwarded-For, which the service believed unconditionally. It is now believed only from an address named in EKORAILS_TRUSTED_PROXIES, and seven tests cover the resolution.
 
 ### REQ-13 — Passwords, tokens, complete identification numbers, bank credentials, private keys and unmasked documents are never logged.
 
