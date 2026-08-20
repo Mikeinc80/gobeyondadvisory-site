@@ -1,0 +1,148 @@
+name: CI
+
+# Everything that can fail the build, fails the build. The checks are ordered cheapest
+# first so a claims-lint violation does not wait behind a full database test run.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      EKORAILS_ENV_MODE: TEST
+      EKORAILS_LOG_LEVEL: error
+      EKORAILS_DB_HOST: 127.0.0.1
+      EKORAILS_DB_PORT: '5432'
+      EKORAILS_DB_NAME: ekorails
+      EKORAILS_DB_USER: ekorails_app
+      EKORAILS_DB_PASSWORD: ekorails_app_dev
+      EKORAILS_DB_OWNER: ekorails_owner
+      EKORAILS_DB_OWNER_PASSWORD: ekorails_owner_dev
+      EKORAILS_DB_BACKUP_PASSWORD: ekorails_backup_dev
+      EKORAILS_MASTER_KEY: ci-only-key-not-used-for-anything-real
+      PGPASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # ---- Cheap checks first -------------------------------------------
+
+      - name: Claims lint
+        run: node scripts/lint-claims.mjs
+
+      - name: Web client link check
+        run: node scripts/check-web.mjs
+
+      - name: Build
+        run: npx tsc -p services/api/tsconfig.json
+
+      - name: Environment configuration is honest
+        run: node scripts/check-env.mjs
+
+      - name: Generated documents match the code
+        run: node scripts/generate-docs.mjs --check
+
+      # ---- Database ------------------------------------------------------
+
+      - name: Provision database roles
+        run: |
+          sudo apt-get install -y --no-install-recommends postgresql-client
+          ./scripts/provision-roles.sh
+        env:
+          EKORAILS_DB_SUPERUSER: postgres
+
+      - name: Apply migrations
+        run: ./scripts/db-reset.sh
+
+      - name: Tests
+        run: |
+          for suite in unit mandatory api; do
+            echo "==> $suite"
+            node --test --test-concurrency=1 "services/api/dist/test/${suite}.test.js"
+          done
+
+  # The browser smoke test is a separate job: it needs a browser, it takes longer, and a
+  # failure in it means something different from a unit-test failure — the server is
+  # correct and a person cannot use it.
+  browser:
+    runs-on: ubuntu-latest
+    needs: verify
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      EKORAILS_ENV_MODE: SANDBOX
+      EKORAILS_LOG_LEVEL: error
+      EKORAILS_DB_HOST: 127.0.0.1
+      EKORAILS_DB_PORT: '5432'
+      EKORAILS_DB_NAME: ekorails
+      EKORAILS_DB_USER: ekorails_app
+      EKORAILS_DB_PASSWORD: ekorails_app_dev
+      EKORAILS_DB_OWNER: ekorails_owner
+      EKORAILS_DB_OWNER_PASSWORD: ekorails_owner_dev
+      EKORAILS_DB_BACKUP_PASSWORD: ekorails_backup_dev
+      EKORAILS_MASTER_KEY: ci-only-key-not-used-for-anything-real
+      EKORAILS_INSECURE_COOKIES: 'true'
+      PGPASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      - run: npm i -D playwright
+      - run: npx playwright install --with-deps chromium
+
+      - run: npx tsc -p services/api/tsconfig.json
+
+      - name: Provision, migrate and seed
+        run: |
+          sudo apt-get install -y --no-install-recommends postgresql-client
+          ./scripts/provision-roles.sh
+          ./scripts/db-reset.sh
+          node services/api/dist/src/seed/run-seed.js
+        env:
+          EKORAILS_DB_SUPERUSER: postgres
+
+      - name: Six consoles, nine roles, one write journey
+        run: node scripts/smoke-web.mjs

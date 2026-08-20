@@ -29,6 +29,11 @@ node scripts/lint-claims.mjs
 echo "==> Checking generated documents"
 node scripts/generate-docs.mjs --check
 
+# A setting documented in .env.example that nothing reads is worse than a missing one:
+# somebody will set it and believe it took effect.
+echo "==> Checking environment configuration"
+node scripts/check-env.mjs
+
 TOTAL_PASS=0
 TOTAL_FAIL=0
 FAILED_SUITES=()

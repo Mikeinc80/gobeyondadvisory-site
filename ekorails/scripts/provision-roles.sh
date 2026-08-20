@@ -89,10 +89,28 @@ COMMENT ON ROLE ekorails_owner IS
 SQL
 
 echo "==> Provisioning database roles"
-if [[ "$(id -un)" == "postgres" ]]; then
+
+# Three ways to reach a cluster as a superuser, in order of preference.
+#
+# The TCP path is first because it is the only one that works against a managed database
+# or a containerised Postgres: `su postgres` needs a local unix socket and a local account,
+# and neither exists in either case. Relying on it alone would mean this script runs on a
+# developer laptop and nowhere the system would actually be deployed.
+if [[ -n "${EKORAILS_DB_SUPERUSER:-}" ]]; then
+  PGHOST="${EKORAILS_DB_HOST:-127.0.0.1}" \
+  PGPORT="${EKORAILS_DB_PORT:-5432}" \
+  psql -v ON_ERROR_STOP=1 -q \
+       --username "$EKORAILS_DB_SUPERUSER" \
+       --dbname "${EKORAILS_DB_SUPERUSER_DB:-postgres}" \
+       -f "$SQL_FILE"
+elif [[ "$(id -un)" == "postgres" ]]; then
   psql -v ON_ERROR_STOP=1 -q -f "$SQL_FILE"
-else
+elif command -v su >/dev/null 2>&1 && id postgres >/dev/null 2>&1; then
   su postgres -c "psql -v ON_ERROR_STOP=1 -q -f '$SQL_FILE'"
+else
+  echo "REFUSED: no way to reach the cluster as a superuser." >&2
+  echo "Set EKORAILS_DB_SUPERUSER (and PGPASSWORD) to connect over TCP." >&2
+  exit 2
 fi
 
 echo "    ekorails_owner   schema owner; not superuser, not BYPASSRLS"

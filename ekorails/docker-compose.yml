@@ -1,0 +1,54 @@
+# Local development. NOT a deployment topology.
+#
+# This brings up PostgreSQL and the service on one machine with development credentials in
+# plain text. That is fine for a laptop and is not fine for anything else — see
+# infra/terraform/README.md for what a real deployment would need, and note that no
+# deployment region has been selected (founder decision FD-008).
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ekorails
+    ports:
+      - "5432:5432"
+    volumes:
+      - ekorails-db:/var/lib/postgresql/data
+    healthcheck:
+      # The service refuses to start against an unmigrated or unbalanced database, so it
+      # must not start before Postgres is genuinely accepting connections.
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ekorails"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      EKORAILS_ENV_MODE: SANDBOX
+      EKORAILS_HOST: 0.0.0.0
+      EKORAILS_PORT: "8080"
+      EKORAILS_LOG_LEVEL: info
+      EKORAILS_DB_HOST: db
+      EKORAILS_DB_PORT: "5432"
+      EKORAILS_DB_NAME: ekorails
+      EKORAILS_DB_USER: ekorails_app
+      EKORAILS_DB_PASSWORD: ekorails_app_dev
+      EKORAILS_DB_OWNER: ekorails_owner
+      EKORAILS_DB_OWNER_PASSWORD: ekorails_owner_dev
+      EKORAILS_DB_BACKUP_PASSWORD: ekorails_backup_dev
+      EKORAILS_MASTER_KEY: local-development-key-do-not-use-anywhere-else
+      # Local HTTP only. The application refuses this outside DEMO, SANDBOX and TEST.
+      EKORAILS_INSECURE_COOKIES: "true"
+      # Every release gate is absent, which means false. Live funds are unreachable.
+    ports:
+      - "8080:8080"
+
+volumes:
+  ekorails-db:
