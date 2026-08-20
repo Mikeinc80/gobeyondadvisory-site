@@ -120,7 +120,7 @@ export function buildRouter(): Router {
         note:
           'The CBN Regulatory Sandbox application was not available to this build. No regulatory or ' +
           'commercial fact has been invented. Values below are placeholders awaiting the filing.',
-        see: 'docs/00-source-of-truth-review.md and docs/09-founder-decisions.md',
+        see: 'docs/00-source-of-truth-review.md and docs/A-founder-decisions.md',
       },
       release_gates: RELEASE_GATES.map((g) => ({
         key: g.key, description: g.description, evidence_required: g.evidence,

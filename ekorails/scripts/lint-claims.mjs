@@ -34,7 +34,7 @@ const SKIP_DIRECTORIES = new Set(['node_modules', 'dist', '.git', 'coverage']);
 /** Files whose whole purpose is to name the prohibited language. */
 const SELF_REFERENTIAL = new Set([
   'scripts/lint-claims.mjs',
-  'docs/24-claims-lint.md',
+  'docs/B-claims-lint.md',
 ]);
 
 const PROHIBITED = [

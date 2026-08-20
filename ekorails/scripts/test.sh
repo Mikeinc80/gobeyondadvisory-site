@@ -23,6 +23,12 @@ node scripts/check-web.mjs
 echo "==> Checking user-facing claims"
 node scripts/lint-claims.mjs
 
+# The documents that describe mechanism are generated from the definitions the software
+# uses. This fails the build when a definition has changed and the documents have not,
+# rather than leaving a role matrix that is quietly wrong.
+echo "==> Checking generated documents"
+node scripts/generate-docs.mjs --check
+
 TOTAL_PASS=0
 TOTAL_FAIL=0
 FAILED_SUITES=()

@@ -36,7 +36,7 @@ Every fact that would normally come from the filing is represented in exactly on
 
 1. **A configuration placeholder** with an explicit `INSERT_APPROVED_*` sentinel value, stored in
    `system_configuration` and surfaced in the UI as an unresolved placeholder chip.
-2. **A `[FOUNDER DECISION REQUIRED]` entry** in `docs/09-founder-decisions.md` and in the Founder
+2. **A `[FOUNDER DECISION REQUIRED]` entry** in `docs/A-founder-decisions.md` and in the Founder
    Learning Center Decision Log, with one recommended option, the main risk, and an
    `awaiting_approval` status.
 3. **A refusal to state the fact at all**, where even a placeholder would imply a claim
@@ -76,7 +76,7 @@ Rendered as a standing disclaimer at `/regulatory-boundary` in every console, an
 The word list that would breach these boundaries is enforced by an automated lint over all
 user-facing strings (`scripts/lint-claims.mjs`), run in CI. It fails the build on unsupported
 marketing language ("guaranteed rate", "no spread", "zero loss", "best market rate", "licensed",
-"CBN-approved", "we hold your funds", and others). See `docs/24-claims-lint.md`.
+"CBN-approved", "we hold your funds", and others). See `docs/B-claims-lint.md`.
 
 ---
 
@@ -172,7 +172,7 @@ Enforced by `audit.immutability.test.ts` and `ledger.immutability.test.ts`.
 
 Nine decisions block progression from *Tested* to *Pilot Ready*. They are recorded in full — with
 options, recommendation, risk, reversibility and regulatory impact — in
-`docs/09-founder-decisions.md` and are readable and approvable inside the Founder Learning Center
+`docs/A-founder-decisions.md` and are readable and approvable inside the Founder Learning Center
 Decision Log.
 
 | ID | Decision | Recommendation | Blocks |

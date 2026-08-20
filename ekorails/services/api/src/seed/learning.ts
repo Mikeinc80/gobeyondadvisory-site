@@ -913,219 +913,231 @@ export async function seedGlossary(db: Queryable): Promise<number> {
   return count;
 }
 
+/**
+ * The founder decisions this build could not make for itself.
+ *
+ * Exported so that `docs/A-founder-decisions.md` is generated from the same objects that
+ * seed the decision log. A decision recorded one way in the database and another way in
+ * the document is worse than not writing the document.
+ */
+export const FOUNDER_DECISIONS = [
+  {
+    ref: 'FD-001', title: 'What legal entity particulars may the product display?',
+    context:
+      'Receipts, the regulator view and customer-facing documents normally carry the registered ' +
+      'name, company number, jurisdiction of incorporation and registered office. No incorporation ' +
+      'document was supplied to this build.',
+    options: [
+      { option: 'Display only the registered name until documents are attached', consequence: 'Some documents look incomplete; nothing false is stated.' },
+      { option: 'Display particulars the founder provides verbally', consequence: 'Fast, but an unverified company number on a regulatory document is a serious problem.' },
+      { option: 'Omit entity details entirely', consequence: 'Receipts become less useful to customers and to their auditors.' },
+    ],
+    recommended: 'Display only the registered name until incorporation documents are attached to this repository.',
+    risk:
+      'An incorrect company number or jurisdiction on a document that reaches a regulator or a bank ' +
+      'is difficult to explain and undermines everything else in the file.',
+    regulatory: 'Low if handled as recommended. High if particulars are invented.',
+    cost: 'None.',
+    reversibility: 'easily_reversible',
+    blocks: 'Regulator view, transaction receipts, PDF report footers.',
+  },
+  {
+    ref: 'FD-002', title: 'Which corridor and currency pair does the pilot run?',
+    context:
+      'The controlling source for the corridor is the CBN Regulatory Sandbox application, which was ' +
+      'not available. The corridor is seeded with INSERT_APPROVED_* placeholders and the ' +
+      'demonstration data is denominated in NGN and USD purely so the engine can be exercised.',
+    options: [
+      { option: 'Choose the destination by settled partner availability', consequence: 'Slower to announce, but the corridor is real on day one.' },
+      { option: 'Choose the destination by market size', consequence: 'Attractive commercially, but a corridor with no partner is not a corridor.' },
+      { option: 'Run two corridors from the start', consequence: 'Doubles the compliance, partner and reconciliation surface during a pilot.' },
+    ],
+    recommended:
+      'One corridor. Nigeria as origin, with the destination chosen by which licensed settlement ' +
+      'partner is contractually available — not by which market is largest.',
+    risk:
+      'Announcing a corridor before a partner is contracted. Partner availability, not demand, is ' +
+      'the binding constraint in cross-border settlement.',
+    regulatory:
+      'HIGH. The corridor defines the scope of the sandbox permission. Operating outside it is ' +
+      'operating without permission.',
+    cost: 'Each additional corridor multiplies partner, compliance and reconciliation work.',
+    reversibility: 'costly_to_reverse',
+    blocks: 'Corridor configuration, FX pair, limits, every compliance evaluation.',
+  },
+  {
+    ref: 'FD-003', title: 'What transaction and pilot limits apply?',
+    context:
+      'Per-transaction, daily, monthly and pilot-aggregate limits, plus the participant cap, come ' +
+      'from the filing. Provisional demonstration limits are configured and marked as such.',
+    options: [
+      { option: 'Adopt the filing\'s limits verbatim', consequence: 'No divergence between what was approved and what the system enforces.' },
+      { option: 'Set internal limits below the filing\'s', consequence: 'More conservative; a customer hitting the internal limit may not understand why.' },
+      { option: 'Set internal limits above the filing\'s', consequence: 'Unacceptable — a breach of the sandbox conditions.' },
+    ],
+    recommended:
+      'Adopt the filing\'s limits verbatim, and never set an internal limit above them. Below is a ' +
+      'commercial choice; above is a breach.',
+    risk:
+      'A limit breach is a reportable event, not an internal exception. Until the filing supplies ' +
+      'the limits, the LIMIT_NOT_CONFIGURED rule holds every transaction for manual review, which ' +
+      'is the intended behaviour rather than a defect.',
+    regulatory: 'HIGH. Exceeding an agreed cap is the clearest possible breach of pilot conditions.',
+    cost: 'Lower limits reduce revenue per customer during the pilot.',
+    reversibility: 'easily_reversible',
+    blocks: 'The limit and velocity rules; the pilot report\'s breach measures.',
+  },
+  {
+    ref: 'FD-004', title: 'What is the settlement mechanism and who are the partners?',
+    context:
+      'Everything in this build settles through simulators. The real mechanism — correspondent ' +
+      'banking, a licensed PSP, or something else — is not asserted anywhere.',
+    options: [
+      { option: 'Correspondent-bank settlement through a licensed partner', consequence: 'Well understood by regulators and banks; slower and more expensive.' },
+      { option: 'A licensed payment institution as settlement agent', consequence: 'Potentially faster; the partner\'s own permissions become a dependency.' },
+      { option: 'Apply for EKORails\' own licence', consequence: 'Removes the dependency; adds years and substantial capital.' },
+    ],
+    recommended:
+      'Correspondent-bank settlement through a licensed partner, with EKORails orchestrating only. ' +
+      'This keeps EKORails outside every licensed activity for the pilot.',
+    risk:
+      'Partner concentration. A single settlement partner is a single point of failure for the ' +
+      'entire product, and correspondent relationships are withdrawn with little notice.',
+    regulatory:
+      'HIGH. This determines whether EKORails is performing a licensed activity. Get it wrong and ' +
+      'the question becomes an enforcement one.',
+    cost: 'Correspondent settlement carries higher per-transaction cost and requires pre-funding.',
+    reversibility: 'effectively_irreversible',
+    blocks: 'Partner adapters, custody posture, the ledger\'s partner account structure.',
+  },
+  {
+    ref: 'FD-005', title: 'Which AML/CFT thresholds and lists apply?',
+    context:
+      'Rules implement generally accepted controls, but Nigerian reporting thresholds and the ' +
+      'applicable high-risk jurisdiction list are unconfirmed. The jurisdiction list ships EMPTY ' +
+      'rather than invented.',
+    options: [
+      { option: 'Adopt the CBN AML/CFT Regulations thresholds once the filing cites them', consequence: 'Correct, but the rule cannot fire until then.' },
+      { option: 'Use an international default list', consequence: 'Plausible but wrong — it would assert a regulatory fact nobody has given us.' },
+      { option: 'Set no jurisdiction rule at all', consequence: 'Removes a control rather than deferring it.' },
+    ],
+    recommended:
+      'Adopt the thresholds and lists the filing cites. Until then the rule exists, is visible, and ' +
+      'reports honestly that it cannot fire.',
+    risk:
+      'An out-of-date list produces false NEGATIVES, which are invisible. The list must be a ' +
+      'versioned rule parameter with a stated review cadence, not a code constant.',
+    regulatory: 'HIGH. Screening against the wrong list is close to not screening.',
+    cost: 'A maintained list service is a recurring subscription.',
+    reversibility: 'easily_reversible',
+    blocks: 'HIGH_RISK_JURISDICTION rule parameters; reporting thresholds.',
+  },
+  {
+    ref: 'FD-006', title: 'What regulatory returns must be filed, in what form, and how often?',
+    context:
+      'The report shapes are built and exportable in CSV, XLSX and PDF. No statutory form ' +
+      'identifier is asserted, because inventing one would be inventing a regulatory fact.',
+    options: [
+      { option: 'Build to the filing\'s specified returns once supplied', consequence: 'Correct; a short mapping exercise per return.' },
+      { option: 'Guess the likely forms now', consequence: 'A plausible-looking form identifier on a submitted return is worse than none.' },
+    ],
+    recommended: 'Build to the filing\'s returns. Do not invent form identifiers.',
+    risk: 'A missed return is a supervisory failure in its own right, regardless of the underlying data.',
+    regulatory: 'MEDIUM to HIGH depending on the cadence required.',
+    cost: 'Low — the data already exists; only the presentation layer changes.',
+    reversibility: 'easily_reversible',
+    blocks: 'Report headers and the regulatory export route.',
+  },
+  {
+    ref: 'FD-007', title: 'How long does the pilot run and what counts as success?',
+    context:
+      'The pilot report computes participants, volumes, completion rate, cost, processing time, ' +
+      'exceptions, complaints and incidents. No target thresholds are asserted.',
+    options: [
+      { option: 'Adopt the filing\'s duration and targets verbatim', consequence: 'What you are measured against is what you agreed.' },
+      { option: 'Set internal stretch targets above the filing\'s', consequence: 'Motivating internally; risks appearing to have failed against your own numbers.' },
+    ],
+    recommended:
+      'Adopt the filing\'s duration and targets verbatim for external reporting. Keep any internal ' +
+      'stretch targets internal.',
+    risk:
+      'Reporting against targets you invented, and appearing to miss them, damages credibility ' +
+      'more than the underlying performance would.',
+    regulatory: 'MEDIUM. Success measures determine whether the pilot progresses.',
+    cost: 'A longer pilot costs more to run but produces more evidence.',
+    reversibility: 'easily_reversible',
+    blocks: 'Pilot report targets and the readiness assessment.',
+  },
+  {
+    ref: 'FD-008', title: 'Where is the system deployed, and what data residency is claimed?',
+    context:
+      'The deployment region is a placeholder. The system makes NO residency claim. In particular ' +
+      'it does not claim African residency on the basis of African ownership.',
+    options: [
+      { option: 'Complete a residency assessment, then choose a region', consequence: 'Slower; defensible.' },
+      { option: 'Choose an African region and market it as African residency', consequence: 'Marketable, but a claim you cannot support if backups or support access sit elsewhere.' },
+      { option: 'Choose the cheapest region', consequence: 'May place data outside what the regulator or customers will accept.' },
+    ],
+    recommended:
+      'Complete a data residency and cross-border transfer assessment first. Choose the region from ' +
+      'that assessment, and describe residency only in terms of where data actually sits.',
+    risk:
+      'Residency is about where data physically is and whose law reaches it — including backups, ' +
+      'logs and support access. A claim that ignores any of those is false.',
+    regulatory: 'HIGH. Data localisation requirements vary and are enforced.',
+    cost: 'Regional pricing varies; some regions lack managed services.',
+    reversibility: 'costly_to_reverse',
+    blocks: 'Infrastructure deployment, the privacy impact assessment, customer contracts.',
+  },
+  {
+    ref: 'FD-009', title: 'What may be said publicly about sandbox status?',
+    context:
+      'Admission has not been confirmed to this build. The configuration defaults to not_confirmed ' +
+      'and nothing in the product implies otherwise.',
+    options: [
+      { option: 'Say nothing until an admission letter exists', consequence: 'Less impressive in a pitch; entirely safe.' },
+      { option: 'Say "engaged with the CBN sandbox process"', consequence: 'Ambiguous, and ambiguity is read generously by listeners and harshly by regulators.' },
+      // claims-lint-allow: recorded in the decision log as a REJECTED option.
+    // Deliberately describes the wording rather than reproducing it: the claims lint reads
+    // this file too, and an option that spells out a prohibited phrase would be flagged —
+    // correctly, because a string in a database is a string that can end up on a screen.
+    { option: 'Assert admission to the sandbox in external copy', consequence: 'Unacceptable unless and until an admission letter exists.' },
+    ],
+    recommended: 'Say nothing about sandbox status until an admission letter exists.',
+    risk:
+      'Overstating regulatory status is one of the fastest ways to lose both a regulator\'s and a ' +
+      'bank partner\'s confidence, and it is very hard to recover.',
+    regulatory: 'HIGH. Misrepresenting regulatory status is itself a serious matter.',
+    cost: 'None.',
+    reversibility: 'easily_reversible',
+    blocks: 'All external-facing copy, the pitch deck, the website.',
+  },
+  {
+    ref: 'FD-010', title: 'Framework choice: minimal dependencies versus a conventional stack',
+    context:
+      'The brief recommends Next.js and NestJS. This build uses TypeScript on Node with one runtime ' +
+      'dependency (the PostgreSQL driver), a hand-written router, and a no-build web client. ' +
+      'Spreadsheet, PDF and cryptographic functions are implemented directly.',
+    options: [
+      { option: 'Keep the minimal stack', consequence: 'Very small attack surface and no dependency advisories to triage; less familiar to new hires; more code owned in-house.' },
+      { option: 'Migrate to Next.js and NestJS', consequence: 'Conventional and hireable; adds roughly a thousand transitive dependencies to a system that moves money.' },
+      { option: 'Hybrid: NestJS API, minimal front end', consequence: 'Splits the difference and the drawbacks.' },
+    ],
+    recommended:
+      'Keep the minimal stack through the pilot, then reassess. The security and supply-chain ' +
+      'argument is strongest exactly when the system is under regulatory scrutiny and the team is small.',
+    risk:
+      'Hiring and onboarding are harder, and hand-written infrastructure carries bugs a mature ' +
+      'framework would not. This is a genuine trade, not a free win.',
+    regulatory: 'LOW directly, but dependency scanning findings are a standard security-review question.',
+    cost: 'Lower running cost; higher cost to onboard an engineer unfamiliar with the codebase.',
+    reversibility: 'costly_to_reverse',
+    blocks: 'Nothing. Recorded because a technical due-diligence reviewer will ask why.',
+  },
+];
+
 export async function seedDecisionLog(db: Queryable): Promise<number> {
-  const decisions = [
-    {
-      ref: 'FD-001', title: 'What legal entity particulars may the product display?',
-      context:
-        'Receipts, the regulator view and customer-facing documents normally carry the registered ' +
-        'name, company number, jurisdiction of incorporation and registered office. No incorporation ' +
-        'document was supplied to this build.',
-      options: [
-        { option: 'Display only the registered name until documents are attached', consequence: 'Some documents look incomplete; nothing false is stated.' },
-        { option: 'Display particulars the founder provides verbally', consequence: 'Fast, but an unverified company number on a regulatory document is a serious problem.' },
-        { option: 'Omit entity details entirely', consequence: 'Receipts become less useful to customers and to their auditors.' },
-      ],
-      recommended: 'Display only the registered name until incorporation documents are attached to this repository.',
-      risk:
-        'An incorrect company number or jurisdiction on a document that reaches a regulator or a bank ' +
-        'is difficult to explain and undermines everything else in the file.',
-      regulatory: 'Low if handled as recommended. High if particulars are invented.',
-      cost: 'None.',
-      reversibility: 'easily_reversible',
-      blocks: 'Regulator view, transaction receipts, PDF report footers.',
-    },
-    {
-      ref: 'FD-002', title: 'Which corridor and currency pair does the pilot run?',
-      context:
-        'The controlling source for the corridor is the CBN Regulatory Sandbox application, which was ' +
-        'not available. The corridor is seeded with INSERT_APPROVED_* placeholders and the ' +
-        'demonstration data is denominated in NGN and USD purely so the engine can be exercised.',
-      options: [
-        { option: 'Choose the destination by settled partner availability', consequence: 'Slower to announce, but the corridor is real on day one.' },
-        { option: 'Choose the destination by market size', consequence: 'Attractive commercially, but a corridor with no partner is not a corridor.' },
-        { option: 'Run two corridors from the start', consequence: 'Doubles the compliance, partner and reconciliation surface during a pilot.' },
-      ],
-      recommended:
-        'One corridor. Nigeria as origin, with the destination chosen by which licensed settlement ' +
-        'partner is contractually available — not by which market is largest.',
-      risk:
-        'Announcing a corridor before a partner is contracted. Partner availability, not demand, is ' +
-        'the binding constraint in cross-border settlement.',
-      regulatory:
-        'HIGH. The corridor defines the scope of the sandbox permission. Operating outside it is ' +
-        'operating without permission.',
-      cost: 'Each additional corridor multiplies partner, compliance and reconciliation work.',
-      reversibility: 'costly_to_reverse',
-      blocks: 'Corridor configuration, FX pair, limits, every compliance evaluation.',
-    },
-    {
-      ref: 'FD-003', title: 'What transaction and pilot limits apply?',
-      context:
-        'Per-transaction, daily, monthly and pilot-aggregate limits, plus the participant cap, come ' +
-        'from the filing. Provisional demonstration limits are configured and marked as such.',
-      options: [
-        { option: 'Adopt the filing\'s limits verbatim', consequence: 'No divergence between what was approved and what the system enforces.' },
-        { option: 'Set internal limits below the filing\'s', consequence: 'More conservative; a customer hitting the internal limit may not understand why.' },
-        { option: 'Set internal limits above the filing\'s', consequence: 'Unacceptable — a breach of the sandbox conditions.' },
-      ],
-      recommended:
-        'Adopt the filing\'s limits verbatim, and never set an internal limit above them. Below is a ' +
-        'commercial choice; above is a breach.',
-      risk:
-        'A limit breach is a reportable event, not an internal exception. Until the filing supplies ' +
-        'the limits, the LIMIT_NOT_CONFIGURED rule holds every transaction for manual review, which ' +
-        'is the intended behaviour rather than a defect.',
-      regulatory: 'HIGH. Exceeding an agreed cap is the clearest possible breach of pilot conditions.',
-      cost: 'Lower limits reduce revenue per customer during the pilot.',
-      reversibility: 'easily_reversible',
-      blocks: 'The limit and velocity rules; the pilot report\'s breach measures.',
-    },
-    {
-      ref: 'FD-004', title: 'What is the settlement mechanism and who are the partners?',
-      context:
-        'Everything in this build settles through simulators. The real mechanism — correspondent ' +
-        'banking, a licensed PSP, or something else — is not asserted anywhere.',
-      options: [
-        { option: 'Correspondent-bank settlement through a licensed partner', consequence: 'Well understood by regulators and banks; slower and more expensive.' },
-        { option: 'A licensed payment institution as settlement agent', consequence: 'Potentially faster; the partner\'s own permissions become a dependency.' },
-        { option: 'Apply for EKORails\' own licence', consequence: 'Removes the dependency; adds years and substantial capital.' },
-      ],
-      recommended:
-        'Correspondent-bank settlement through a licensed partner, with EKORails orchestrating only. ' +
-        'This keeps EKORails outside every licensed activity for the pilot.',
-      risk:
-        'Partner concentration. A single settlement partner is a single point of failure for the ' +
-        'entire product, and correspondent relationships are withdrawn with little notice.',
-      regulatory:
-        'HIGH. This determines whether EKORails is performing a licensed activity. Get it wrong and ' +
-        'the question becomes an enforcement one.',
-      cost: 'Correspondent settlement carries higher per-transaction cost and requires pre-funding.',
-      reversibility: 'effectively_irreversible',
-      blocks: 'Partner adapters, custody posture, the ledger\'s partner account structure.',
-    },
-    {
-      ref: 'FD-005', title: 'Which AML/CFT thresholds and lists apply?',
-      context:
-        'Rules implement generally accepted controls, but Nigerian reporting thresholds and the ' +
-        'applicable high-risk jurisdiction list are unconfirmed. The jurisdiction list ships EMPTY ' +
-        'rather than invented.',
-      options: [
-        { option: 'Adopt the CBN AML/CFT Regulations thresholds once the filing cites them', consequence: 'Correct, but the rule cannot fire until then.' },
-        { option: 'Use an international default list', consequence: 'Plausible but wrong — it would assert a regulatory fact nobody has given us.' },
-        { option: 'Set no jurisdiction rule at all', consequence: 'Removes a control rather than deferring it.' },
-      ],
-      recommended:
-        'Adopt the thresholds and lists the filing cites. Until then the rule exists, is visible, and ' +
-        'reports honestly that it cannot fire.',
-      risk:
-        'An out-of-date list produces false NEGATIVES, which are invisible. The list must be a ' +
-        'versioned rule parameter with a stated review cadence, not a code constant.',
-      regulatory: 'HIGH. Screening against the wrong list is close to not screening.',
-      cost: 'A maintained list service is a recurring subscription.',
-      reversibility: 'easily_reversible',
-      blocks: 'HIGH_RISK_JURISDICTION rule parameters; reporting thresholds.',
-    },
-    {
-      ref: 'FD-006', title: 'What regulatory returns must be filed, in what form, and how often?',
-      context:
-        'The report shapes are built and exportable in CSV, XLSX and PDF. No statutory form ' +
-        'identifier is asserted, because inventing one would be inventing a regulatory fact.',
-      options: [
-        { option: 'Build to the filing\'s specified returns once supplied', consequence: 'Correct; a short mapping exercise per return.' },
-        { option: 'Guess the likely forms now', consequence: 'A plausible-looking form identifier on a submitted return is worse than none.' },
-      ],
-      recommended: 'Build to the filing\'s returns. Do not invent form identifiers.',
-      risk: 'A missed return is a supervisory failure in its own right, regardless of the underlying data.',
-      regulatory: 'MEDIUM to HIGH depending on the cadence required.',
-      cost: 'Low — the data already exists; only the presentation layer changes.',
-      reversibility: 'easily_reversible',
-      blocks: 'Report headers and the regulatory export route.',
-    },
-    {
-      ref: 'FD-007', title: 'How long does the pilot run and what counts as success?',
-      context:
-        'The pilot report computes participants, volumes, completion rate, cost, processing time, ' +
-        'exceptions, complaints and incidents. No target thresholds are asserted.',
-      options: [
-        { option: 'Adopt the filing\'s duration and targets verbatim', consequence: 'What you are measured against is what you agreed.' },
-        { option: 'Set internal stretch targets above the filing\'s', consequence: 'Motivating internally; risks appearing to have failed against your own numbers.' },
-      ],
-      recommended:
-        'Adopt the filing\'s duration and targets verbatim for external reporting. Keep any internal ' +
-        'stretch targets internal.',
-      risk:
-        'Reporting against targets you invented, and appearing to miss them, damages credibility ' +
-        'more than the underlying performance would.',
-      regulatory: 'MEDIUM. Success measures determine whether the pilot progresses.',
-      cost: 'A longer pilot costs more to run but produces more evidence.',
-      reversibility: 'easily_reversible',
-      blocks: 'Pilot report targets and the readiness assessment.',
-    },
-    {
-      ref: 'FD-008', title: 'Where is the system deployed, and what data residency is claimed?',
-      context:
-        'The deployment region is a placeholder. The system makes NO residency claim. In particular ' +
-        'it does not claim African residency on the basis of African ownership.',
-      options: [
-        { option: 'Complete a residency assessment, then choose a region', consequence: 'Slower; defensible.' },
-        { option: 'Choose an African region and market it as African residency', consequence: 'Marketable, but a claim you cannot support if backups or support access sit elsewhere.' },
-        { option: 'Choose the cheapest region', consequence: 'May place data outside what the regulator or customers will accept.' },
-      ],
-      recommended:
-        'Complete a data residency and cross-border transfer assessment first. Choose the region from ' +
-        'that assessment, and describe residency only in terms of where data actually sits.',
-      risk:
-        'Residency is about where data physically is and whose law reaches it — including backups, ' +
-        'logs and support access. A claim that ignores any of those is false.',
-      regulatory: 'HIGH. Data localisation requirements vary and are enforced.',
-      cost: 'Regional pricing varies; some regions lack managed services.',
-      reversibility: 'costly_to_reverse',
-      blocks: 'Infrastructure deployment, the privacy impact assessment, customer contracts.',
-    },
-    {
-      ref: 'FD-009', title: 'What may be said publicly about sandbox status?',
-      context:
-        'Admission has not been confirmed to this build. The configuration defaults to not_confirmed ' +
-        'and nothing in the product implies otherwise.',
-      options: [
-        { option: 'Say nothing until an admission letter exists', consequence: 'Less impressive in a pitch; entirely safe.' },
-        { option: 'Say "engaged with the CBN sandbox process"', consequence: 'Ambiguous, and ambiguity is read generously by listeners and harshly by regulators.' },
-        // claims-lint-allow: recorded in the decision log as a REJECTED option.
-      { option: 'Say "CBN sandbox participant"', consequence: 'Unacceptable unless and until it is true.' },
-      ],
-      recommended: 'Say nothing about sandbox status until an admission letter exists.',
-      risk:
-        'Overstating regulatory status is one of the fastest ways to lose both a regulator\'s and a ' +
-        'bank partner\'s confidence, and it is very hard to recover.',
-      regulatory: 'HIGH. Misrepresenting regulatory status is itself a serious matter.',
-      cost: 'None.',
-      reversibility: 'easily_reversible',
-      blocks: 'All external-facing copy, the pitch deck, the website.',
-    },
-    {
-      ref: 'FD-010', title: 'Framework choice: minimal dependencies versus a conventional stack',
-      context:
-        'The brief recommends Next.js and NestJS. This build uses TypeScript on Node with one runtime ' +
-        'dependency (the PostgreSQL driver), a hand-written router, and a no-build web client. ' +
-        'Spreadsheet, PDF and cryptographic functions are implemented directly.',
-      options: [
-        { option: 'Keep the minimal stack', consequence: 'Very small attack surface and no dependency advisories to triage; less familiar to new hires; more code owned in-house.' },
-        { option: 'Migrate to Next.js and NestJS', consequence: 'Conventional and hireable; adds roughly a thousand transitive dependencies to a system that moves money.' },
-        { option: 'Hybrid: NestJS API, minimal front end', consequence: 'Splits the difference and the drawbacks.' },
-      ],
-      recommended:
-        'Keep the minimal stack through the pilot, then reassess. The security and supply-chain ' +
-        'argument is strongest exactly when the system is under regulatory scrutiny and the team is small.',
-      risk:
-        'Hiring and onboarding are harder, and hand-written infrastructure carries bugs a mature ' +
-        'framework would not. This is a genuine trade, not a free win.',
-      regulatory: 'LOW directly, but dependency scanning findings are a standard security-review question.',
-      cost: 'Lower running cost; higher cost to onboard an engineer unfamiliar with the codebase.',
-      reversibility: 'costly_to_reverse',
-      blocks: 'Nothing. Recorded because a technical due-diligence reviewer will ask why.',
-    },
-  ];
+  const decisions = FOUNDER_DECISIONS;
 
   let count = 0;
   for (const d of decisions) {
@@ -1145,240 +1157,243 @@ export async function seedDecisionLog(db: Queryable): Promise<number> {
   return count;
 }
 
+/** The risk register. Exported so `docs/11-risk-register.md` is generated from it. */
+export const RISK_REGISTER = [
+  {
+    ref: 'R-01', category: 'regulatory', title: 'Operating outside the approved sandbox scope',
+    description:
+      'The corridor, currencies and limits come from a filing that was not available to this build. ' +
+      'Transacting outside the approved scope would be operating without permission.',
+    il: 'possible', ii: 'severe',
+    controls:
+      'Corridor is held as an explicit placeholder; the CORRIDOR_PLACEHOLDER_UNCONFIRMED rule fires ' +
+      'on every transaction so none can auto-clear compliance; a missing limit is treated as a block ' +
+      'rather than as unlimited.',
+    status: 'implemented_tested', rl: 'unlikely', ri: 'severe',
+    owner: 'Founder / Compliance', treatment: 'mitigate',
+    action: 'Obtain the filing and resolve FD-002 and FD-003 before any pilot activity.',
+    blocks: true,
+  },
+  {
+    ref: 'R-02', category: 'licensing', title: 'Appearing to perform a licensed activity',
+    description:
+      'Software that appears to hold funds, execute FX or settle payments invites the question of ' +
+      'whether EKORails is performing those activities without authorisation.',
+    il: 'possible', ii: 'critical',
+    controls:
+      'No customer stored-value account in the chart of accounts; funding is recorded at the partner; ' +
+      'a claims lint over user-facing text fails the build on prohibited language; a standing ' +
+      'regulatory-boundary statement is served from the API.',
+    status: 'implemented_tested', rl: 'rare', ri: 'critical',
+    owner: 'Founder / Legal', treatment: 'mitigate',
+    action: 'Legal review of all external-facing copy before any external demonstration.',
+    blocks: true,
+  },
+  {
+    ref: 'R-03', category: 'settlement', title: 'Duplicate settlement',
+    description:
+      'An instruction is sent, the outcome is not learned, and a retry results in the beneficiary ' +
+      'being paid twice. Usually unrecoverable.',
+    il: 'likely', ii: 'major',
+    controls:
+      'Deterministic idempotency keys derived from the transaction reference; a duplicate submission ' +
+      'returns the original result; an unknown outcome is never auto-retried and raises a critical ' +
+      'exception; the settlement reconciliation run counts submissions per transaction.',
+    status: 'implemented_tested', rl: 'unlikely', ri: 'major',
+    owner: 'Engineering / Treasury', treatment: 'mitigate',
+    action: 'Confirm the real partner honours idempotency keys and document their semantics.',
+    blocks: false,
+  },
+  {
+    ref: 'R-04', category: 'custody', title: 'Inadvertent custody of customer funds',
+    description:
+      'A future change introduces an account or flow in which EKORails holds customer money, ' +
+      'triggering client-money obligations it is not authorised for.',
+    il: 'unlikely', ii: 'critical',
+    controls:
+      'The account category enumeration is a database CHECK constraint. Adding a custody account ' +
+      'requires a visible schema migration, not a configuration change.',
+    status: 'implemented_tested', rl: 'rare', ri: 'critical',
+    owner: 'Engineering / Legal', treatment: 'avoid',
+    action: 'Add a review gate on any migration touching ledger_account.',
+    blocks: false,
+  },
+  {
+    ref: 'R-05', category: 'partner_dependency', title: 'Single settlement partner concentration',
+    description:
+      'One settlement partner is a single point of failure for the entire product. Correspondent ' +
+      'relationships are withdrawn with little notice.',
+    il: 'possible', ii: 'severe',
+    controls:
+      'Adapters are provider-neutral and resolved by configuration, so a second partner is a ' +
+      'configuration and adapter change rather than a rewrite.',
+    status: 'implemented_untested', rl: 'possible', ri: 'severe',
+    owner: 'Founder', treatment: 'mitigate',
+    action: 'Identify a second settlement partner before the pilot ends. No partner is contracted today.',
+    blocks: true,
+  },
+  {
+    ref: 'R-06', category: 'cyber', title: 'Account takeover leading to fraudulent payment',
+    description:
+      'A compromised customer credential is used to add a beneficiary and pay it.',
+    il: 'likely', ii: 'major',
+    controls:
+      'Mandatory MFA; step-up re-authentication before quote acceptance and settlement release; ' +
+      'maker-checker on every payment; a new-beneficiary cooling-off rule; device and network ' +
+      'signals feeding the compliance engine; session invalidation on password change.',
+    status: 'implemented_tested', rl: 'unlikely', ri: 'major',
+    owner: 'Engineering / Security', treatment: 'mitigate',
+    action: 'Add hardware security key support and out-of-band beneficiary confirmation.',
+    blocks: false,
+  },
+  {
+    ref: 'R-07', category: 'cyber', title: 'Malicious insider altering records',
+    description:
+      'A member of staff with legitimate access alters a compliance decision, a ledger entry or the ' +
+      'audit trail to conceal an action.',
+    il: 'unlikely', ii: 'critical',
+    controls:
+      'The application database role holds no UPDATE or DELETE privilege on audit, ledger-entry or ' +
+      'compliance-decision tables; append-only triggers refuse mutation even for the table owner; ' +
+      'the audit trail is hash-chained and verifiable in SQL.',
+    status: 'implemented_tested', rl: 'rare', ri: 'critical',
+    owner: 'Engineering / Security', treatment: 'mitigate',
+    action:
+      'Separate the database administrator role from the application team, and ship audit records ' +
+      'to write-once external storage. Neither is done today.',
+    blocks: false,
+  },
+  {
+    ref: 'R-08', category: 'data_protection', title: 'Exposure of personal data',
+    description:
+      'Identity documents, ownership registers and screening payloads contain significant personal ' +
+      'data about identifiable individuals.',
+    il: 'possible', ii: 'major',
+    controls:
+      'Field-level AES-256-GCM encryption for identification and account numbers; hashed network ' +
+      'identifiers; a redaction layer on every log and audit write; role-based masking in reports; ' +
+      'audited document access with a stated reason for external roles.',
+    status: 'implemented_tested', rl: 'unlikely', ri: 'major',
+    owner: 'Engineering / Privacy', treatment: 'mitigate',
+    action:
+      'Complete the privacy impact assessment and the cross-border transfer assessment (FD-008), ' +
+      'and connect a managed key store instead of a derived key.',
+    blocks: true,
+  },
+  {
+    ref: 'R-09', category: 'accounting', title: 'Ledger and transaction state diverging',
+    description:
+      'A transaction reaches a state with accounting consequences without its journal being posted.',
+    il: 'unlikely', ii: 'major',
+    controls:
+      'State transitions and journal postings occur in one database transaction; the ' +
+      'transaction-to-ledger reconciliation checks required journals per state daily; the service ' +
+      'refuses to start if the trial balance does not net to zero.',
+    status: 'implemented_tested', rl: 'rare', ri: 'major',
+    owner: 'Engineering / Finance', treatment: 'mitigate',
+    action: 'None outstanding.',
+    blocks: false,
+  },
+  {
+    ref: 'R-10', category: 'fx', title: 'Unhedged currency exposure',
+    description:
+      'An obligation is converted without the matching liquidity being positioned, leaving EKORails ' +
+      'exposed to rate movement.',
+    il: 'possible', ii: 'moderate',
+    controls:
+      'Conversion and positioning post through an FX clearing account that must return to zero; the ' +
+      'currency-position reconciliation reports any residual balance as a break.',
+    status: 'implemented_tested', rl: 'unlikely', ri: 'moderate',
+    owner: 'Treasury', treatment: 'mitigate',
+    action: 'Agree an exposure limit and an escalation path with the FX partner once contracted.',
+    blocks: false,
+  },
+  {
+    ref: 'R-11', category: 'operational', title: 'Alert fatigue in compliance review',
+    description:
+      'Every transaction currently requires manual review because the corridor is a placeholder. ' +
+      'At volume this trains analysts to clear alerts without reading them.',
+    il: 'likely', ii: 'major',
+    controls:
+      'Rules carry an explicit false-positive assessment; the compliance report tracks trigger rates ' +
+      'and decision times per rule so drift is visible.',
+    status: 'implemented_untested', rl: 'possible', ri: 'major',
+    owner: 'Compliance', treatment: 'mitigate',
+    action:
+      'Resolve FD-002 so genuinely clean transactions can auto-clear, and review trigger rates ' +
+      'weekly during the pilot.',
+    blocks: false,
+  },
+  {
+    ref: 'R-12', category: 'cyber', title: 'Document-borne malware',
+    description:
+      'A customer uploads a document containing active content or malware, which reaches a ' +
+      'compliance analyst\'s machine.',
+    il: 'possible', ii: 'major',
+    controls:
+      'Strict file-type allowlist; magic-byte verification against the declared type; refusal of ' +
+      'PDFs containing JavaScript, launch actions or embedded files; content hashing.',
+    status: 'implemented_untested', rl: 'possible', ri: 'major',
+    owner: 'Engineering / Security', treatment: 'mitigate',
+    action:
+      'CONNECT A REAL ANTIVIRUS SERVICE. The current checks are structural only and are explicitly ' +
+      'not antivirus. This is a named gap.',
+    blocks: true,
+  },
+  {
+    ref: 'R-13', category: 'operational', title: 'Single-instance operational limits',
+    description:
+      'Rate limiting is in-process and the background worker is single-process. Neither is safe ' +
+      'across multiple instances.',
+    il: 'almost_certain', ii: 'moderate',
+    controls: 'Documented; the job table supports a distributed lock but no shared store is deployed.',
+    status: 'documented_only', rl: 'likely', ri: 'moderate',
+    owner: 'Engineering', treatment: 'mitigate',
+    action: 'Deploy a shared cache for rate limiting and a distributed lock for the worker before scale-out.',
+    blocks: false,
+  },
+  {
+    ref: 'R-14', category: 'operational', title: 'Backup restoration has never been tested',
+    description:
+      'Backups that have not been restored are not backups. No restoration has been performed for ' +
+      'this system.',
+    il: 'possible', ii: 'critical',
+    controls: 'A restoration test procedure is written and a test exists; it has not been run against real infrastructure.',
+    status: 'documented_only', rl: 'possible', ri: 'critical',
+    owner: 'Engineering', treatment: 'mitigate',
+    action: 'Perform and evidence a full restoration test, including transaction-history verification. Release gate EKORAILS_GATE_DR_TESTED depends on it.',
+    blocks: true,
+  },
+  {
+    ref: 'R-15', category: 'reputational', title: 'Unsupported claims in external material',
+    description:
+      'Marketing or pitch material describes capabilities or regulatory status the system does not have.',
+    il: 'likely', ii: 'severe',
+    controls: 'A claims lint runs in CI over user-facing strings in this repository.',
+    status: 'implemented_tested', rl: 'possible', ri: 'severe',
+    owner: 'Founder', treatment: 'mitigate',
+    action:
+      'The lint cannot police a slide deck. Apply the same word list to all external material by ' +
+      'review before publication.',
+    blocks: false,
+  },
+  {
+    ref: 'R-16', category: 'concentration', title: 'Key-person dependency',
+    description:
+      'A single founder currently holds the product, compliance and technical knowledge of this system.',
+    il: 'almost_certain', ii: 'major',
+    controls:
+      'The Founder Learning Center, the decision log, the build journal and extensive in-code ' +
+      'documentation exist specifically to reduce this.',
+    status: 'implemented_untested', rl: 'likely', ri: 'major',
+    owner: 'Founder', treatment: 'mitigate',
+    action: 'Appoint a named compliance officer and a second engineer before the pilot begins.',
+    blocks: true,
+  },
+];
+
 export async function seedRiskRegister(db: Queryable): Promise<number> {
-  const risks = [
-    {
-      ref: 'R-01', category: 'regulatory', title: 'Operating outside the approved sandbox scope',
-      description:
-        'The corridor, currencies and limits come from a filing that was not available to this build. ' +
-        'Transacting outside the approved scope would be operating without permission.',
-      il: 'possible', ii: 'severe',
-      controls:
-        'Corridor is held as an explicit placeholder; the CORRIDOR_PLACEHOLDER_UNCONFIRMED rule fires ' +
-        'on every transaction so none can auto-clear compliance; a missing limit is treated as a block ' +
-        'rather than as unlimited.',
-      status: 'implemented_tested', rl: 'unlikely', ri: 'severe',
-      owner: 'Founder / Compliance', treatment: 'mitigate',
-      action: 'Obtain the filing and resolve FD-002 and FD-003 before any pilot activity.',
-      blocks: true,
-    },
-    {
-      ref: 'R-02', category: 'licensing', title: 'Appearing to perform a licensed activity',
-      description:
-        'Software that appears to hold funds, execute FX or settle payments invites the question of ' +
-        'whether EKORails is performing those activities without authorisation.',
-      il: 'possible', ii: 'critical',
-      controls:
-        'No customer stored-value account in the chart of accounts; funding is recorded at the partner; ' +
-        'a claims lint over user-facing text fails the build on prohibited language; a standing ' +
-        'regulatory-boundary statement is served from the API.',
-      status: 'implemented_tested', rl: 'rare', ri: 'critical',
-      owner: 'Founder / Legal', treatment: 'mitigate',
-      action: 'Legal review of all external-facing copy before any external demonstration.',
-      blocks: true,
-    },
-    {
-      ref: 'R-03', category: 'settlement', title: 'Duplicate settlement',
-      description:
-        'An instruction is sent, the outcome is not learned, and a retry results in the beneficiary ' +
-        'being paid twice. Usually unrecoverable.',
-      il: 'likely', ii: 'major',
-      controls:
-        'Deterministic idempotency keys derived from the transaction reference; a duplicate submission ' +
-        'returns the original result; an unknown outcome is never auto-retried and raises a critical ' +
-        'exception; the settlement reconciliation run counts submissions per transaction.',
-      status: 'implemented_tested', rl: 'unlikely', ri: 'major',
-      owner: 'Engineering / Treasury', treatment: 'mitigate',
-      action: 'Confirm the real partner honours idempotency keys and document their semantics.',
-      blocks: false,
-    },
-    {
-      ref: 'R-04', category: 'custody', title: 'Inadvertent custody of customer funds',
-      description:
-        'A future change introduces an account or flow in which EKORails holds customer money, ' +
-        'triggering client-money obligations it is not authorised for.',
-      il: 'unlikely', ii: 'critical',
-      controls:
-        'The account category enumeration is a database CHECK constraint. Adding a custody account ' +
-        'requires a visible schema migration, not a configuration change.',
-      status: 'implemented_tested', rl: 'rare', ri: 'critical',
-      owner: 'Engineering / Legal', treatment: 'avoid',
-      action: 'Add a review gate on any migration touching ledger_account.',
-      blocks: false,
-    },
-    {
-      ref: 'R-05', category: 'partner_dependency', title: 'Single settlement partner concentration',
-      description:
-        'One settlement partner is a single point of failure for the entire product. Correspondent ' +
-        'relationships are withdrawn with little notice.',
-      il: 'possible', ii: 'severe',
-      controls:
-        'Adapters are provider-neutral and resolved by configuration, so a second partner is a ' +
-        'configuration and adapter change rather than a rewrite.',
-      status: 'implemented_untested', rl: 'possible', ri: 'severe',
-      owner: 'Founder', treatment: 'mitigate',
-      action: 'Identify a second settlement partner before the pilot ends. No partner is contracted today.',
-      blocks: true,
-    },
-    {
-      ref: 'R-06', category: 'cyber', title: 'Account takeover leading to fraudulent payment',
-      description:
-        'A compromised customer credential is used to add a beneficiary and pay it.',
-      il: 'likely', ii: 'major',
-      controls:
-        'Mandatory MFA; step-up re-authentication before quote acceptance and settlement release; ' +
-        'maker-checker on every payment; a new-beneficiary cooling-off rule; device and network ' +
-        'signals feeding the compliance engine; session invalidation on password change.',
-      status: 'implemented_tested', rl: 'unlikely', ri: 'major',
-      owner: 'Engineering / Security', treatment: 'mitigate',
-      action: 'Add hardware security key support and out-of-band beneficiary confirmation.',
-      blocks: false,
-    },
-    {
-      ref: 'R-07', category: 'cyber', title: 'Malicious insider altering records',
-      description:
-        'A member of staff with legitimate access alters a compliance decision, a ledger entry or the ' +
-        'audit trail to conceal an action.',
-      il: 'unlikely', ii: 'critical',
-      controls:
-        'The application database role holds no UPDATE or DELETE privilege on audit, ledger-entry or ' +
-        'compliance-decision tables; append-only triggers refuse mutation even for the table owner; ' +
-        'the audit trail is hash-chained and verifiable in SQL.',
-      status: 'implemented_tested', rl: 'rare', ri: 'critical',
-      owner: 'Engineering / Security', treatment: 'mitigate',
-      action:
-        'Separate the database administrator role from the application team, and ship audit records ' +
-        'to write-once external storage. Neither is done today.',
-      blocks: false,
-    },
-    {
-      ref: 'R-08', category: 'data_protection', title: 'Exposure of personal data',
-      description:
-        'Identity documents, ownership registers and screening payloads contain significant personal ' +
-        'data about identifiable individuals.',
-      il: 'possible', ii: 'major',
-      controls:
-        'Field-level AES-256-GCM encryption for identification and account numbers; hashed network ' +
-        'identifiers; a redaction layer on every log and audit write; role-based masking in reports; ' +
-        'audited document access with a stated reason for external roles.',
-      status: 'implemented_tested', rl: 'unlikely', ri: 'major',
-      owner: 'Engineering / Privacy', treatment: 'mitigate',
-      action:
-        'Complete the privacy impact assessment and the cross-border transfer assessment (FD-008), ' +
-        'and connect a managed key store instead of a derived key.',
-      blocks: true,
-    },
-    {
-      ref: 'R-09', category: 'accounting', title: 'Ledger and transaction state diverging',
-      description:
-        'A transaction reaches a state with accounting consequences without its journal being posted.',
-      il: 'unlikely', ii: 'major',
-      controls:
-        'State transitions and journal postings occur in one database transaction; the ' +
-        'transaction-to-ledger reconciliation checks required journals per state daily; the service ' +
-        'refuses to start if the trial balance does not net to zero.',
-      status: 'implemented_tested', rl: 'rare', ri: 'major',
-      owner: 'Engineering / Finance', treatment: 'mitigate',
-      action: 'None outstanding.',
-      blocks: false,
-    },
-    {
-      ref: 'R-10', category: 'fx', title: 'Unhedged currency exposure',
-      description:
-        'An obligation is converted without the matching liquidity being positioned, leaving EKORails ' +
-        'exposed to rate movement.',
-      il: 'possible', ii: 'moderate',
-      controls:
-        'Conversion and positioning post through an FX clearing account that must return to zero; the ' +
-        'currency-position reconciliation reports any residual balance as a break.',
-      status: 'implemented_tested', rl: 'unlikely', ri: 'moderate',
-      owner: 'Treasury', treatment: 'mitigate',
-      action: 'Agree an exposure limit and an escalation path with the FX partner once contracted.',
-      blocks: false,
-    },
-    {
-      ref: 'R-11', category: 'operational', title: 'Alert fatigue in compliance review',
-      description:
-        'Every transaction currently requires manual review because the corridor is a placeholder. ' +
-        'At volume this trains analysts to clear alerts without reading them.',
-      il: 'likely', ii: 'major',
-      controls:
-        'Rules carry an explicit false-positive assessment; the compliance report tracks trigger rates ' +
-        'and decision times per rule so drift is visible.',
-      status: 'implemented_untested', rl: 'possible', ri: 'major',
-      owner: 'Compliance', treatment: 'mitigate',
-      action:
-        'Resolve FD-002 so genuinely clean transactions can auto-clear, and review trigger rates ' +
-        'weekly during the pilot.',
-      blocks: false,
-    },
-    {
-      ref: 'R-12', category: 'cyber', title: 'Document-borne malware',
-      description:
-        'A customer uploads a document containing active content or malware, which reaches a ' +
-        'compliance analyst\'s machine.',
-      il: 'possible', ii: 'major',
-      controls:
-        'Strict file-type allowlist; magic-byte verification against the declared type; refusal of ' +
-        'PDFs containing JavaScript, launch actions or embedded files; content hashing.',
-      status: 'implemented_untested', rl: 'possible', ri: 'major',
-      owner: 'Engineering / Security', treatment: 'mitigate',
-      action:
-        'CONNECT A REAL ANTIVIRUS SERVICE. The current checks are structural only and are explicitly ' +
-        'not antivirus. This is a named gap.',
-      blocks: true,
-    },
-    {
-      ref: 'R-13', category: 'operational', title: 'Single-instance operational limits',
-      description:
-        'Rate limiting is in-process and the background worker is single-process. Neither is safe ' +
-        'across multiple instances.',
-      il: 'almost_certain', ii: 'moderate',
-      controls: 'Documented; the job table supports a distributed lock but no shared store is deployed.',
-      status: 'documented_only', rl: 'likely', ri: 'moderate',
-      owner: 'Engineering', treatment: 'mitigate',
-      action: 'Deploy a shared cache for rate limiting and a distributed lock for the worker before scale-out.',
-      blocks: false,
-    },
-    {
-      ref: 'R-14', category: 'operational', title: 'Backup restoration has never been tested',
-      description:
-        'Backups that have not been restored are not backups. No restoration has been performed for ' +
-        'this system.',
-      il: 'possible', ii: 'critical',
-      controls: 'A restoration test procedure is written and a test exists; it has not been run against real infrastructure.',
-      status: 'documented_only', rl: 'possible', ri: 'critical',
-      owner: 'Engineering', treatment: 'mitigate',
-      action: 'Perform and evidence a full restoration test, including transaction-history verification. Release gate EKORAILS_GATE_DR_TESTED depends on it.',
-      blocks: true,
-    },
-    {
-      ref: 'R-15', category: 'reputational', title: 'Unsupported claims in external material',
-      description:
-        'Marketing or pitch material describes capabilities or regulatory status the system does not have.',
-      il: 'likely', ii: 'severe',
-      controls: 'A claims lint runs in CI over user-facing strings in this repository.',
-      status: 'implemented_tested', rl: 'possible', ri: 'severe',
-      owner: 'Founder', treatment: 'mitigate',
-      action:
-        'The lint cannot police a slide deck. Apply the same word list to all external material by ' +
-        'review before publication.',
-      blocks: false,
-    },
-    {
-      ref: 'R-16', category: 'concentration', title: 'Key-person dependency',
-      description:
-        'A single founder currently holds the product, compliance and technical knowledge of this system.',
-      il: 'almost_certain', ii: 'major',
-      controls:
-        'The Founder Learning Center, the decision log, the build journal and extensive in-code ' +
-        'documentation exist specifically to reduce this.',
-      status: 'implemented_untested', rl: 'likely', ri: 'major',
-      owner: 'Founder', treatment: 'mitigate',
-      action: 'Appoint a named compliance officer and a second engineer before the pilot begins.',
-      blocks: true,
-    },
-  ];
+  const risks = RISK_REGISTER;
 
   let count = 0;
   for (const r of risks) {
@@ -1399,89 +1414,92 @@ export async function seedRiskRegister(db: Queryable): Promise<number> {
   return count;
 }
 
+/** The build journal. Exported so `docs/25-pilot-readiness-report.md` can draw on it. */
+export const BUILD_JOURNAL = [
+  {
+    milestone: 'Phase 0 — Source-of-truth review',
+    date: '2026-08-20',
+    built:
+      'A complete traceability review of the 22 facts the CBN filing was supposed to control, a ' +
+      'code-enforced regulatory boundary, a data classification, a risk register and nine founder ' +
+      'decisions.',
+    changed:
+      'Established the placeholder regime: because the filing was unavailable, no regulatory or ' +
+      'commercial fact has been invented anywhere in the codebase.',
+    test:
+      'Read docs/00-source-of-truth-review.md. Call GET /api/system/regulatory-boundary and confirm ' +
+      'every unresolved fact is named as unresolved. Run `npm run lint:claims`.',
+    simulated: 'Nothing yet — this milestone produced analysis, not running software.',
+    limitations:
+      'The controlling document is genuinely absent. Thirteen of twenty-two controlled facts are ' +
+      'fully unresolved.',
+    open: 'FD-001 through FD-009, all awaiting approval.',
+    risks: 'R-01 (operating outside approved scope) and R-02 (appearing to perform a licensed activity).',
+    questions:
+      'Can you attach the final CBN Regulatory Sandbox application to this repository? Until then ' +
+      'no transaction can auto-clear compliance and the pilot cannot start.',
+  },
+  {
+    milestone: 'Phase 1 — Foundations',
+    date: '2026-08-20',
+    built:
+      'PostgreSQL schema across eleven migrations: fixed-precision money domains, append-only ' +
+      'guards, a deferred constraint trigger enforcing per-currency journal balance, a hash-chained ' +
+      'audit trail with SQL-side verification, row-level security with FORCE on every ' +
+      'customer-data table, and least-privilege grants. Authentication with scrypt, AES-256-GCM ' +
+      'field encryption and RFC 6238 TOTP with a replay guard. Nine roles with explicit denials.',
+    changed:
+      'Integrity moved from the application layer into the database. An application-level ' +
+      'administrator now has no SQL privilege with which to alter an audit, ledger or compliance record.',
+    test:
+      './scripts/db-reset.sh then npm test. See audit.immutability, ledger.immutability and ' +
+      'isolation tests specifically.',
+    simulated: 'None. This layer is real.',
+    limitations:
+      'No external identity provider is connected. Rate limiting is in-process and unsafe across ' +
+      'instances (R-13).',
+    open: 'FD-010 (framework choice) recorded for technical due diligence.',
+    risks: 'R-07 (insider record alteration) reduced to rare by database-level controls.',
+    questions:
+      'Do you want an external identity provider (OIDC) before the pilot, or is built-in ' +
+      'authentication with mandatory MFA acceptable for a controlled participant group?',
+  },
+  {
+    milestone: 'Phases 2 to 5 — Onboarding, transactions, settlement, reconciliation and reporting',
+    date: '2026-08-20',
+    built:
+      'KYB onboarding with beneficial ownership and screening; a 22-rule compliance engine writing ' +
+      'reproducible immutable evaluations; beneficiaries with automatic approval invalidation on ' +
+      'material change; a double-entry ledger with FX clearing; an auditable FX quotation engine; ' +
+      'a 22-state settlement machine where every edge is declared and guarded; partner simulators ' +
+      'covering eleven failure scenarios with idempotency; six reconciliation run types; exception ' +
+      'management with four-eyes closure; eight reports exportable as CSV, XLSX and PDF; and the ' +
+      'Founder Learning Center.',
+    changed:
+      'The system now runs a complete transaction lifecycle end to end, including its failure modes.',
+    test:
+      'npm run seed, then sign in as each demonstration user. Use the guided demonstration in the ' +
+      'Founder Learning Center. Inject a failure scenario through the administration console and ' +
+      'watch the ledger, the exception queue and the reconciliation run respond.',
+    simulated:
+      'Every partner. Funding, FX execution, settlement and the beneficiary credit are all ' +
+      'simulated. Screening uses a clearly labelled fictional list. Email and SMS have no ' +
+      'transport configured and say so in the delivery record.',
+    limitations:
+      'No document blob store and no antivirus service (R-12). No statement file ingestion. ' +
+      'Settlement finality is out of scope by design.',
+    open: 'All nine founder decisions remain unapproved.',
+    risks:
+      'R-11 (alert fatigue) is new and follows directly from the corridor placeholder: every ' +
+      'transaction currently requires manual review.',
+    questions:
+      'Review the twenty-two compliance rules in the Learning Center. Are any missing for your ' +
+      'corridor, and are any so noisy they would be cleared without being read?',
+  },
+];
+
 export async function seedBuildJournal(db: Queryable): Promise<number> {
-  const entries = [
-    {
-      milestone: 'Phase 0 — Source-of-truth review',
-      date: '2026-08-20',
-      built:
-        'A complete traceability review of the 22 facts the CBN filing was supposed to control, a ' +
-        'code-enforced regulatory boundary, a data classification, a risk register and nine founder ' +
-        'decisions.',
-      changed:
-        'Established the placeholder regime: because the filing was unavailable, no regulatory or ' +
-        'commercial fact has been invented anywhere in the codebase.',
-      test:
-        'Read docs/00-source-of-truth-review.md. Call GET /api/system/regulatory-boundary and confirm ' +
-        'every unresolved fact is named as unresolved. Run `npm run lint:claims`.',
-      simulated: 'Nothing yet — this milestone produced analysis, not running software.',
-      limitations:
-        'The controlling document is genuinely absent. Thirteen of twenty-two controlled facts are ' +
-        'fully unresolved.',
-      open: 'FD-001 through FD-009, all awaiting approval.',
-      risks: 'R-01 (operating outside approved scope) and R-02 (appearing to perform a licensed activity).',
-      questions:
-        'Can you attach the final CBN Regulatory Sandbox application to this repository? Until then ' +
-        'no transaction can auto-clear compliance and the pilot cannot start.',
-    },
-    {
-      milestone: 'Phase 1 — Foundations',
-      date: '2026-08-20',
-      built:
-        'PostgreSQL schema across eleven migrations: fixed-precision money domains, append-only ' +
-        'guards, a deferred constraint trigger enforcing per-currency journal balance, a hash-chained ' +
-        'audit trail with SQL-side verification, row-level security with FORCE on every ' +
-        'customer-data table, and least-privilege grants. Authentication with scrypt, AES-256-GCM ' +
-        'field encryption and RFC 6238 TOTP with a replay guard. Nine roles with explicit denials.',
-      changed:
-        'Integrity moved from the application layer into the database. An application-level ' +
-        'administrator now has no SQL privilege with which to alter an audit, ledger or compliance record.',
-      test:
-        './scripts/db-reset.sh then npm test. See audit.immutability, ledger.immutability and ' +
-        'isolation tests specifically.',
-      simulated: 'None. This layer is real.',
-      limitations:
-        'No external identity provider is connected. Rate limiting is in-process and unsafe across ' +
-        'instances (R-13).',
-      open: 'FD-010 (framework choice) recorded for technical due diligence.',
-      risks: 'R-07 (insider record alteration) reduced to rare by database-level controls.',
-      questions:
-        'Do you want an external identity provider (OIDC) before the pilot, or is built-in ' +
-        'authentication with mandatory MFA acceptable for a controlled participant group?',
-    },
-    {
-      milestone: 'Phases 2 to 5 — Onboarding, transactions, settlement, reconciliation and reporting',
-      date: '2026-08-20',
-      built:
-        'KYB onboarding with beneficial ownership and screening; a 22-rule compliance engine writing ' +
-        'reproducible immutable evaluations; beneficiaries with automatic approval invalidation on ' +
-        'material change; a double-entry ledger with FX clearing; an auditable FX quotation engine; ' +
-        'a 22-state settlement machine where every edge is declared and guarded; partner simulators ' +
-        'covering eleven failure scenarios with idempotency; six reconciliation run types; exception ' +
-        'management with four-eyes closure; eight reports exportable as CSV, XLSX and PDF; and the ' +
-        'Founder Learning Center.',
-      changed:
-        'The system now runs a complete transaction lifecycle end to end, including its failure modes.',
-      test:
-        'npm run seed, then sign in as each demonstration user. Use the guided demonstration in the ' +
-        'Founder Learning Center. Inject a failure scenario through the administration console and ' +
-        'watch the ledger, the exception queue and the reconciliation run respond.',
-      simulated:
-        'Every partner. Funding, FX execution, settlement and the beneficiary credit are all ' +
-        'simulated. Screening uses a clearly labelled fictional list. Email and SMS have no ' +
-        'transport configured and say so in the delivery record.',
-      limitations:
-        'No document blob store and no antivirus service (R-12). No statement file ingestion. ' +
-        'Settlement finality is out of scope by design.',
-      open: 'All nine founder decisions remain unapproved.',
-      risks:
-        'R-11 (alert fatigue) is new and follows directly from the corridor placeholder: every ' +
-        'transaction currently requires manual review.',
-      questions:
-        'Review the twenty-two compliance rules in the Learning Center. Are any missing for your ' +
-        'corridor, and are any so noisy they would be cleared without being read?',
-    },
-  ];
+  const entries = BUILD_JOURNAL;
 
   let count = 0;
   for (const e of entries) {
