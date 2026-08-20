@@ -102,3 +102,10 @@ every placeholder.
 | `docs/15-deployment-checklist.md` | Netlify, DNS, email, sign-off, verification, rollback |
 | `docs/16-prelaunch-review-checklist.md` | Regulatory and factual review, with sign-off table |
 | `docs/17-red-team-review.md` | Six adversarial reviews and the consolidated action list |
+
+## Previewing without a server
+
+`python3 tools/preview.py` bundles every built page of both sites into a single
+self-contained file at `preview/ekorails-preview.html`. Open it in a browser: a site switcher, a page
+rail and viewport-width buttons (full / 1280 / 834 / 390) let you walk both sites, including the
+cross-links between them, with no server running.
