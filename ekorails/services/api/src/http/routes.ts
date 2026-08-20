@@ -13,7 +13,7 @@ import { one, many, maybeOne } from '../db/pool.js';
 import * as auth from '../auth/service.js';
 import { ROLES, PERMISSIONS, SEPARATION_RULES, maskingProfileForRoles, type Permission } from '../auth/rbac.js';
 import { environment, environmentSummary, RELEASE_GATES } from '../core/env.js';
-import { forbidden, invalid, notFound, precondition } from '../core/errors.js';
+import { forbidden, invalid, notFound, precondition, unauthenticated } from '../core/errors.js';
 import { Decimal, RATE_SCALE } from '../core/money.js';
 import * as txnService from '../modules/transaction/service.js';
 import * as orgService from '../modules/org/service.js';
@@ -164,6 +164,14 @@ export function buildRouter(): Router {
       const result = await withContext({ scope: 'system' }, (db) =>
         auth.login(db, { email, password, ipHash: ctx.ipHash, userAgentHash: ctx.userAgentHash }),
       );
+
+      // The refusal is raised only after the transaction has COMMITTED. Throwing inside it
+      // would roll back the login-attempt record, the failure counter and the audit event,
+      // leaving an attacker unlimited attempts and no trace.
+      if (!result.ok) {
+        ctx.log.warn('login refused', { reason: result.reason });
+        throw unauthenticated('INVALID_CREDENTIALS', 'Email or password is incorrect.', result.reason);
+      }
 
       ctx.setCookies.push(
         serialiseCookie('ekorails_session', result.sessionToken, {
@@ -729,7 +737,9 @@ export function buildRouter(): Router {
     handler: async (ctx) =>
       withReadOnlyContext(contextFor(ctx), async (db) => {
         const result = await settlement.timeline(db, ctx.params['id']!);
-        if (!result['transaction']) throw notFound('TRANSACTION_NOT_FOUND', 'Transaction not found.');
+        // Not found, and not "forbidden": confirming that a record exists in another
+        // organisation is itself a disclosure.
+        if (!result) throw notFound('TRANSACTION_NOT_FOUND', 'Transaction not found.');
         return result;
       }),
   });

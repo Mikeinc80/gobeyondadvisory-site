@@ -4,15 +4,22 @@
   "private": true,
   "description": "EKORails B2B cross-border settlement orchestration platform (MVP).",
   "license": "UNLICENSED",
-  "workspaces": ["services/api", "apps/web"],
-  "engines": { "node": ">=22.0.0" },
+  "workspaces": [
+    "services/api",
+    "apps/web"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "db:reset": "./scripts/db-reset.sh",
     "build": "npm run build --workspace services/api && npm run build --workspace apps/web",
     "seed": "npm run seed --workspace services/api",
     "start": "npm run start --workspace services/api",
-    "test": "npm run test --workspace services/api",
+    "test": "./scripts/test.sh",
     "lint:claims": "node scripts/lint-claims.mjs",
-    "verify": "npm run build && npm run lint:claims && npm run test"
+    "verify": "npm run lint:claims && ./scripts/test.sh",
+    "provision": "./scripts/provision-roles.sh",
+    "demo": "./scripts/db-reset.sh && npm run build && npm run seed && npm start"
   }
 }

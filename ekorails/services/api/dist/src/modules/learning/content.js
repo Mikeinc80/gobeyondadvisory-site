@@ -212,7 +212,7 @@ export async function approveDecision(db, decisionRef, approverName, reason, use
  */
 export async function walkthrough(db, transactionId) {
     const data = await timeline(db, transactionId);
-    if (!data['transaction'])
+    if (!data)
         throw notFound('TRANSACTION_NOT_FOUND', 'Transaction not found.');
     const transitions = data['transitions'];
     const journals = data['journals'];

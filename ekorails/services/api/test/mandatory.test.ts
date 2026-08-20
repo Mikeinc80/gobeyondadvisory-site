@@ -41,6 +41,7 @@ describe('1. Successful B2B settlement', () => {
       const settlement = await import('../src/modules/settlement/service.js');
       return settlement.timeline(q, txn.id);
     });
+    assert.ok(detail, 'the transaction timeline must be readable');
 
     const transitions = detail['transitions'] as Array<Record<string, unknown>>;
     const states = transitions.map((t) => t['to_state']);

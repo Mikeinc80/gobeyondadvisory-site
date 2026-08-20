@@ -30,7 +30,8 @@ export const RELEASE_GATES = [
     {
         key: 'EKORAILS_GATE_PARTNER_CONTRACTS',
         description: 'Executed contracts are in place with every partner in the settlement chain.',
-        evidence: 'Signed agreements, including settlement finality and liability terms.',
+        evidence: 'Signed agreements stating which party bears loss at each stage, and by whom settlement ' +
+            'finality is conferred — since EKORails cannot confer it.',
     },
     {
         key: 'EKORAILS_GATE_SECURITY_REVIEW',

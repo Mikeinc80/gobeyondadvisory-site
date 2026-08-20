@@ -31,6 +31,20 @@ export function normaliseEmail(email) {
  * therefore the response time — does not reveal whether the account exists.
  */
 const DECOY_HASH = hashPassword('decoy-password-for-uniform-timing-only');
+/**
+ * Authenticates a password.
+ *
+ * Returns a discriminated result rather than throwing on a credential failure, and the
+ * reason for that is not stylistic.
+ *
+ * A failed login must PERSIST three things: the login_attempt row, the incremented
+ * failure counter, and the audit event. Throwing from inside the caller's transaction
+ * rolls all three back — which means the attempt is never recorded and the lockout
+ * counter never advances, so an attacker gets unlimited attempts and leaves no trace.
+ * (That was a real defect here, caught by the "lock the account after the threshold" and
+ * "every login attempt is recorded" tests.) Returning normally lets the transaction
+ * commit; the HTTP layer turns the failure into a 401 afterwards.
+ */
 export async function login(db, req) {
     const emailNorm = normaliseEmail(req.email);
     const emailHash = sha256Hex(emailNorm);
@@ -55,8 +69,9 @@ export async function login(db, req) {
             organizationId: user?.organization_id ?? null,
             metadata: { reason },
         });
-        // One message for every failure mode. The caller learns nothing about which.
-        throw unauthenticated('INVALID_CREDENTIALS', 'Email or password is incorrect.', reason);
+        // The reason travels no further than the audit trail. The caller gets one message for
+        // every failure mode, so the endpoint is not a user-enumeration oracle.
+        return { ok: false, reason };
     };
     if (!user) {
         verifyPassword(req.password, DECOY_HASH); // uniform timing
@@ -115,6 +130,7 @@ export async function login(db, req) {
         metadata: { mfa_required: user.mfa_enrolled },
     });
     return {
+        ok: true,
         sessionToken,
         csrfToken,
         sessionId: session.id,

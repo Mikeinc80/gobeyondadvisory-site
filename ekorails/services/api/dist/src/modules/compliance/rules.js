@@ -82,7 +82,11 @@ export const RULES = [
         requiredEvidence: 'The suspension record, its reason and the deciding user.',
         automatedAction: 'The transaction is rejected and the attempt is recorded against the suspension case.',
         humanDecision: 'A Compliance Manager must lift the suspension before the customer can transact.',
-        falsePositiveRisk: 'None. The state is explicit.',
+        falsePositiveRisk: 'Effectively none: the rule reads an explicit state rather than inferring anything, so it ' +
+            'cannot be wrong about whether a suspension exists. The real risk is the opposite one — a ' +
+            'suspension that should have been lifted and was not, which shows up as a customer unable ' +
+            'to transact for reasons nobody is monitoring. Suspensions are therefore listed on the ' +
+            'compliance dashboard with their age.',
         policyBasis: 'Internal risk-control policy; ability to restrict a relationship pending investigation.',
         evaluate: (input) => ({
             triggered: input.organization.suspended,
@@ -142,7 +146,10 @@ export const RULES = [
         requiredEvidence: 'The user role grants in force at initiation.',
         automatedAction: 'The transaction is refused at the API boundary and never reaches draft.',
         humanDecision: 'The customer administrator grants the appropriate role, which is itself audited.',
-        falsePositiveRisk: 'None. The permission set is explicit.',
+        falsePositiveRisk: 'None as a detection: the permission set is explicit and is read at the moment of ' +
+            'initiation. The operational risk is a legitimate user whose role grant expired, which ' +
+            'presents identically to an unauthorised one and is resolved by the customer ' +
+            'administrator rather than by compliance.',
         policyBasis: 'Segregation of duties and least privilege.',
         evaluate: (input) => {
             const t = input.transaction;
@@ -258,7 +265,8 @@ export const RULES = [
         riskAddressed: 'Splitting a large exposure across several transactions in one day to stay under the single-transaction cap.',
         triggerCondition: 'Today\'s settled and in-flight total plus this transaction exceeds the daily limit.',
         requiredEvidence: 'The velocity counter for the day and the corridor daily limit.',
-        automatedAction: 'Rejected.',
+        automatedAction: 'The transaction is rejected. It is not queued, because the limit has already been reached ' +
+            'and no amount of review changes that without a limit change.',
         humanDecision: 'A Compliance Manager may authorise an exception only where the filing permits one.',
         falsePositiveRisk: 'Moderate: a customer with genuine same-day volume hits this legitimately. The remedy is a ' +
             'documented limit review, not an override.',
@@ -297,7 +305,8 @@ export const RULES = [
         riskAddressed: 'Exceeding the agreed monthly exposure for a single customer.',
         triggerCondition: 'Month-to-date total plus this transaction exceeds the monthly limit.',
         requiredEvidence: 'The monthly velocity counter and the corridor monthly limit.',
-        automatedAction: 'Rejected.',
+        automatedAction: 'The transaction is rejected. The customer can still transact next month, or after a ' +
+            'documented limit review, but not against this limit now.',
         humanDecision: 'Limit review under maker-checker.',
         falsePositiveRisk: 'Moderate, for the same reason as the daily rule.',
         policyBasis: 'Aggregate monthly cap. Value UNCONFIRMED pending the CBN filing (FD-003).',
@@ -411,10 +420,14 @@ export const RULES = [
         riskAddressed: 'Transacting on a corridor that has been switched off for risk, regulatory or partner reasons.',
         triggerCondition: 'The corridor status is not "enabled".',
         requiredEvidence: 'The corridor configuration and the change record that disabled it.',
-        automatedAction: 'Rejected.',
+        automatedAction: 'The transaction is rejected before a quote is issued, so the customer is not shown a price ' +
+            'for a route that cannot currently be used.',
         humanDecision: 'Re-enabling a corridor is a maker-checker configuration change.',
-        falsePositiveRisk: 'None.',
-        policyBasis: 'Operational risk control.',
+        falsePositiveRisk: 'Effectively none: the rule reads an explicit configuration state. The risk worth watching ' +
+            'is a corridor left disabled after an incident is resolved, which silently blocks a ' +
+            'customer who has done nothing wrong.',
+        policyBasis: 'Internal operational risk control. A corridor is disabled when a partner is unavailable, an ' +
+            'incident is open, or a regulatory question is unresolved — and it must then actually stop traffic.',
         evaluate: (input) => ({
             triggered: input.corridor.status !== 'enabled',
             message: input.corridor.status !== 'enabled'
@@ -436,9 +449,12 @@ export const RULES = [
             'arrangement exists.',
         triggerCondition: 'Send or receive currency does not match the corridor definition.',
         requiredEvidence: 'The transaction currencies and the corridor definition.',
-        automatedAction: 'Rejected.',
+        automatedAction: 'The transaction is rejected. No quote is issued, because there is no liquidity arrangement ' +
+            'behind a pair the corridor does not cover.',
         humanDecision: 'None. A new currency pair is a new corridor.',
-        falsePositiveRisk: 'None.',
+        falsePositiveRisk: 'Effectively none: the rule reads an explicit configuration state. The risk worth watching ' +
+            'is a corridor left disabled after an incident is resolved, which silently blocks a ' +
+            'customer who has done nothing wrong.',
         policyBasis: 'Approved corridor scope. Currencies UNCONFIRMED pending the filing (FD-002).',
         evaluate: (input) => {
             const t = input.transaction;
@@ -545,7 +561,8 @@ export const RULES = [
             'beneficiary that no list would capture.',
         triggerCondition: 'Adverse-media screening returns a flag.',
         requiredEvidence: 'The screening result and the analyst\'s assessment of the underlying reporting.',
-        automatedAction: 'Held for manual review.',
+        automatedAction: 'The transaction is held for manual review. It is deliberately not rejected: adverse media is ' +
+            'an input to judgement and frequently concerns a different person of the same name.',
         humanDecision: 'An analyst assesses relevance, recency and credibility, and records a reasoned disposition.',
         falsePositiveRisk: 'High. Adverse media matching frequently surfaces unrelated individuals of the same name, or ' +
             'reporting that is stale or unfounded. It is an input to judgement, never a decision.',
@@ -647,7 +664,8 @@ export const RULES = [
             '(the profile was wrong) or a red flag (the account is being used for something else).',
         triggerCondition: 'Send amount exceeds the declared expected transaction size by the configured multiple.',
         requiredEvidence: 'The declared expected size from the KYB profile and the transaction amount.',
-        automatedAction: 'Held for manual review.',
+        automatedAction: 'The transaction is held for manual review, and the divergence from the declared profile is ' +
+            'shown to the analyst alongside the profile figure it is being compared against.',
         humanDecision: 'An analyst either updates the customer profile with evidence, or treats the divergence as an alert.',
         falsePositiveRisk: 'High for growing businesses, and for customers who guessed when completing onboarding. This is a ' +
             'prompt to re-baseline the profile as often as it is a genuine alert.',
@@ -691,7 +709,8 @@ export const RULES = [
         triggerCondition: 'The amount exceeds the customer\'s largest recent transaction by the configured multiple, once ' +
             'there is enough history to make the comparison meaningful.',
         requiredEvidence: 'The customer\'s recent transaction amounts.',
-        automatedAction: 'Held for manual review.',
+        automatedAction: 'The transaction is held for manual review, with the customer\'s recent maximum shown so the ' +
+            'analyst can judge the step change rather than just the absolute figure.',
         humanDecision: 'An analyst checks the supporting trade documents against the amount.',
         falsePositiveRisk: 'High for new customers and for lumpy trade flows. Suppressed below the minimum history count for ' +
             'exactly that reason.',
@@ -774,7 +793,8 @@ export const RULES = [
             'laundering depends on the absence, or the falsification, of exactly these documents.',
         triggerCondition: 'A required document role is not linked to the transaction.',
         requiredEvidence: 'The linked documents and their roles.',
-        automatedAction: 'Held for manual review.',
+        automatedAction: 'The transaction is held for manual review and the specific missing document role is named, ' +
+            'so the customer can be asked for exactly the right thing rather than for everything again.',
         humanDecision: 'An analyst requests the missing document and checks it against the transaction details.',
         falsePositiveRisk: 'Low mechanically, but note the rule checks that a document EXISTS, not that it is genuine. ' +
             'Document authenticity is a human judgement this system does not automate and does not claim to.',
@@ -881,7 +901,8 @@ export const RULES = [
         triggerCondition: 'The beneficiary is younger than the configured cooling-off period, or the organisation has added ' +
             'an unusual number of beneficiaries in the last week.',
         requiredEvidence: 'Beneficiary creation timestamp and the organisation\'s recent beneficiary additions.',
-        automatedAction: 'Held for manual review.',
+        automatedAction: 'The transaction is held for manual review. The beneficiary is not blocked outright, because ' +
+            'a genuinely new trading relationship looks identical and blocking it would cost the customer a trade.',
         humanDecision: 'An analyst confirms the beneficiary through a channel other than the one that requested it.',
         falsePositiveRisk: 'High for genuinely new trading relationships and for a customer onboarding several suppliers at once. ' +
             'The cost of the false positive is a delay; the cost of the false negative is a lost payment.',
@@ -921,7 +942,8 @@ export const RULES = [
         triggerCondition: 'The beneficiary shares a director or ultimate beneficial owner with the sending organisation, ' +
             'or the declared relationship indicates common control.',
         requiredEvidence: 'The ownership and control registers for both parties, and the declared relationship.',
-        automatedAction: 'Held for manual review.',
+        automatedAction: 'The transaction is held for manual review with the shared controller or declared relationship ' +
+            'shown, so the analyst is assessing a stated fact rather than a suspicion.',
         humanDecision: 'An analyst confirms the commercial rationale and that the trade documentation reflects a real transaction.',
         falsePositiveRisk: 'Low as a detection, but note that related-party payments are frequently entirely legitimate — ' +
             'intra-group settlement is normal. The rule flags for context, not suspicion.',

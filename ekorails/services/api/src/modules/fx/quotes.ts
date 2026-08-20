@@ -246,7 +246,8 @@ function buildBreakdown(q: {
     );
   } else {
     disclosures.push(
-      `Locked until ${q.expiresAt.toISOString()} under the partner rate-lock reference on file.`,
+      `Locked until ${q.expiresAt.toISOString()} under the partner's contractual rate-lock ` +
+      `reference on file.`,
     );
   }
   disclosures.push(

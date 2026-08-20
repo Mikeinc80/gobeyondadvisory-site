@@ -520,7 +520,9 @@ const MODULES = [
         whoUsesIt: 'Everyone. It is enforced in code rather than in a policy document.',
         regulatorySignificance: 'This is the first thing a supervisor tests: does the product hold itself out as something it ' +
             'is not?',
-        mainOperationalRisk: 'Language drift. A phrase like "your EKORails balance" or "guaranteed rate" appears in a ' +
+        mainOperationalRisk: 
+        // claims-lint-allow: quoted as an example of language the product must never use.
+        'Language drift. A phrase like "your EKORails balance" or "guaranteed rate" appears in a ' +
             'screen, then in a deck, then in a conversation with a bank.',
         whatIfItFails: 'At best, a correction and lost credibility. At worst, an enforcement question about ' +
             'unlicensed activity.',
@@ -558,9 +560,12 @@ const MODULES = [
             {
                 question: 'Which of these may the product say?',
                 options: [
+                    // claims-lint-allow: a wrong answer in an assessment about prohibited language.
                     '"Guaranteed rate"',
+                    // claims-lint-allow: a wrong answer in an assessment about prohibited language.
                     '"CBN-approved"',
                     '"Indicative rate, simulated"',
+                    // claims-lint-allow: a wrong answer in an assessment about prohibited language.
                     '"Zero spread"',
                 ],
                 correct: 2,
@@ -569,6 +574,7 @@ const MODULES = [
                     'partner has contractually locked it — which no simulator can do.',
             },
             {
+                // claims-lint-allow: the question exists precisely to establish that it does not.
                 question: 'Does EKORails claim to be an admitted CBN sandbox participant?',
                 options: [
                     'Yes',
@@ -581,6 +587,7 @@ const MODULES = [
                     'anywhere. Founder decision FD-009 recommends saying nothing until an admission letter exists.',
             },
             {
+                // claims-lint-allow: the question exists precisely to establish that it cannot.
                 question: 'The company is African-owned. Can it claim African data residency?',
                 options: [
                     'Yes',
@@ -938,6 +945,7 @@ export async function seedDecisionLog(db) {
             options: [
                 { option: 'Say nothing until an admission letter exists', consequence: 'Less impressive in a pitch; entirely safe.' },
                 { option: 'Say "engaged with the CBN sandbox process"', consequence: 'Ambiguous, and ambiguity is read generously by listeners and harshly by regulators.' },
+                // claims-lint-allow: recorded in the decision log as a REJECTED option.
                 { option: 'Say "CBN sandbox participant"', consequence: 'Unacceptable unless and until it is true.' },
             ],
             recommended: 'Say nothing about sandbox status until an admission letter exists.',

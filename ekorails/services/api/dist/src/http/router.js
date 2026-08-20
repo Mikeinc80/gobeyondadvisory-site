@@ -131,17 +131,29 @@ function readBody(req, limit) {
     return new Promise((resolve, reject) => {
         const chunks = [];
         let total = 0;
+        let overLimit = false;
         req.on('data', (chunk) => {
+            if (overLimit)
+                return;
             total += chunk.length;
             if (total > limit) {
-                reject(invalid('PAYLOAD_TOO_LARGE', `Request body exceeds ${limit} bytes.`));
-                req.destroy();
+                overLimit = true;
+                // Stop buffering but keep draining. Destroying the socket here would abort the
+                // connection before the response could be written, so the caller would see a
+                // network error instead of a clear refusal — and would have no idea why.
+                chunks.length = 0;
+                req.resume();
+                reject(invalid('PAYLOAD_TOO_LARGE', `Request body exceeds ${limit} bytes.`, {
+                    limit_bytes: limit,
+                }));
                 return;
             }
             chunks.push(chunk);
         });
-        req.on('end', () => resolve(Buffer.concat(chunks)));
+        req.on('end', () => { if (!overLimit)
+            resolve(Buffer.concat(chunks)); });
         req.on('error', reject);
+        req.on('aborted', () => reject(invalid('REQUEST_ABORTED', 'The request was aborted.')));
     });
 }
 /**

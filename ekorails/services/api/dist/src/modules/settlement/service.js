@@ -588,7 +588,10 @@ export async function complete(db, transactionId, actor) {
 }
 /** The complete lifecycle view of one transaction, used by the timeline and walkthrough. */
 export async function timeline(db, transactionId) {
-    const txn = await one(db, `SELECT t.id, t.reference, t.state, t.send_amount::text AS send_amount, t.send_currency,
+    // maybeOne, not one: a transaction that row-level security has filtered out is ABSENT
+    // from this caller's point of view, and must produce a 404 rather than a 500. The
+    // difference between those two status codes is itself an information leak.
+    const txn = await maybeOne(db, `SELECT t.id, t.reference, t.state, t.send_amount::text AS send_amount, t.send_currency,
             t.receive_currency, t.expected_receive_amount::text AS expected_receive_amount,
             t.actual_receive_amount::text AS actual_receive_amount, t.purpose, t.risk_rating,
             t.created_at, t.completed_at, t.invoice_number,
@@ -603,6 +606,8 @@ export async function timeline(db, transactionId) {
        LEFT JOIN app_user iu ON iu.id = t.initiated_by
        LEFT JOIN app_user au ON au.id = t.approved_by
       WHERE t.id = $1`, [transactionId]);
+    if (!txn)
+        return null;
     const transitions = await many(db, `SELECT tt.from_state, tt.to_state, tt.actor_type, tt.actor_role, tt.reason,
             tt.evidence, tt.occurred_at,
             u.full_name AS actor_name, p.display_name AS partner_name,

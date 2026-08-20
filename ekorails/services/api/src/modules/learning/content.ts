@@ -256,7 +256,7 @@ export async function approveDecision(
  */
 export async function walkthrough(db: Queryable, transactionId: string): Promise<Record<string, unknown>> {
   const data = await timeline(db, transactionId);
-  if (!data['transaction']) throw notFound('TRANSACTION_NOT_FOUND', 'Transaction not found.');
+  if (!data) throw notFound('TRANSACTION_NOT_FOUND', 'Transaction not found.');
 
   const transitions = data['transitions'] as Array<Record<string, unknown>>;
   const journals = data['journals'] as Array<Record<string, unknown>>;

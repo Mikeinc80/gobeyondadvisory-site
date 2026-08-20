@@ -142,7 +142,8 @@ function buildBreakdown(q) {
             `before acceptance or if the destination institution applies its own charges.`);
     }
     else {
-        disclosures.push(`Locked until ${q.expiresAt.toISOString()} under the partner rate-lock reference on file.`);
+        disclosures.push(`Locked until ${q.expiresAt.toISOString()} under the partner's contractual rate-lock ` +
+            `reference on file.`);
     }
     disclosures.push('The beneficiary bank or any intermediary may deduct its own charges, which are outside ' +
         'EKORails\' control and are not included in this breakdown.');

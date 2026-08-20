@@ -1,0 +1,667 @@
+/**
+ * API contract and end-to-end tests.
+ *
+ * These start a real HTTP server against a real database and drive it the way a browser
+ * does — cookies, CSRF headers, MFA — so the authentication, authorisation and CSRF paths
+ * are exercised as they will be in use rather than as unit-tested functions.
+ */
+
+import { test, describe, before, after } from 'node:test';
+import assert from 'node:assert/strict';
+import type { Server } from 'node:http';
+import { resetDatabase, connect, buildFixture, SYSTEM, type TestDb, type Fixture } from './helpers.js';
+
+import { createHttpServer } from '../src/http/router.js';
+import { buildRouter } from '../src/http/routes.js';
+import { withContext, withReadOnlyContext, closePool } from '../src/db/pool.js';
+import * as auth from '../src/auth/service.js';
+import { totpCodeForStep, totpStep, decryptField } from '../src/core/crypto.js';
+
+let db: TestDb;
+let fx: Fixture;
+let server: Server;
+let baseUrl: string;
+
+const TEST_PASSWORD = 'Kx7-Harbour-Lantern-2026';
+
+before(async () => {
+  resetDatabase();
+  db = connect();
+  fx = await buildFixture(db);
+
+  server = createHttpServer({
+    router: buildRouter(),
+    authenticate: (token) => withContext({ scope: 'system' }, (q) => auth.resolveSession(q, token)),
+    verifyCsrf: (token, csrf) =>
+      withReadOnlyContext({ scope: 'system' }, (q) => auth.verifyCsrf(q, token, csrf)),
+  });
+
+  await new Promise<void>((resolve) => {
+    server.listen(0, '127.0.0.1', () => resolve());
+  });
+  const address = server.address();
+  const port = typeof address === 'object' && address ? address.port : 0;
+  baseUrl = `http://127.0.0.1:${port}`;
+
+  // Cookies are marked Secure by default; over plain HTTP in a test we must opt out or
+  // the client would refuse to store them.
+  process.env['EKORAILS_INSECURE_COOKIES'] = 'true';
+});
+
+after(async () => {
+  await new Promise<void>((resolve) => server.close(() => resolve()));
+  await db.close();
+  await closePool();
+});
+
+// ---------------------------------------------------------------------------
+// A minimal cookie-aware client
+// ---------------------------------------------------------------------------
+
+let clientCounter = 0;
+
+class Client {
+  private cookies = new Map<string, string>();
+  /**
+   * A distinct forwarded address per client.
+   *
+   * The rate limiter keys on the session where there is one and on the hashed network
+   * identifier otherwise. Without distinct addresses the whole suite would look like a
+   * single caller, the rate-limit test would starve every test after it, and the
+   * failures would look like authorisation bugs. Distinct addresses also exercise the
+   * X-Forwarded-For handling, which is how the limiter will see callers behind a proxy.
+   */
+  private readonly forwardedFor = `198.51.100.${(clientCounter += 1) % 250}`;
+
+  async request(
+    method: string, path: string, body?: unknown, extraHeaders: Record<string, string> = {},
+  ): Promise<{ status: number; json: Record<string, unknown>; headers: Headers }> {
+    const headers: Record<string, string> = {
+      'x-forwarded-for': this.forwardedFor, ...extraHeaders,
+    };
+    if (this.cookies.size > 0) {
+      headers['cookie'] = [...this.cookies].map(([k, v]) => `${k}=${v}`).join('; ');
+    }
+    // Only supply the CSRF header when the caller has not deliberately set one: a test
+    // that passes a wrong token must actually send the wrong token.
+    const csrf = this.cookies.get('ekorails_csrf');
+    if (csrf && !['GET', 'HEAD'].includes(method) && headers['x-csrf-token'] === undefined) {
+      headers['x-csrf-token'] = decodeURIComponent(csrf);
+    }
+    if (body !== undefined) headers['content-type'] = 'application/json';
+
+    const response = await fetch(`${baseUrl}${path}`, {
+      method, headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+      redirect: 'manual',
+    });
+
+    for (const raw of response.headers.getSetCookie()) {
+      const [pair] = raw.split(';');
+      const idx = pair!.indexOf('=');
+      if (idx > 0) {
+        const name = pair!.slice(0, idx);
+        const value = pair!.slice(idx + 1);
+        if (value === '') this.cookies.delete(name);
+        else this.cookies.set(name, value);
+      }
+    }
+
+    const text = await response.text();
+    let json: Record<string, unknown> = {};
+    try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
+    return { status: response.status, json, headers: response.headers };
+  }
+
+  get(path: string) { return this.request('GET', path); }
+  post(path: string, body?: unknown, headers?: Record<string, string>) {
+    return this.request('POST', path, body ?? {}, headers);
+  }
+
+  /** Deliberately omits the CSRF header, to test the double-submit check. */
+  async postWithoutCsrf(path: string, body: unknown = {}) {
+    const headers: Record<string, string> = {
+      'content-type': 'application/json', 'x-forwarded-for': this.forwardedFor,
+    };
+    if (this.cookies.size > 0) {
+      headers['cookie'] = [...this.cookies].map(([k, v]) => `${k}=${v}`).join('; ');
+    }
+    const response = await fetch(`${baseUrl}${path}`, {
+      method: 'POST', headers, body: JSON.stringify(body),
+    });
+    return { status: response.status, json: (await response.json()) as Record<string, unknown> };
+  }
+
+  hasCookie(name: string): boolean { return this.cookies.has(name); }
+  clearCookies(): void { this.cookies.clear(); }
+  address(): string { return this.forwardedFor; }
+}
+
+async function currentTotp(email: string): Promise<string> {
+  const secret = await db.asOwner(SYSTEM, async (q) => {
+    const row = await q.query<{ mfa_secret_encrypted: string | null }>(
+      'SELECT mfa_secret_encrypted FROM app_user WHERE email_normalised = $1', [email.toLowerCase()],
+    );
+    return row.rows[0]?.mfa_secret_encrypted ?? null;
+  });
+  if (!secret) throw new Error(`${email} has no MFA secret`);
+  return totpCodeForStep(decryptField(secret), totpStep());
+}
+
+/** Signs in and completes MFA where the account has it enrolled. */
+async function signIn(email: string): Promise<Client> {
+  const client = new Client();
+  const login = await client.post('/api/auth/login', { email, password: TEST_PASSWORD });
+  assert.equal(login.status, 200, `login failed for ${email}: ${JSON.stringify(login.json)}`);
+  const data = login.json['data'] as Record<string, unknown>;
+  if (data['mfa_required'] === true) {
+    const verify = await client.post('/api/auth/mfa/verify', { code: await currentTotp(email) });
+    assert.equal(verify.status, 200, `mfa failed for ${email}`);
+  }
+  return client;
+}
+
+// ---------------------------------------------------------------------------
+describe('Public endpoints and security headers', () => {
+  test('the environment banner is on every response, including errors', async () => {
+    const client = new Client();
+    const ok = await client.get('/api/system/environment');
+    assert.equal(ok.headers.get('x-ekorails-environment'), 'DEMO; SANDBOX ENVIRONMENT. NO LIVE FUNDS.');
+
+    const notFound = await client.get('/api/does-not-exist');
+    assert.equal(notFound.status, 404);
+    assert.match(
+      notFound.headers.get('x-ekorails-environment') ?? '', /NO LIVE FUNDS/,
+      'even a 404 must carry the banner',
+    );
+  });
+
+  test('the response envelope always carries the banner and simulation flag', async () => {
+    const response = await new Client().get('/api/system/environment');
+    const meta = response.json['meta'] as Record<string, unknown>;
+    assert.equal(meta['banner'], 'SANDBOX ENVIRONMENT. NO LIVE FUNDS.');
+    assert.equal(meta['simulated'], true);
+    assert.ok(meta['request_id'], 'every response must carry a request id');
+  });
+
+  test('security headers are strict', async () => {
+    const response = await new Client().get('/api/system/health');
+    const csp = response.headers.get('content-security-policy') ?? '';
+    assert.match(csp, /default-src 'self'/);
+    assert.match(csp, /object-src 'none'/);
+    assert.match(csp, /frame-ancestors 'none'/);
+    assert.ok(!csp.includes("'unsafe-eval'"), 'eval must not be permitted');
+    assert.ok(!/script-src[^;]*'unsafe-inline'/.test(csp), 'inline script must not be permitted');
+
+    assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
+    assert.equal(response.headers.get('x-frame-options'), 'DENY');
+    assert.equal(response.headers.get('referrer-policy'), 'no-referrer');
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+    assert.match(response.headers.get('strict-transport-security') ?? '', /max-age=\d+/);
+  });
+
+  test('the regulatory boundary is served publicly and states what EKORails is not', async () => {
+    const response = await new Client().get('/api/system/regulatory-boundary');
+    const data = response.json['data'] as Record<string, unknown>;
+    const isNot = data['ekorails_is_not'] as string[];
+    for (const claim of [
+      'a bank', 'a deposit-taking institution', 'a licensed payment provider',
+      'a custodian of customer funds', 'a cryptocurrency exchange',
+      'a consumer investment platform', 'an admitted participant in the CBN Regulatory Sandbox',
+    ]) {
+      assert.ok(isNot.includes(claim), `the boundary must disclaim "${claim}"`);
+    }
+    const gates = data['release_gates'] as Array<{ met: boolean }>;
+    assert.equal(gates.length, 9);
+    assert.equal(gates.every((g) => !g.met), true, 'no release gate may be met in this build');
+  });
+
+  test('the environment mode cannot be changed through the API', async () => {
+    const client = await signIn('admin@ekorails.invalid');
+    // There is deliberately no route for this. A 404 or 405 is the correct answer;
+    // what must never happen is a 200.
+    for (const path of ['/api/system/environment', '/api/admin/environment']) {
+      const response = await client.request('PATCH', path, { mode: 'PRODUCTION' });
+      assert.notEqual(response.status, 200, `${path} must not accept a mode change`);
+    }
+  });
+
+  test('OpenAPI describes every route with its required permissions', async () => {
+    const response = await new Client().get('/api/openapi.json');
+    const spec = (response.json['data'] as Record<string, unknown>);
+    assert.equal(spec['openapi'], '3.1.0');
+    const paths = spec['paths'] as Record<string, Record<string, Record<string, unknown>>>;
+    assert.ok(Object.keys(paths).length > 40, 'the API must be substantial');
+    const txnPost = paths['/api/transactions']?.['post'];
+    assert.deepEqual(txnPost?.['x-required-permissions'], ['txn.initiate']);
+    assert.match(
+      String(spec['info'] && (spec['info'] as Record<string, string>)['description']),
+      /not a bank/,
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('Authentication', () => {
+  test('a wrong password and an unknown email give the same response', async () => {
+    const wrongPassword = await new Client().post('/api/auth/login', {
+      email: 'analyst@ekorails.invalid', password: 'definitely-not-the-password',
+    });
+    const unknownEmail = await new Client().post('/api/auth/login', {
+      email: 'nobody@nowhere.invalid', password: 'definitely-not-the-password',
+    });
+    assert.equal(wrongPassword.status, 401);
+    assert.equal(unknownEmail.status, 401);
+    assert.deepEqual(
+      wrongPassword.json['error'], unknownEmail.json['error'],
+      'the endpoint must not be a user-enumeration oracle',
+    );
+  });
+
+  test('a successful login sets an httpOnly session cookie and a readable CSRF cookie', async () => {
+    const client = new Client();
+    const response = await client.post('/api/auth/login', {
+      email: 'analyst@ekorails.invalid', password: TEST_PASSWORD,
+    });
+    assert.equal(response.status, 200);
+    const setCookies = response.headers.getSetCookie();
+    const session = setCookies.find((c) => c.startsWith('ekorails_session='));
+    const csrf = setCookies.find((c) => c.startsWith('ekorails_csrf='));
+    assert.ok(session, 'a session cookie must be set');
+    assert.match(session!, /HttpOnly/, 'the session cookie must be httpOnly');
+    assert.match(session!, /SameSite=Strict/);
+    assert.ok(csrf, 'a CSRF cookie must be set');
+    assert.ok(!/HttpOnly/.test(csrf!), 'the CSRF cookie must be readable by the client to be echoed');
+    // The session token must never appear in the response body.
+    assert.ok(
+      !JSON.stringify(response.json).includes(session!.split('=')[1]!.split(';')[0]!),
+      'the session token must not be echoed in the body',
+    );
+  });
+
+  test('failed logins lock the account after the threshold', async () => {
+    const email = 'lockout.test@ekorails.invalid';
+    await db.asOwner(SYSTEM, async (q) => {
+      const { createUser } = await import('../src/auth/service.js');
+      await createUser(q, {
+        organizationId: fx.internalOrgId, email, fullName: 'Lockout Subject',
+        password: TEST_PASSWORD, roles: [], enrolMfa: false,
+      });
+    });
+
+    for (let i = 0; i < auth.MAX_FAILED_LOGINS; i += 1) {
+      const response = await new Client().post('/api/auth/login', { email, password: 'wrong' });
+      assert.equal(response.status, 401);
+    }
+
+    // Now even the CORRECT password is refused.
+    const afterLock = await new Client().post('/api/auth/login', { email, password: TEST_PASSWORD });
+    assert.equal(afterLock.status, 401, 'a locked account must refuse the correct password');
+
+    const status = await db.asOwner(SYSTEM, async (q) => {
+      const row = await q.query<{ status: string; locked_until: Date | null }>(
+        'SELECT status, locked_until FROM app_user WHERE email_normalised = $1', [email],
+      );
+      return row.rows[0]!;
+    });
+    assert.equal(status.status, 'locked');
+    assert.ok(status.locked_until, 'a lockout must have an expiry, not be permanent');
+  });
+
+  test('every login attempt, successful or not, is recorded', async () => {
+    const count = await db.asOwner(SYSTEM, async (q) => {
+      const row = await q.query<{ succeeded: string; failed: string }>(
+        `SELECT count(*) FILTER (WHERE succeeded)::text AS succeeded,
+                count(*) FILTER (WHERE NOT succeeded)::text AS failed
+           FROM login_attempt`,
+      );
+      return row.rows[0]!;
+    });
+    assert.ok(Number(count.succeeded) > 0, 'successful logins must be recorded');
+    assert.ok(Number(count.failed) > 0, 'failed logins must be recorded');
+  });
+
+  test('an unauthenticated request to a protected route is refused', async () => {
+    const response = await new Client().get('/api/transactions');
+    assert.equal(response.status, 401);
+    assert.equal((response.json['error'] as Record<string, string>)['code'], 'SESSION_REQUIRED');
+  });
+
+  test('logout revokes the session and clears the cookies', async () => {
+    const client = await signIn('analyst@ekorails.invalid');
+    assert.equal((await client.get('/api/me')).status, 200);
+
+    const logout = await client.post('/api/auth/logout');
+    assert.equal(logout.status, 200);
+    assert.equal(client.hasCookie('ekorails_session'), false, 'the cookie must be cleared');
+
+    // Even replaying the old cookie fails, because the session is revoked server-side.
+    assert.equal((await client.get('/api/me')).status, 401);
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('CSRF protection', () => {
+  test('a state-changing request without the CSRF header is refused', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const response = await client.postWithoutCsrf('/api/support-cases', {
+      category: 'customer_support', subject: 'Test', description: 'Test description.',
+    });
+    assert.equal(response.status, 403);
+    assert.equal((response.json['error'] as Record<string, string>)['code'], 'CSRF_TOKEN_INVALID');
+  });
+
+  test('a request with the WRONG CSRF token is refused', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const response = await client.post(
+      '/api/support-cases',
+      { category: 'customer_support', subject: 'Test', description: 'Test description.' },
+      { 'x-csrf-token': 'not-the-right-token' },
+    );
+    assert.equal(response.status, 403);
+  });
+
+  test('a GET does not require a CSRF token', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    assert.equal((await client.get('/api/transactions')).status, 200);
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('Authorisation at the route boundary', () => {
+  test('a business user cannot reach the compliance queue', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const response = await client.get('/api/compliance/cases');
+    assert.equal(response.status, 403);
+    assert.equal((response.json['error'] as Record<string, string>)['code'], 'PERMISSION_DENIED');
+  });
+
+  test('a business user cannot reach the ledger', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    assert.equal((await client.get('/api/ledger/trial-balance')).status, 403);
+    assert.equal((await client.get('/api/ledger/accounts')).status, 403);
+  });
+
+  test('a compliance analyst cannot route a settlement', async () => {
+    const client = await signIn('analyst@ekorails.invalid');
+    const response = await client.post(
+      '/api/transactions/00000000-0000-0000-0000-000000000000/settlement/submit',
+    );
+    assert.equal(response.status, 403);
+  });
+
+  test('a treasury operator cannot clear a compliance alert', async () => {
+    const client = await signIn('treasury@ekorails.invalid');
+    const response = await client.post(
+      '/api/transactions/00000000-0000-0000-0000-000000000000/compliance-decision',
+      { decision: 'approve', reason: 'Attempting to clear an alert as treasury, which must be refused.' },
+    );
+    assert.equal(response.status, 403);
+  });
+
+  test('an administrator cannot read transactions or documents', async () => {
+    const client = await signIn('admin@ekorails.invalid');
+    assert.equal((await client.get('/api/transactions')).status, 403);
+    assert.equal((await client.get('/api/documents')).status, 403);
+  });
+
+  test('the auditor can read but every write route is refused', async () => {
+    const client = await signIn('analyst@ekorails.invalid');
+    // Confirm the read side works for a role that has it, then check the auditor.
+    assert.equal((await client.get('/api/compliance/cases')).status, 200);
+
+    const auditorEmail = 'auditor.api@ekorails.invalid';
+    await db.asOwner(SYSTEM, async (q) => {
+      const { createUser } = await import('../src/auth/service.js');
+      await createUser(q, {
+        organizationId: fx.internalOrgId, email: auditorEmail, fullName: 'API Auditor',
+        password: TEST_PASSWORD, roles: ['auditor_regulator'], enrolMfa: false,
+      });
+    });
+    const auditor = await signIn(auditorEmail);
+
+    assert.equal((await auditor.get('/api/audit/events')).status, 200, 'the auditor must be able to read');
+    assert.equal((await auditor.get('/api/regulator/overview')).status, 200);
+    assert.equal((await auditor.get('/api/ledger/trial-balance')).status, 200);
+
+    // Writes.
+    assert.equal((await auditor.post('/api/transactions', {})).status, 403);
+    assert.equal((await auditor.post('/api/beneficiaries', {})).status, 403);
+    assert.equal((await auditor.post('/api/reconciliation/run')).status, 403);
+    assert.equal((await auditor.post('/api/admin/simulation', { scenario: 'success' })).status, 403);
+  });
+
+  test('/api/me reports the caller\'s roles, permissions and explicit denials', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const response = await client.get('/api/me');
+    const data = response.json['data'] as Record<string, unknown>;
+    assert.deepEqual(data['roles'], ['business_initiator']);
+    assert.equal(data['scope'], 'org');
+    const roleDetails = data['role_details'] as Array<{ cannot: string[] }>;
+    assert.ok(roleDetails[0]!.cannot.length > 0, 'the role\'s explicit denials must be visible to the user');
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('Cross-organisation isolation over HTTP', () => {
+  test('a user sees only their own organisation\'s transactions', async () => {
+    const { createAndAdvance } = await import('./helpers.js');
+    await createAndAdvance(db, fx, { stopAt: 'pending_compliance', amount: '1900000.000000' });
+
+    const alpha = await signIn('initiator.a@testalpha.invalid');
+    const bravo = await signIn('initiator.b@testbravo.invalid');
+
+    const alphaList = (await alpha.get('/api/transactions')).json['data'] as unknown[];
+    const bravoList = (await bravo.get('/api/transactions')).json['data'] as unknown[];
+
+    assert.ok(alphaList.length > 0, 'alpha must see its own transactions');
+    assert.equal(bravoList.length, 0, 'bravo must see none of alpha\'s transactions');
+  });
+
+  test('fetching another organisation\'s transaction by id returns 404', async () => {
+    const alpha = await signIn('initiator.a@testalpha.invalid');
+    const bravo = await signIn('initiator.b@testbravo.invalid');
+
+    const list = (await alpha.get('/api/transactions')).json['data'] as Array<{ id: string }>;
+    const target = list[0]!.id;
+
+    assert.equal((await alpha.get(`/api/transactions/${target}`)).status, 200);
+    const denied = await bravo.get(`/api/transactions/${target}`);
+    assert.equal(denied.status, 404, 'cross-organisation access must be indistinguishable from absence');
+    assert.ok(
+      !JSON.stringify(denied.json).toLowerCase().includes('forbidden'),
+      'the response must not hint that the record exists elsewhere',
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('Rate limiting', () => {
+  test('the login endpoint is rate limited', async () => {
+    const client = new Client();
+    let limited = false;
+    for (let i = 0; i < 25; i += 1) {
+      const response = await client.post('/api/auth/login', {
+        email: `ratelimit${i}@nowhere.invalid`, password: 'wrong',
+      });
+      if (response.status === 429) {
+        limited = true;
+        assert.ok(response.json['error'], 'a rate-limited response must carry an error body');
+        break;
+      }
+    }
+    assert.ok(limited, 'the login endpoint must rate limit');
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('Input validation', () => {
+  test('a malformed JSON body is rejected cleanly', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const response = await fetch(`${baseUrl}/api/support-cases`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: '{not valid json',
+    });
+    assert.equal(response.status, 400);
+    const body = await response.json() as Record<string, unknown>;
+    assert.equal((body['error'] as Record<string, string>)['code'], 'INVALID_JSON');
+  });
+
+  test('a missing required field names the field', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const response = await client.post('/api/transactions', { send_amount: '100.000000' });
+    assert.equal(response.status, 400);
+    const error = response.json['error'] as Record<string, unknown>;
+    assert.equal(error['code'], 'FIELD_REQUIRED');
+    assert.ok((error['details'] as Record<string, string>)['field'], 'the failing field must be named');
+  });
+
+  test('an amount that is not a fixed-point decimal string is rejected', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const response = await client.post('/api/transactions', {
+      beneficiary_id: fx.beneficiaryA, corridor_id: fx.corridorId,
+      send_amount: 1000000, send_currency: 'NGN', receive_currency: 'USD',
+      purpose: 'Test', source_of_funds: 'Trading revenue received into the operating account.',
+    });
+    assert.equal(response.status, 400, 'a JSON number must not be accepted as a money amount');
+  });
+
+  test('an unknown route returns 404 and a known route with a wrong method returns 405', async () => {
+    const client = await signIn('analyst@ekorails.invalid');
+    assert.equal((await client.get('/api/nonexistent')).status, 404);
+    assert.equal((await client.request('DELETE', '/api/transactions')).status, 405);
+  });
+
+  test('an oversized body is refused', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const huge = 'x'.repeat(2 * 1024 * 1024);
+    const response = await client.post('/api/support-cases', {
+      category: 'customer_support', subject: 'big', description: huge,
+    });
+    assert.ok([400, 413].includes(response.status), `expected a size refusal; got ${response.status}`);
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('Reporting over HTTP', () => {
+  test('the report catalogue is filtered by the caller\'s permissions', async () => {
+    const business = await signIn('initiator.a@testalpha.invalid');
+    const finance = await signIn('finance@ekorails.invalid');
+
+    const businessReports = (await business.get('/api/reports')).json['data'] as Array<{ key: string }>;
+    const financeReports = (await finance.get('/api/reports')).json['data'] as Array<{ key: string }>;
+
+    assert.ok(
+      !businessReports.some((r) => r.key === 'trial-balance'),
+      'a business user must not be offered the trial balance',
+    );
+    assert.ok(
+      financeReports.some((r) => r.key === 'trial-balance'),
+      'a finance analyst must be offered the trial balance',
+    );
+  });
+
+  test('a report exports as CSV, XLSX and PDF, and each export is recorded', async () => {
+    const finance = await signIn('finance@ekorails.invalid');
+
+    for (const [format, expectedType] of [
+      ['csv', 'text/csv'],
+      ['xlsx', 'spreadsheetml'],
+      ['pdf', 'application/pdf'],
+    ] as const) {
+      const response = await finance.get(`/api/reports/trial-balance?format=${format}`);
+      assert.equal(response.status, 200, `${format} export failed`);
+      assert.match(
+        String(response.headers.get('content-type') ?? ''), new RegExp(expectedType),
+        `${format} must be served with the right content type`,
+      );
+      assert.match(
+        String(response.headers.get('content-disposition') ?? ''), /attachment; filename=/,
+        `${format} must be served as a download`,
+      );
+    }
+
+    const recorded = await db.asOwner(SYSTEM, async (q) => {
+      const rows = await q.query<{ format: string; content_sha256: string; masking_profile: string }>(
+        "SELECT format, content_sha256, masking_profile FROM report WHERE report_key = 'trial-balance'",
+      );
+      return rows.rows;
+    });
+    assert.equal(recorded.length, 3, 'each of the three exports must be recorded');
+    for (const row of recorded) {
+      assert.match(row.content_sha256, /^[0-9a-f]{64}$/, 'each export must record a content hash');
+      assert.ok(row.masking_profile, 'each export must record the masking profile that produced it');
+    }
+
+    // And each export must be audited.
+    const audited = await db.asOwner(SYSTEM, async (q) => {
+      const row = await q.query<{ n: string }>(
+        "SELECT count(*)::text AS n FROM audit_event WHERE category = 'report_export'",
+      );
+      return Number(row.rows[0]!.n);
+    });
+    assert.ok(audited >= 3, 'every export must be audited');
+  });
+
+  test('the regulator overview exposes no personal names', async () => {
+    const auditorEmail = 'regulator.api@ekorails.invalid';
+    await db.asOwner(SYSTEM, async (q) => {
+      const { createUser } = await import('../src/auth/service.js');
+      await createUser(q, {
+        organizationId: fx.internalOrgId, email: auditorEmail, fullName: 'API Regulator',
+        password: TEST_PASSWORD, roles: ['auditor_regulator'], enrolMfa: false,
+      });
+    });
+    const client = await signIn(auditorEmail);
+    const response = await client.get('/api/regulator/overview');
+    assert.equal(response.status, 200);
+
+    const serialised = JSON.stringify(response.json);
+    // The fixture's people are named "Owner Of <company>"; none may appear.
+    assert.ok(!serialised.includes('Owner Of'), 'no individual name may appear in the regulator view');
+    const data = response.json['data'] as Record<string, unknown>;
+    const scope = data['pilot_scope'] as Record<string, unknown>;
+    assert.match(String(scope['sandbox_admission_status']), /NOT CONFIRMED/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('Founder Learning Center over HTTP', () => {
+  test('the product map reports honest completion stages', async () => {
+    const client = await signIn('analyst@ekorails.invalid');
+    const response = await client.get('/api/learning/product-map');
+    assert.equal(response.status, 200);
+    const data = response.json['data'] as Record<string, unknown>;
+    const definitions = data['completion_definitions'] as Array<{ stage: string }>;
+    assert.equal(definitions.length, 8, 'all eight completion definitions must be present');
+    assert.ok(definitions.some((d) => d.stage === 'pilot_ready'));
+  });
+
+  // claims-lint-allow: the test name describes a disclaimer being asserted, not a claim.
+  test('the state-machine view disclaims settlement finality', async () => {
+    const client = await signIn('analyst@ekorails.invalid');
+    const response = await client.get('/api/learning/state-machine');
+    const data = response.json['data'] as Record<string, unknown>;
+    assert.match(String(data['note']), /does not mean settlement finality/i);
+    assert.ok((data['transition_count'] as number) > 25);
+  });
+
+  test('the compliance rule library is readable with plain-English explanations', async () => {
+    const client = await signIn('analyst@ekorails.invalid');
+    const response = await client.get('/api/compliance/rules');
+    const data = response.json['data'] as Record<string, unknown>;
+    const rules = data['rules'] as Array<Record<string, string>>;
+    assert.ok(rules.length >= 23, 'the full rule catalogue must be visible');
+    for (const rule of rules) {
+      assert.ok(
+        String(rule['risk_addressed'] ?? '').length > 30,
+        `${rule['rule_key']} needs a real explanation of the risk it addresses`,
+      );
+      assert.ok(
+        String(rule['false_positive_risk'] ?? '').length > 20,
+        `${rule['rule_key']} must state how it can be wrong`,
+      );
+    }
+  });
+});

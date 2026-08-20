@@ -792,8 +792,13 @@ export async function complete(
 }
 
 /** The complete lifecycle view of one transaction, used by the timeline and walkthrough. */
-export async function timeline(db: Queryable, transactionId: string): Promise<Record<string, unknown>> {
-  const txn = await one<Record<string, unknown>>(
+export async function timeline(
+  db: Queryable, transactionId: string,
+): Promise<Record<string, unknown> | null> {
+  // maybeOne, not one: a transaction that row-level security has filtered out is ABSENT
+  // from this caller's point of view, and must produce a 404 rather than a 500. The
+  // difference between those two status codes is itself an information leak.
+  const txn = await maybeOne<Record<string, unknown>>(
     db,
     `SELECT t.id, t.reference, t.state, t.send_amount::text AS send_amount, t.send_currency,
             t.receive_currency, t.expected_receive_amount::text AS expected_receive_amount,
@@ -812,6 +817,7 @@ export async function timeline(db: Queryable, transactionId: string): Promise<Re
       WHERE t.id = $1`,
     [transactionId],
   );
+  if (!txn) return null;
 
   const transitions = await many<Record<string, unknown>>(
     db,
