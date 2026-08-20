@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Platform | EKORails settlement and interoperability architecture</title>
-<meta name="description" content="The proposed EKORails platform architecture: participants, transaction lifecycle, integration options, ledger and record-keeping, settlement model, compliance controls, reporting and resilience. Every unbuilt component is labelled planned or under development.">
+<meta name="description" content="The proposed EKORails architecture: participants, transaction lifecycle, system boundary, integrations, ledger, settlement model, controls and resilience.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://ekorails.com/platform">
 <meta name="theme-color" content="#08151F">
@@ -12,14 +12,14 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="EKORails">
 <meta property="og:title" content="Platform | EKORails settlement and interoperability architecture">
-<meta property="og:description" content="The proposed EKORails platform architecture: participants, transaction lifecycle, integration options, ledger and record-keeping, settlement model, compliance controls, reporting and resilience. Every unbuilt component is labelled planned or under development.">
+<meta property="og:description" content="The proposed EKORails architecture: participants, transaction lifecycle, system boundary, integrations, ledger, settlement model, controls and resilience.">
 <meta property="og:url" content="https://ekorails.com/platform">
 <meta property="og:image" content="https://ekorails.com/assets/img/og-default.png">
 <meta property="og:image:alt" content="EKORails — settlement infrastructure for African trade.">
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Platform | EKORails settlement and interoperability architecture">
-<meta name="twitter:description" content="The proposed EKORails platform architecture: participants, transaction lifecycle, integration options, ledger and record-keeping, settlement model, compliance controls, reporting and resilience. Every unbuilt component is labelled planned or under development.">
+<meta name="twitter:description" content="The proposed EKORails architecture: participants, transaction lifecycle, system boundary, integrations, ledger, settlement model, controls and resilience.">
 <meta name="twitter:image" content="https://ekorails.com/assets/img/og-default.png">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
@@ -116,6 +116,7 @@
             <li><a href="#controls">Compliance controls</a></li>
             <li><a href="#reporting">Reporting</a></li>
             <li><a href="#resilience">Resilience and continuity</a></li>
+            <li><a href="#insolvency">Insolvency and wind-down</a></li>
             <li><a href="#data">Data handling</a></li>
             <li><a href="#responsibilities">Partner responsibilities</a></li>
           </ol>
@@ -383,6 +384,23 @@
         <li>Tested restore procedures and a documented incident and communications plan.</li>
         <li>An exit and wind-down plan so that participants are not stranded if the pilot ends.</li>
       </ul>
+      <h3 id="insolvency" style="font-size:var(--step-1);margin-top:var(--s-5)">Insolvency and wind-down</h3>
+      <p>Because EKORails does not hold customer funds, an insolvency of EKORails LTD does not put
+        customer money at risk in the design: funds sit with licensed institutions throughout, and the
+        claim a customer holds is against that institution under its own regime, not against EKORails.</p>
+      <p>What an EKORails failure would put at risk is coordination and record-keeping. The wind-down
+        plan therefore covers three obligations: stop accepting new instructions immediately; drive every
+        in-flight transaction to a terminal state — settled, returned or rejected — with each partner;
+        and hand participants and their supervisors a complete, readable export of the audit record for
+        the full retention period.</p>
+      <p>The reverse direction matters equally. If a settlement, conversion or payout partner fails, the
+        platform must be able to establish the true state of every transaction on that route by
+        reconciliation rather than assumption, and to stop routing to it without stranding work already
+        accepted. Concentration on a single partner for any critical function is treated as a risk in its
+        own right.</p>
+      <p>Final wind-down documentation, escrow of the audit record, and the treatment of each partner
+        agreement on insolvency: <span class="placeholder">[CONFIRM WITH EKORAILS]</span>
+        <span class="placeholder">[SUBJECT TO REGULATORY APPROVAL]</span></p>
     </div>
 
     <hr class="rule">

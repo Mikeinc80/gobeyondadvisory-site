@@ -467,6 +467,9 @@ def build_site(key: str) -> int:
         d = src / extra
         if d.is_dir():
             shutil.copytree(d, out / extra)
+    static = src / "static"
+    if static.is_dir():
+        shutil.copytree(static, out, dirs_exist_ok=True)
 
     metas, entries = [], []
     for frag in sorted((src / "pages").rglob("*.html")):

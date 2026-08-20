@@ -1,0 +1,14 @@
+# Coordinated vulnerability disclosure — EKORails LTD
+#
+# If you believe you have found a security vulnerability affecting this website
+# or the EKORails platform, please tell us. We will acknowledge your report and
+# keep you informed while we investigate.
+#
+# Please do not test against production systems, do not access data that is not
+# yours, and do not run automated scanning that could degrade the service.
+
+Contact: mailto:compliance@ekorails.com
+Preferred-Languages: en
+Canonical: https://ekorails.com/.well-known/security.txt
+Policy: https://ekorails.com/contact
+Expires: 2027-08-20T00:00:00.000Z
