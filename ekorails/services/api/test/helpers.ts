@@ -37,6 +37,9 @@ function findRepoRoot(start: string): string {
 
 const REPO_ROOT = findRepoRoot(HERE);
 
+/** The repository root, for tests that need to read source rather than call it. */
+export function repoRoot(): string { return REPO_ROOT; }
+
 process.env['EKORAILS_ENV_MODE'] ??= 'DEMO';
 process.env['EKORAILS_LOG_LEVEL'] ??= 'error';
 

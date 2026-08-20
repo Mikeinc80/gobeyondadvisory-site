@@ -515,6 +515,429 @@ function generateComplianceMatrix() {
 }
 
 // ---------------------------------------------------------------------------
+// 10 — Requirements traceability
+// ---------------------------------------------------------------------------
+
+/**
+ * Requirements, and the test that proves each one.
+ *
+ * The `verifiedBy` entries are matched against the actual `test('...')` names in the
+ * suites. A requirement claiming a test that does not exist fails the build, which is
+ * the only thing that stops a traceability matrix becoming a work of fiction — the
+ * failure mode of every such matrix is a row asserting coverage that was renamed away
+ * two quarters ago.
+ *
+ * Requirements with NO test are listed too, in their own section, with what is missing
+ * stated plainly. A matrix with no gaps is a matrix nobody checked.
+ */
+const REQUIREMENTS = [
+  {
+    id: 'REQ-01', area: 'Regulatory boundary',
+    requirement: 'This deployment moves no real money, and live functionality cannot be activated through any interface.',
+    source: 'Brief — "The MVP must default to simulated settlement. Live-mode functionality must remain disabled behind a configuration flag and must not be activatable through the user interface."',
+    enforcedBy: 'Nine release gates read from process configuration at start-up; assertLiveMoneyPermitted() throws unconditionally in this build.',
+    verifiedBy: [
+      'assertLiveMoneyPermitted throws in this build',
+      'the environment mode cannot be changed through the API',
+      'every single gate must be met; eight of nine is still a refusal',
+      'PRODUCTION with unmet gates REFUSES to start',
+      'there are nine release gates, each with stated evidence',
+    ],
+  },
+  {
+    id: 'REQ-02', area: 'Regulatory boundary',
+    requirement: 'The environment banner appears on every screen and every response, and cannot be suppressed.',
+    source: 'Brief — persistent banner "SANDBOX ENVIRONMENT. NO LIVE FUNDS."',
+    enforcedBy: 'First element in the document; a response header on every request; the client blocks the page if the rendered banner disagrees with the server.',
+    verifiedBy: [
+      'the environment banner is on every response, including errors',
+      'the response envelope always carries the banner and simulation flag',
+    ],
+  },
+  {
+    id: 'REQ-03', area: 'Regulatory boundary',
+    requirement: 'EKORails is never presented as a bank, a custodian of customer funds, or an admitted sandbox participant.',
+    source: 'Brief — regulatory boundary list.',
+    enforcedBy: 'No customer stored-value account exists in the chart of accounts; a public boundary statement; a claims lint over every user-facing string.',
+    verifiedBy: [
+      'the chart of accounts contains no customer stored-value account',
+      'the regulatory boundary is served publicly and states what EKORails is not',
+      'a business user has no ledger read permission and sees only their own accounts',
+    ],
+  },
+  {
+    id: 'REQ-04', area: 'Money',
+    requirement: 'Monetary amounts are stored using fixed-precision decimal types. Floating point is never used for money.',
+    source: 'Brief — "Store monetary amounts using fixed-precision decimal types. Never use floating-point storage for money."',
+    enforcedBy: 'NUMERIC(24,6) columns; a BigInt-backed Decimal that refuses construction from a fractional JavaScript number; amounts travel to the browser as strings.',
+    verifiedBy: [
+      'fractional JS numbers cannot be used to construct money',
+      'constructing from a value with too many decimals is REFUSED, not truncated',
+      'the classic float failure does not occur',
+      'very large amounts do not lose precision',
+      'addition and subtraction are exact at scale',
+      'the canonical string form round-trips exactly',
+    ],
+  },
+  {
+    id: 'REQ-05', area: 'Ledger',
+    requirement: 'Every journal balances within each currency, and an unbalanced journal cannot exist.',
+    source: 'Brief — double-entry ledger.',
+    enforcedBy: 'A deferred CONSTRAINT TRIGGER that sums by currency at commit and raises otherwise.',
+    verifiedBy: [
+      'an unbalanced journal is refused at commit by the database',
+      'a cross-currency journal must balance within EACH currency',
+      'a single-line journal is refused',
+      'the trial balance nets to zero in every currency',
+      'the application layer refuses an imbalance before it reaches the database',
+    ],
+  },
+  {
+    id: 'REQ-06', area: 'Ledger',
+    requirement: 'Ledger entries cannot be edited or deleted. Corrections are made by reversal.',
+    source: 'Brief — audit-log protection; accounting integrity.',
+    enforcedBy: 'No UPDATE/DELETE grant for the application role; append-only triggers that raise even for the table owner.',
+    verifiedBy: [
+      'the application role cannot UPDATE a journal entry',
+      'the application role cannot DELETE a journal entry',
+      'even the schema owner cannot UPDATE a journal entry',
+      'even the schema owner cannot DELETE a journal entry',
+      'a partner rejection unwinds the positioning by reversal, not deletion',
+      'a return is a new event; the original settlement journal stands',
+    ],
+  },
+  {
+    id: 'REQ-07', area: 'Audit',
+    requirement: 'The audit trail is append-only and tamper-evident, and refusals are recorded as carefully as successes.',
+    source: 'Brief — audit-log protection.',
+    enforcedBy: 'Hash-chained entries verified by a SQL function; append-only triggers; withheld grants; deliberately permissive RLS on UPDATE/DELETE so an attempt raises loudly rather than matching zero rows.',
+    verifiedBy: [
+      'the audit hash chain verifies and detects tampering',
+      'the application role has no UPDATE privilege on the audit trail',
+      'the application role has no DELETE privilege on the audit trail',
+      'even the schema owner is refused by the append-only trigger on UPDATE',
+      'even the schema owner is refused by the append-only trigger on DELETE',
+      'the audit record is genuinely unchanged after the attempts',
+      'every login attempt, successful or not, is recorded',
+    ],
+  },
+  {
+    id: 'REQ-08', area: 'Access control',
+    requirement: 'One organisation cannot read another organisation\'s data.',
+    source: 'Brief — least privilege; role "cannot" statements.',
+    enforcedBy: 'Row-level security with FORCE on every table carrying customer data, driven by a transaction-local security context.',
+    verifiedBy: [
+      'organisation A cannot see organisation B\'s transactions, at the database level',
+      'the isolation holds across every organisation-scoped table',
+      'a request with no security context sees nothing at all',
+      'a cross-organisation quote acceptance returns not-found, not forbidden',
+    ],
+  },
+  {
+    id: 'REQ-09', area: 'Access control',
+    requirement: 'The nine specified roles exist, each with its stated permissions and its explicit denials.',
+    source: 'Brief — nine user roles with can/cannot lists.',
+    enforcedBy: 'Roles declared as data, seeded into the database, denials stated explicitly rather than implied by absence.',
+    verifiedBy: [
+      'all nine roles from the specification exist',
+      'every role states what it explicitly cannot do',
+      'every role permission exists in the permission catalogue',
+      'a business initiator cannot approve, clear compliance or touch the ledger',
+      'a treasury operator cannot clear a compliance alert',
+      'an analyst cannot approve a high-risk KYB case',
+      'the auditor role is read-only: it holds no write permission at all',
+      'a System Administrator holds no permission that could reach a compliance decision',
+    ],
+  },
+  {
+    id: 'REQ-10', area: 'Access control',
+    requirement: 'The person who initiates a transaction cannot authorise it.',
+    source: 'Brief — dual authorisation.',
+    enforcedBy: 'A separation rule evaluated against the transaction\'s initiator, refused by the state machine and again by the database.',
+    verifiedBy: [
+      'the state machine refuses the approve edge for the initiator',
+      'the service layer refuses a self-approval and audits the attempt',
+      'the database refuses a self-approval even if the service layer is bypassed',
+      'separation-of-duties rules fire on the involved user',
+    ],
+  },
+  {
+    id: 'REQ-11', area: 'Authentication',
+    requirement: 'Multi-factor authentication, with re-authentication before value-moving actions.',
+    source: 'Brief — MFA; step-up for sensitive operations.',
+    enforcedBy: 'RFC 6238 TOTP with a step replay guard; step-up required by declared transitions; scrypt passwords; lockout.',
+    verifiedBy: [
+      'TOTP generates and verifies, and refuses a replayed step',
+      'TOTP tolerates one step of clock drift but not two',
+      'the value-moving edges require step-up authentication',
+      'failed logins lock the account after the threshold',
+      'a wrong password and an unknown email give the same response',
+      'password hashes verify and differ per salt',
+      'the password policy weights length and rejects contextual words',
+    ],
+  },
+  {
+    id: 'REQ-12', area: 'Web security',
+    requirement: 'CSRF protection, strict security headers, and rate limiting.',
+    source: 'Brief — OWASP ASVS / API Top 10; CSRF; CSP; rate limiting.',
+    enforcedBy: 'Double-submit CSRF token; CSP with a nonce and no inline script; per-identity rate limits.',
+    verifiedBy: [
+      'a state-changing request without the CSRF header is refused',
+      'a request with the WRONG CSRF token is refused',
+      'a GET does not require a CSRF token',
+      'security headers are strict',
+      'the login endpoint is rate limited',
+      'an oversized body is refused',
+      'a malformed JSON body is rejected cleanly',
+    ],
+  },
+  {
+    id: 'REQ-13', area: 'Logging',
+    requirement: 'Passwords, tokens, complete identification numbers, bank credentials, private keys and unmasked documents are never logged.',
+    source: 'Brief — "Never log: Passwords, Authentication tokens, Complete identification numbers, Full bank-account credentials, Private cryptographic keys, Unmasked sensitive documents."',
+    enforcedBy: 'A redaction layer over structured logging, asserted against real logging output.',
+    verifiedBy: [
+      'the redaction layer removes credentials and masks identifiers',
+      'no audit event in the database contains an unredacted secret',
+      'no integration event payload contains an unmasked account identifier',
+    ],
+  },
+  {
+    id: 'REQ-14', area: 'Compliance',
+    requirement: 'Every applicable rule is evaluated and recorded, whether or not it fires, and a decision can be reconstructed later.',
+    source: 'Brief — compliance rule library; reproducible decisions.',
+    enforcedBy: 'Self-contained evaluations storing the rule text, parameters, data used, an input hash and a ruleset hash.',
+    verifiedBy: [
+      'every required check from the specification is present',
+      'every rule states its subject scope',
+      'every rule carries the plain-English fields the Learning Center renders',
+      'rule keys and versions are unique',
+      'the high-risk jurisdiction list is empty and says why',
+      'no rule cites a regulation the filing has not supplied without saying so',
+      'the case the engine opened carries its reasoning, authored by the engine and not by a person',
+    ],
+  },
+  {
+    id: 'REQ-15', area: 'Compliance',
+    requirement: 'A transaction cannot bypass compliance review, and prohibited outcomes block rather than warn.',
+    source: 'Brief — compliance-first.',
+    enforcedBy: 'No transition edge skips compliance; prohibited-severity rules reject or suspend.',
+    verifiedBy: [
+      'no edge exists that would skip compliance',
+      'prohibited-severity rules reject or suspend, never merely review',
+      'the compliance engine also treats suspension as prohibited',
+      'a suspended organisation is refused at creation and the attempt is audited',
+      'a match against the simulated list suspends rather than silently allowing',
+      'a PEP hit routes to enhanced due diligence and requires a manager',
+      'a missing limit is treated as a block, never as unlimited',
+      'an amount over the per-transaction limit is rejected, not merely flagged',
+    ],
+  },
+  {
+    id: 'REQ-16', area: 'AI',
+    requirement: 'AI extraction proposes; it never confirms. A human must confirm extracted information.',
+    source: 'Brief — "Do not claim AI verification is conclusive... A human must confirm extracted information."',
+    enforcedBy: 'Extraction writes to a separate table with status proposed; the compliance engine never reads it; a recorded human confirmation is required.',
+    verifiedBy: [
+      'a proposal is recorded as proposed and says it has no effect',
+      'an unconfirmed proposal cannot influence a compliance outcome',
+      'confirming records the person, and the audit event says the proposal was advisory',
+      'a transaction without source-of-funds evidence cannot auto-clear',
+    ],
+  },
+  {
+    id: 'REQ-17', area: 'Settlement',
+    requirement: 'An unknown partner outcome does not retry automatically, and the same instruction cannot cause a second payment.',
+    source: 'Brief — settlement failure handling.',
+    enforcedBy: 'Deterministic idempotency keys; an unknown-outcome state with retry disabled, reachable only by non-user actors.',
+    verifiedBy: [
+      'a timeout produces an UNKNOWN outcome, a suspense posting and a critical exception',
+      'resubmitting the same idempotency key does not instruct a second payment',
+      'the unknown-outcome edge exists and is reachable only by non-users',
+      'a partner cannot take a compliance or approval edge',
+    ],
+  },
+  {
+    id: 'REQ-18', area: 'Settlement',
+    requirement: 'Settlement finality is never claimed, and a return does not erase the settlement it follows.',
+    source: 'Brief — do not overstate what settlement means.',
+    enforcedBy: 'A disclaimer carried by the state machine description; the returned-payment edge posts a new journal rather than a reversal.',
+    verifiedBy: [
+      'finality is never claimed anywhere in the machine',
+      'the state-machine view disclaims settlement finality',
+      'the returned-payment edge does NOT reverse the settlement journal',
+    ],
+  },
+  {
+    id: 'REQ-19', area: 'Reconciliation',
+    requirement: 'Differences open a break with an owner, and closure above the threshold requires a second person.',
+    source: 'Brief — reconciliation and exception handling.',
+    enforcedBy: 'Reconciliation opens exception cases; four-eyes approval refused for the investigator.',
+    verifiedBy: [
+      'a partner statement that disagrees with the ledger produces a break',
+      'closing a break above the threshold requires a second person',
+    ],
+  },
+  {
+    id: 'REQ-20', area: 'FX',
+    requirement: 'A rate is indicative until accepted, never described as locked without a contractual lock, and an expired quote is refused.',
+    source: 'Brief — forbidden FX language; "Locked until [time]" only where contractually locked.',
+    enforcedBy: 'Simulated quotes cannot carry a lock; expiry enforced at acceptance; the claims lint fails the build on prohibited language.',
+    verifiedBy: [
+      'a simulated quote can never be marked as contractually locked',
+      'an expired quote cannot be accepted',
+      'an FX spread is computed in basis points from reference and provider rates',
+    ],
+  },
+  {
+    id: 'REQ-21', area: 'Reporting',
+    requirement: 'Reports export in multiple formats, safely, with each export recorded.',
+    source: 'Brief — reporting and export.',
+    enforcedBy: 'CSV/XLSX/PDF writers with formula-injection neutralisation and precision preservation; exports recorded with a content hash and masking profile.',
+    verifiedBy: [
+      'a report exports as CSV, XLSX and PDF, and each export is recorded',
+      'CSV neutralises formula injection',
+      'CSV quotes correctly per RFC 4180',
+      'XLSX keeps very long numbers as text so precision is not lost',
+      'PDF paginates rather than truncating',
+      'the report catalogue is filtered by the caller\'s permissions',
+      'a customer can run a report of their own activity',
+    ],
+  },
+  {
+    id: 'REQ-22', area: 'Privacy',
+    requirement: 'Personal data is encrypted at field level and masked by default, and oversight views expose no personal names.',
+    source: 'Brief — data protection; masking.',
+    enforcedBy: 'AES-256-GCM field encryption; masking profiles derived from roles and applied server-side.',
+    verifiedBy: [
+      'field encryption round-trips and is authenticated',
+      'masking profiles are correct for each realm',
+      'the regulator overview exposes no personal names',
+      'off-platform notifications refuse to carry financial detail',
+      'no stored notification body violates the off-platform rule',
+    ],
+  },
+  {
+    id: 'REQ-23', area: 'Continuity',
+    requirement: 'A backup restores with its history, its ledger balance and its audit chain intact.',
+    source: 'Brief — disaster recovery.',
+    enforcedBy: 'A dedicated read-only backup role, because FORCE row-level security silently empties a dump taken as the owner.',
+    verifiedBy: [
+      'a logical backup restores with history, ledger balance and audit chain intact',
+    ],
+    gap: 'The test proves the mechanism. NO RESTORATION OF A REAL DEPLOYMENT HAS EVER BEEN PERFORMED. See R-14 and EKORAILS_GATE_DR_TESTED.',
+  },
+  {
+    id: 'REQ-24', area: 'Honesty',
+    requirement: 'No feature is reported as complete because its interface exists, and unfinished work is not concealed.',
+    source: 'Brief — "Never report a feature as complete merely because the interface exists." / "Do not conceal incomplete functionality."',
+    enforcedBy: 'Eight completion stages; the product map reports the highest stage genuinely reached; the build journal and risk register state what is unfinished.',
+    verifiedBy: [
+      'the product map reports honest completion stages',
+    ],
+  },
+  {
+    id: 'REQ-25', area: 'Honesty',
+    requirement: 'No claim is made that EKORails is not entitled to make.',
+    source: 'Brief — forbidden FX language; regulatory boundary.',
+    enforcedBy: 'A claims lint over every user-facing string in the repository, failing the build on prohibited language.',
+    verifiedBy: [],
+    gap: 'Verified by scripts/lint-claims.mjs in the build rather than by a test in the suites. The lint covers this repository only; it cannot police a slide deck, a website or a conversation. See R-15.',
+  },
+];
+
+function generateTraceability() {
+  const suites = ['unit', 'mandatory', 'api'];
+  const testNames = new Set();
+  for (const suite of suites) {
+    const source = readFileSync(join(ROOT, `services/api/test/${suite}.test.ts`), 'utf8');
+    for (const match of source.matchAll(/\btest\(\s*'((?:[^'\\]|\\.)*)'/g)) {
+      testNames.add(match[1].replace(/\\'/g, "'"));
+    }
+  }
+
+  // A requirement naming a test that does not exist is the failure mode of every
+  // traceability matrix. Fail rather than print it.
+  const missing = [];
+  for (const requirement of REQUIREMENTS) {
+    for (const name of requirement.verifiedBy) {
+      if (!testNames.has(name)) missing.push(`${requirement.id} names a test that does not exist: "${name}"`);
+    }
+  }
+  if (missing.length > 0) {
+    console.error('Traceability matrix is out of date:\n');
+    for (const problem of missing) console.error(`  - ${problem}`);
+    console.error('\nEither the test was renamed, or the requirement is not actually covered.');
+    process.exit(1);
+  }
+
+  const covered = REQUIREMENTS.filter((r) => r.verifiedBy.length > 0);
+  const gaps = REQUIREMENTS.filter((r) => r.gap);
+  const totalAssertions = REQUIREMENTS.reduce((sum, r) => sum + r.verifiedBy.length, 0);
+
+  const lines = [];
+  lines.push('# 10 — Requirements traceability');
+  lines.push('');
+  lines.push(`${REQUIREMENTS.length} requirements. ${covered.length} carry at least one automated test.`);
+  lines.push(`${totalAssertions} named tests across ${testNames.size} in the suites.`);
+  lines.push('');
+  lines.push('## Why this document checks itself');
+  lines.push('');
+  lines.push('The failure mode of every traceability matrix is a row asserting coverage by a test that');
+  lines.push('was renamed away two quarters ago. So each test named below is matched against the actual');
+  lines.push('`test(...)` names in the suites when this document is generated, and a name that does not');
+  lines.push('resolve **fails the build**.');
+  lines.push('');
+  lines.push('It does not prove the tests are good. It proves they exist and are named here honestly.');
+  lines.push('');
+  lines.push(`## Requirements with a gap (${gaps.length})`);
+  lines.push('');
+  lines.push('Listed first, because a matrix whose gaps are at the bottom is a matrix nobody reads to');
+  lines.push('the bottom of.');
+  lines.push('');
+  for (const requirement of gaps) {
+    lines.push(`- **${requirement.id}** — ${esc(requirement.requirement)}`);
+    lines.push(`  - ${esc(requirement.gap)}`);
+  }
+  lines.push('');
+  lines.push('## Matrix');
+  lines.push('');
+  lines.push('| Ref | Area | Requirement | Tests |');
+  lines.push('|---|---|---|---|');
+  for (const requirement of REQUIREMENTS) {
+    lines.push(
+      `| \`${requirement.id}\` | ${requirement.area} | ${esc(requirement.requirement)} | ` +
+      `${requirement.verifiedBy.length > 0 ? String(requirement.verifiedBy.length) : '**none**'} |`,
+    );
+  }
+  lines.push('');
+  lines.push('## Detail');
+  lines.push('');
+  for (const requirement of REQUIREMENTS) {
+    lines.push(`### ${requirement.id} — ${requirement.requirement}`);
+    lines.push('');
+    lines.push(`**Area:** ${requirement.area}`);
+    lines.push('');
+    lines.push(`**Source:** ${requirement.source}`);
+    lines.push('');
+    lines.push(`**Enforced by:** ${requirement.enforcedBy}`);
+    lines.push('');
+    if (requirement.verifiedBy.length > 0) {
+      lines.push(`**Verified by ${requirement.verifiedBy.length} test(s):**`);
+      lines.push('');
+      for (const name of requirement.verifiedBy) lines.push(`- \`${name}\``);
+      lines.push('');
+    }
+    if (requirement.gap) {
+      lines.push(`**Gap:** ${requirement.gap}`);
+      lines.push('');
+    }
+  }
+
+  emit('10-requirements-traceability.md', lines.join('\n'));
+}
+
+// ---------------------------------------------------------------------------
 // 11 — Risk register
 // ---------------------------------------------------------------------------
 
@@ -782,6 +1205,7 @@ generateApiReference();
 generateStateMachine();
 generateRoleMatrix();
 generateComplianceMatrix();
+generateTraceability();
 generateRiskRegister();
 generateFounderDecisions();
 generateClaimsLint();

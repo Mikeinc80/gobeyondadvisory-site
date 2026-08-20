@@ -9,7 +9,11 @@
 import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Server } from 'node:http';
-import { resetDatabase, connect, buildFixture, SYSTEM, type TestDb, type Fixture } from './helpers.js';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import {
+  resetDatabase, connect, buildFixture, repoRoot, SYSTEM, type TestDb, type Fixture,
+} from './helpers.js';
 
 import { createHttpServer } from '../src/http/router.js';
 import { buildRouter } from '../src/http/routes.js';
@@ -869,5 +873,139 @@ describe('The customer journey, driven entirely over HTTP', () => {
     const data = report.json['data'] as Record<string, unknown>;
     assert.ok(Array.isArray(data['columns']), 'a report must describe its columns');
     assert.ok(Array.isArray(data['rows']), 'a report must return rows');
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('AI-assisted extraction proposes; it never confirms', () => {
+  /**
+   * The brief is explicit: extraction may propose, and "a human must confirm extracted
+   * information". The interesting question is not whether a confirmation endpoint exists —
+   * it is whether an UNCONFIRMED proposal can influence anything.
+   *
+   * Three properties are asserted here, and the third is the one that matters:
+   *   1. A proposal is recorded with status 'proposed' and says so in the response.
+   *   2. Confirmation records the confirming person, not the extractor.
+   *   3. The compliance engine does not read extraction output at all — so a proposal
+   *      cannot change a risk outcome whether it is confirmed or not.
+   */
+
+  async function uploadDocument(client: Client) {
+    return client.post('/api/documents', {
+      document_type: 'invoice',
+      filename: `extract-${Date.now()}.pdf`,
+      mime_type: 'application/pdf',
+      content_base64: Buffer.from('%PDF-1.4\nfictional test invoice\n%%EOF\n', 'latin1').toString('base64'),
+    });
+  }
+
+  test('a proposal is recorded as proposed and says it has no effect', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const document = await uploadDocument(client);
+    assert.equal(document.status, 201, `upload failed: ${JSON.stringify(document.json)}`);
+    const documentId = (document.json['data'] as Record<string, string>)['documentId']
+      ?? (document.json['data'] as Record<string, string>)['document_id']
+      ?? (document.json['data'] as Record<string, string>)['id'];
+
+    const proposal = await client.post(`/api/documents/${documentId}/extraction`, {
+      proposed_fields: { invoice_number: 'INV-EXTRACT-001', total: '1250000.00' },
+      field_confidence: { invoice_number: 0.94, total: 0.71 },
+    });
+    assert.equal(proposal.status, 201, `proposal failed: ${JSON.stringify(proposal.json)}`);
+
+    const data = proposal.json['data'] as Record<string, unknown>;
+    assert.equal(data['status'], 'proposed', 'an extraction must be recorded as a proposal');
+    assert.match(
+      String(data['notice']), /not used by the compliance engine/,
+      'the response must state that the proposal has no effect until a person confirms it',
+    );
+
+    const stored = await db.asOwner(SYSTEM, async (q) => {
+      const row = await q.query<{ status: string; confirmed_by: string | null }>(
+        'SELECT status, confirmed_by FROM document_extraction WHERE id = $1', [data['extractionId']],
+      );
+      return row.rows[0]!;
+    });
+    assert.equal(stored.status, 'proposed');
+    assert.equal(stored.confirmed_by, null, 'an unconfirmed proposal has nobody standing behind it');
+  });
+
+  test('an unconfirmed proposal cannot influence a compliance outcome', async () => {
+    // The strong form of the requirement. A proposal is written claiming a source of funds
+    // that would satisfy the documentation rule, and the transaction is then evaluated. If
+    // the outcome changed, the engine would be reading advisory data — which is exactly what
+    // must never happen.
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const document = await uploadDocument(client);
+    const documentId = (document.json['data'] as Record<string, string>)['documentId']
+      ?? (document.json['data'] as Record<string, string>)['id'];
+
+    await client.post(`/api/documents/${documentId}/extraction`, {
+      proposed_fields: {
+        document_type: 'source_of_funds',
+        source_of_funds: 'Confirmed export receipts, extracted with high confidence.',
+      },
+      field_confidence: { source_of_funds: 0.99 },
+    });
+
+    // The compliance engine must not read document_extraction at all. Assert it on the
+    // source, because a behavioural test could pass by coincidence.
+    const engine = readFileSync(
+      join(repoRoot(), 'services/api/src/modules/compliance/engine.ts'), 'utf8',
+    );
+    const rules = readFileSync(
+      join(repoRoot(), 'services/api/src/modules/compliance/rules.ts'), 'utf8',
+    );
+    assert.ok(
+      !engine.includes('document_extraction') && !rules.includes('document_extraction'),
+      'the compliance engine must never read AI-proposed fields, confirmed or otherwise',
+    );
+    assert.ok(
+      !engine.includes('proposed_fields') && !rules.includes('proposed_fields'),
+      'the compliance engine must never read proposed field values',
+    );
+  });
+
+  test('confirming records the person, and the audit event says the proposal was advisory', async () => {
+    const client = await signIn('initiator.a@testalpha.invalid');
+    const document = await uploadDocument(client);
+    const documentId = (document.json['data'] as Record<string, string>)['documentId']
+      ?? (document.json['data'] as Record<string, string>)['id'];
+
+    const proposal = await client.post(`/api/documents/${documentId}/extraction`, {
+      proposed_fields: { invoice_number: 'INV-EXTRACT-002' },
+      field_confidence: { invoice_number: 0.62 },
+    });
+    const extractionId = (proposal.json['data'] as Record<string, string>)['extractionId']!;
+
+    const confirmed = await client.post(`/api/extractions/${extractionId}/confirm`, {
+      confirmed_fields: { invoice_number: 'INV-EXTRACT-002-CORRECTED' },
+      corrected: true,
+    });
+    assert.equal(confirmed.status, 200, `confirmation failed: ${JSON.stringify(confirmed.json)}`);
+
+    const stored = await db.asOwner(SYSTEM, async (q) => {
+      const row = await q.query<{ status: string; confirmed_by: string | null }>(
+        'SELECT status, confirmed_by FROM document_extraction WHERE id = $1', [extractionId],
+      );
+      return row.rows[0]!;
+    });
+    assert.equal(stored.status, 'corrected', 'a corrected confirmation is distinguishable from a plain one');
+    assert.ok(stored.confirmed_by, 'a confirmation must record WHO confirmed it');
+
+    const audit = await db.asOwner(SYSTEM, async (q) => {
+      const row = await q.query<{ metadata: Record<string, unknown>; actor_user_id: string | null }>(
+        `SELECT metadata, actor_user_id FROM audit_event
+          WHERE action = 'document.extraction.confirm' AND entity_id = $1`,
+        [extractionId],
+      );
+      return row.rows[0]!;
+    });
+    assert.ok(audit, 'confirming must write an audit event');
+    assert.ok(audit.actor_user_id, 'the audit event names the person, not the extractor');
+    assert.match(
+      String(audit.metadata['note']), /advisory only/,
+      'the record must say the proposal was advisory',
+    );
   });
 });
