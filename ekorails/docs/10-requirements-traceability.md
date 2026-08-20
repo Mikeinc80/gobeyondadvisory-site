@@ -9,7 +9,7 @@
 # 10 — Requirements traceability
 
 25 requirements. 24 carry at least one automated test.
-119 named tests across 180 in the suites.
+119 named tests across 181 in the suites.
 
 ## Why this document checks itself
 

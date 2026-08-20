@@ -1938,7 +1938,8 @@ export const BUILD_JOURNAL = [
       'scripts/smoke-web.mjs signs in as each of the nine roles with a genuine time-based code and ' +
       'opens every item that role\'s own navigation offers — 126 page loads — then runs a write ' +
       'journey through initiate, submit and authorise. It asserts the banner, the fictional-data ' +
-      'label, that content rendered, that nothing shows as "undefined", and that the browser ' +
+      'label, that content rendered, that no unresolved placeholder value reached the screen, ' +
+      'and that the browser ' +
       'console is silent. scripts/check-web.mjs does statically what a bundler would: unresolved ' +
       'imports, routes naming views that do not exist, menu items pointing at absent routes, and ' +
       'any use of innerHTML, eval, or Number() on a monetary field.',

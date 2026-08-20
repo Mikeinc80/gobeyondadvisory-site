@@ -7,7 +7,10 @@
  * would be invisible until it had been quietly wrong across thousands of transactions.
  */
 
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { test, describe } from 'node:test';
+import { repoRoot } from './helpers.js';
 import assert from 'node:assert/strict';
 
 import {
@@ -862,6 +865,59 @@ describe('Who a request is attributed to', () => {
     assert.equal(
       resolveClientAddress('203.0.113.5', '10.0.0.4', proxies), '203.0.113.5',
       'a caller naming the proxy in its own header is still an untrusted caller',
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+describe('Modules that are also programs', () => {
+  /**
+   * Importing a module to get one helper out of it should not run that module's program.
+   *
+   * It did, once. `totp.ts` is a command-line tool and it called `main()` at module scope.
+   * The seeder imported one function from it — the string describing how to run it — and
+   * the tool executed mid-seed, printed its usage and exited the process. The seed silently
+   * did nothing.
+   *
+   * The trap is not specific to that file. Any module that runs its entry point on import
+   * is a hazard for whoever imports it next, whatever they wanted from it. This test asserts
+   * the guard is present on every file that has an entry point AND exports something.
+   */
+
+  const ENTRY_POINTS = ['seed/totp.ts', 'seed/run-seed.ts', 'main.ts'];
+
+  for (const file of ENTRY_POINTS) {
+    test(`${file} does not run its program merely because something imported it`, () => {
+      const source = readFileSync(join(repoRoot(), 'services/api/src', file), 'utf8');
+
+      const exportsSomething = /^export /m.test(source);
+      if (!exportsSomething) return;   // nothing can import it, so nothing can be trapped
+
+      assert.match(
+        source, /import\.meta\.url/,
+        `${file} exports something AND runs a program. It must compare import.meta.url ` +
+        'against process.argv[1] so the program runs only when it IS the program.',
+      );
+      assert.ok(
+        /if \(is[A-Za-z]*Entry[A-Za-z]*\)/.test(source) || /import\.meta\.url ===/.test(source),
+        `${file} must guard its entry point behind that comparison, not merely mention it.`,
+      );
+    });
+  }
+
+  test('the command the seeder prints is the path the tool is actually at', async () => {
+    // Both places that printed this said `node dist/seed/totp.js`. The built file is at
+    // `dist/src/seed/totp.js`, so a founder following the seeder's own output got
+    // MODULE_NOT_FOUND. It is derived from the file's own location now; this asserts that
+    // the derivation resolves to a file that exists.
+    const { totpCommand } = await import('../src/seed/totp.js');
+    const printed = totpCommand();
+    assert.match(printed, /^node /);
+
+    const path = printed.replace(/^node /, '');
+    assert.ok(
+      existsSync(path) || existsSync(join(process.cwd(), path)),
+      `the seeder prints "${printed}", and no file is there`,
     );
   });
 });

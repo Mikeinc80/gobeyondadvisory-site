@@ -43,7 +43,7 @@ convenience, not a deployment topology — see `infra/terraform/README.md`.
 ## Verifying it
 
 ```bash
-npm test                              # 181 tests against a real PostgreSQL
+npm test                              # 185 tests against a real PostgreSQL
 node scripts/lint-claims.mjs          # language this entity may not use
 node scripts/check-web.mjs            # the client's links, which no bundler checks here
 node scripts/check-env.mjs            # .env.example matches what the code reads

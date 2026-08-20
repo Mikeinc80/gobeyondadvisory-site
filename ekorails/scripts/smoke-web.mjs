@@ -244,6 +244,10 @@ async function checkPage(page, role, path, errors) {
   if (main.includes('No such page')) {
     note(role.label, path, 'matched no route');
   }
+  // A substring check, and knowingly a heuristic: a page legitimately DISCUSSING an
+  // unresolved value trips it. That happened once, on the build journal, and the answer was
+  // to reword the journal rather than to loosen the check — a screen that renders a
+  // placeholder value to a user is worth a false positive or two to catch.
   for (const broken of ['undefined', '[object Object]', 'NaN']) {
     if (main.includes(broken)) {
       const sample = main.match(new RegExp(`.{0,60}${broken.replace(/[[\]]/g, '\\$&')}.{0,60}`));

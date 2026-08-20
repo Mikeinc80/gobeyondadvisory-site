@@ -24,6 +24,7 @@ import {
 } from './demo.js';
 import { runDailyReconciliation } from '../modules/recon/reconcile.js';
 import { deliverQueued } from '../modules/notification/notify.js';
+import { totpCommand } from './totp.js';
 import { verifyLedgerIntegrity } from '../modules/ledger/ledger.js';
 import { verifyAuditChain } from '../audit/audit.js';
 
@@ -182,7 +183,7 @@ async function main(): Promise<void> {
   process.stdout.write(`\n  Passphrase: ${DEMO_PASSWORD}\n`);
   process.stdout.write(
     '\n  Every account has MFA enrolled. Retrieve a current code with:\n' +
-    '    node dist/seed/totp.js <email>\n',
+    `    ${totpCommand()} <email>\n`,
   );
   process.stdout.write(`\n${'='.repeat(78)}\n\n`);
 }
