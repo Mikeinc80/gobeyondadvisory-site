@@ -107,6 +107,27 @@ export async function evaluate(
   const results: RuleResultRecord[] = [];
   for (const { row, def } of pairs) {
     let outcome;
+
+    // A rule that is not meaningful for this subject is still RECORDED as evaluated,
+    // with the reason stated. Silently skipping it would leave a gap in the evidence;
+    // firing it anyway would produce nonsense — a KYB assessment cannot sensibly fail a
+    // "customer is not approved" check on a customer who is, by definition, not yet approved.
+    if (!def.appliesTo.includes(subject.type)) {
+      results.push({
+        ruleKey: row.rule_key,
+        ruleVersion: row.version,
+        ruleId: row.id,
+        triggered: false,
+        severity: null,
+        action: null,
+        message:
+          `Not applicable to a ${subject.type} assessment. This rule applies to: ` +
+          `${def.appliesTo.join(', ')}.`,
+        dataUsed: { not_applicable: true, subject_type: subject.type, applies_to: def.appliesTo },
+      });
+      continue;
+    }
+
     try {
       outcome = def.evaluate(input, row.parameters ?? {});
     } catch (error) {
@@ -173,7 +194,7 @@ export async function evaluate(
     ],
   );
 
-  for (const { row, def } of pairs) {
+  for (const { row } of pairs) {
     const result = results.find((r) => r.ruleKey === row.rule_key)!;
     await db.query(
       `INSERT INTO rule_evaluation (

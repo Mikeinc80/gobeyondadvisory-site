@@ -57,6 +57,33 @@ export const SYSTEM_CONTEXT: SecurityContext = { scope: 'system' };
 export const ANONYMOUS_CONTEXT: SecurityContext = { scope: 'none' };
 
 let pool: pg.Pool | null = null;
+let deploymentCredentials = false;
+
+/**
+ * Switches the pool to the schema-owner role.
+ *
+ * Used ONLY by migrations and by the seeder, which are deployment operations rather than
+ * application operations. Seeding writes reference data (roles, permissions, rule
+ * definitions) that the running application must never be able to write — the fact that
+ * the seeder needs elevated credentials is the least-privilege model working, not a
+ * limitation to route around.
+ *
+ * Must be called before the first getPool(). Refuses outside DEMO, SANDBOX and TEST.
+ */
+export function useDeploymentCredentials(): void {
+  const mode = process.env['EKORAILS_ENV_MODE'] ?? 'DEMO';
+  if (!['DEMO', 'SANDBOX', 'TEST'].includes(mode)) {
+    throw new Error(
+      `REFUSED: deployment credentials cannot be used with EKORAILS_ENV_MODE=${mode}. ` +
+      'In a controlled pilot or production, migrations run as a separate operational step with ' +
+      'credentials the application process never holds.',
+    );
+  }
+  if (pool !== null) {
+    throw new Error('useDeploymentCredentials() must be called before the pool is opened.');
+  }
+  deploymentCredentials = true;
+}
 
 export function getPool(): pg.Pool {
   if (pool) return pool;
@@ -64,14 +91,18 @@ export function getPool(): pg.Pool {
     host: process.env['EKORAILS_DB_HOST'] ?? '127.0.0.1',
     port: Number(process.env['EKORAILS_DB_PORT'] ?? 5432),
     database: process.env['EKORAILS_DB_NAME'] ?? 'ekorails',
-    user: process.env['EKORAILS_DB_USER'] ?? 'ekorails_app',
-    password: process.env['EKORAILS_DB_PASSWORD'] ?? 'ekorails_app_dev',
+    user: deploymentCredentials
+      ? (process.env['EKORAILS_DB_OWNER'] ?? 'ekorails_owner')
+      : (process.env['EKORAILS_DB_USER'] ?? 'ekorails_app'),
+    password: deploymentCredentials
+      ? (process.env['EKORAILS_DB_OWNER_PASSWORD'] ?? 'ekorails_owner_dev')
+      : (process.env['EKORAILS_DB_PASSWORD'] ?? 'ekorails_app_dev'),
     max: Number(process.env['EKORAILS_DB_POOL_MAX'] ?? 10),
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 5_000,
     // Fail fast rather than hanging a settlement operation behind a stuck query.
     statement_timeout: Number(process.env['EKORAILS_DB_STATEMENT_TIMEOUT_MS'] ?? 15_000),
-    application_name: 'ekorails-api',
+    application_name: deploymentCredentials ? 'ekorails-deploy' : 'ekorails-api',
   });
   pool.on('error', (err) => {
     logger.error('Idle database client error', { error: err.message });

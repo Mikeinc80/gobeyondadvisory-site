@@ -145,11 +145,23 @@ export interface RuleOutcome {
   action?: RuleAction;
 }
 
+export type RuleSubject = 'transaction' | 'organization' | 'beneficiary';
+
 export interface RuleDefinition {
   key: string;
   version: number;
   name: string;
   category: RuleCategory;
+  /**
+   * Which subjects this rule is meaningful for.
+   *
+   * A rule evaluated against a subject it does not apply to is recorded as evaluated and
+   * not triggered, with the reason stated — rather than being silently skipped (which
+   * would leave a gap in the record) or fired inappropriately (which is how a KYB
+   * assessment ends up failing a "customer is not approved" check on a customer who is,
+   * by definition, not yet approved).
+   */
+  appliesTo: readonly RuleSubject[];
   severity: RiskSeverity;
   onTrigger: RuleAction;
   parameters: Record<string, unknown>;
@@ -190,6 +202,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Customer is not an approved business',
     category: 'customer_status',
+    appliesTo: ['transaction'],
     severity: 'prohibited',
     onTrigger: 'reject',
     parameters: { approvedStatuses: ['approved'] },
@@ -226,6 +239,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Customer organisation is suspended',
     category: 'customer_status',
+    appliesTo: ['transaction', 'organization'],
     severity: 'prohibited',
     onTrigger: 'reject',
     parameters: {},
@@ -251,6 +265,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Beneficiary has not been approved',
     category: 'beneficiary_status',
+    appliesTo: ['transaction', 'beneficiary'],
     severity: 'high',
     onTrigger: 'reject',
     parameters: {},
@@ -287,6 +302,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Initiating user is not authorised to transact',
     category: 'authorisation',
+    appliesTo: ['transaction'],
     severity: 'high',
     onTrigger: 'reject',
     parameters: {},
@@ -320,6 +336,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'No approved transaction limit is configured for this corridor',
     category: 'limits',
+    appliesTo: ['transaction'],
     severity: 'high',
     onTrigger: 'manual_review',
     parameters: {},
@@ -360,6 +377,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Transaction exceeds the per-transaction limit',
     category: 'limits',
+    appliesTo: ['transaction'],
     severity: 'prohibited',
     onTrigger: 'reject',
     parameters: {},
@@ -411,6 +429,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Daily aggregate limit would be exceeded',
     category: 'velocity',
+    appliesTo: ['transaction'],
     severity: 'high',
     onTrigger: 'reject',
     parameters: {},
@@ -450,6 +469,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Monthly aggregate limit would be exceeded',
     category: 'velocity',
+    appliesTo: ['transaction'],
     severity: 'high',
     onTrigger: 'reject',
     parameters: {},
@@ -485,6 +505,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Possible structuring',
     category: 'behavioural',
+    appliesTo: ['transaction'],
     severity: 'high',
     onTrigger: 'escalate',
     parameters: { windowHours: 24, minimumCount: 3, proximityFractionOfLimit: 0.9 },
@@ -539,6 +560,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Corridor is an unconfirmed placeholder',
     category: 'corridor',
+    appliesTo: ['transaction', 'organization'],
     severity: 'medium',
     onTrigger: 'manual_review',
     parameters: {},
@@ -571,6 +593,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Corridor is disabled',
     category: 'corridor',
+    appliesTo: ['transaction'],
     severity: 'prohibited',
     onTrigger: 'reject',
     parameters: {},
@@ -594,6 +617,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Currency pair is outside the corridor definition',
     category: 'currency',
+    appliesTo: ['transaction'],
     severity: 'prohibited',
     onTrigger: 'reject',
     parameters: {},
@@ -632,6 +656,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Sanctions screening produced a match',
     category: 'sanctions',
+    appliesTo: ['transaction', 'organization', 'beneficiary'],
     severity: 'prohibited',
     onTrigger: 'suspend',
     parameters: { confirmedMatchThreshold: 95, potentialMatchThreshold: 80 },
@@ -678,6 +703,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Politically exposed person identified',
     category: 'pep',
+    appliesTo: ['transaction', 'organization', 'beneficiary'],
     severity: 'high',
     onTrigger: 'enhanced_due_diligence',
     parameters: {},
@@ -713,6 +739,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Adverse media flag',
     category: 'adverse_media',
+    appliesTo: ['transaction', 'organization', 'beneficiary'],
     severity: 'medium',
     onTrigger: 'manual_review',
     parameters: {},
@@ -743,6 +770,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'High-risk jurisdiction involved',
     category: 'jurisdiction',
+    appliesTo: ['transaction', 'organization', 'beneficiary'],
     severity: 'high',
     onTrigger: 'enhanced_due_diligence',
     parameters: { jurisdictions: DEFAULT_HIGH_RISK_JURISDICTIONS },
@@ -786,6 +814,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'High-risk industry',
     category: 'industry',
+    appliesTo: ['transaction', 'organization'],
     severity: 'medium',
     onTrigger: 'enhanced_due_diligence',
     parameters: { industries: DEFAULT_HIGH_RISK_INDUSTRIES },
@@ -820,6 +849,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Amount inconsistent with the declared business profile',
     category: 'behavioural',
+    appliesTo: ['transaction'],
     severity: 'medium',
     onTrigger: 'manual_review',
     parameters: { multipleOfDeclaredSize: 3 },
@@ -867,6 +897,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Unusual amount relative to this customer\'s own history',
     category: 'behavioural',
+    appliesTo: ['transaction'],
     severity: 'low',
     onTrigger: 'manual_review',
     parameters: { multipleOfRecentMaximum: 5, minimumHistoryCount: 3 },
@@ -916,6 +947,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Source-of-funds evidence is incomplete',
     category: 'documentation',
+    appliesTo: ['transaction'],
     severity: 'high',
     onTrigger: 'manual_review',
     parameters: { minimumNarrativeLength: 20 },
@@ -956,6 +988,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Trade documentation is incomplete',
     category: 'documentation',
+    appliesTo: ['transaction'],
     severity: 'medium',
     onTrigger: 'manual_review',
     parameters: { requiredRoles: ['primary_invoice'] },
@@ -989,6 +1022,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Duplicate invoice',
     category: 'documentation',
+    appliesTo: ['transaction'],
     severity: 'high',
     onTrigger: 'manual_review',
     parameters: {},
@@ -1032,6 +1066,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Bank details reused across organisations',
     category: 'fraud',
+    appliesTo: ['transaction', 'beneficiary'],
     severity: 'high',
     onTrigger: 'escalate',
     parameters: { escalateAtOrgCount: 1 },
@@ -1068,6 +1103,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Beneficiary added and used unusually quickly',
     category: 'fraud',
+    appliesTo: ['transaction', 'beneficiary'],
     severity: 'medium',
     onTrigger: 'manual_review',
     parameters: { minimumAgeHours: 24, recentAdditionsThreshold: 3 },
@@ -1110,6 +1146,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Related-party transaction',
     category: 'related_party',
+    appliesTo: ['transaction', 'beneficiary'],
     severity: 'medium',
     onTrigger: 'manual_review',
     parameters: {},
@@ -1151,6 +1188,7 @@ export const RULES: readonly RuleDefinition[] = [
     version: 1,
     name: 'Suspicious device or network activity',
     category: 'device',
+    appliesTo: ['transaction'],
     severity: 'medium',
     onTrigger: 'manual_review',
     parameters: { distinctIpThreshold: 5, failedLoginThreshold: 3 },

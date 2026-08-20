@@ -169,7 +169,9 @@ CREATE TABLE simulation_directive (
   created_by       UUID REFERENCES app_user(id),
   created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
   revoked_at       TIMESTAMPTZ,
-  CONSTRAINT directive_uses_positive CHECK (remaining_uses IS NULL OR remaining_uses > 0)
+  -- 0 means exhausted, which is a legitimate terminal value once the directive has been
+  -- consumed. NULL means the directive applies until it is explicitly revoked.
+  CONSTRAINT directive_uses_not_negative CHECK (remaining_uses IS NULL OR remaining_uses >= 0)
 );
 
 CREATE INDEX simulation_directive_lookup_idx
