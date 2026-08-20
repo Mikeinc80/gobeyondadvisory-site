@@ -41,7 +41,7 @@ const { RULES } = await import(join(DIST, 'modules/compliance/rules.js'));
 const { REPORT_DEFINITIONS } = await import(join(DIST, 'modules/reporting/reports.js'));
 const { buildRouter } = await import(join(DIST, 'http/routes.js'));
 const { RELEASE_GATES } = await import(join(DIST, 'core/env.js'));
-const { FOUNDER_DECISIONS, RISK_REGISTER, BUILD_JOURNAL } = await import(join(DIST, 'seed/learning.js'));
+const { FOUNDER_DECISIONS, RISK_REGISTER, BUILD_JOURNAL, MODULES } = await import(join(DIST, 'seed/learning.js'));
 
 const written = [];
 const differing = [];
@@ -1034,6 +1034,213 @@ function describeMovement(risk) {
 }
 
 // ---------------------------------------------------------------------------
+// 25 — Pilot readiness
+// ---------------------------------------------------------------------------
+
+const STAGE_ORDER = [
+  'designed', 'frontend_built', 'backend_built', 'integrated',
+  'tested', 'security_reviewed', 'founder_accepted', 'pilot_ready',
+];
+
+/**
+ * The verdict is COMPUTED, not asserted.
+ *
+ * A readiness report whose conclusion is typed in by whoever wrote it is a report that
+ * says whatever that person hoped. This one derives from the actual state of the release
+ * gates, the blocking risks, the open decisions and the honest build stage of each module,
+ * and it cannot say "ready" while any of those says otherwise.
+ */
+function computeVerdict() {
+  const gatesUnmet = RELEASE_GATES.filter((g) => process.env[g.key] !== 'true');
+  const blockingRisks = RISK_REGISTER.filter((r) => r.blocks);
+  const openDecisions = FOUNDER_DECISIONS.length;
+  const notPilotReady = MODULES.filter((m) => m.stage !== 'pilot_ready');
+
+  const dependencies = [];
+  if (gatesUnmet.some((g) => /REGULATORY_APPROVAL|LICENCE_VERIFIED/.test(g.key))) {
+    dependencies.push('REGULATORY DEPENDENCY');
+  }
+  if (gatesUnmet.some((g) => /PARTNER_CONTRACTS/.test(g.key))) {
+    dependencies.push('PARTNER DEPENDENCY');
+  }
+  if (gatesUnmet.some((g) => /SECURITY_REVIEW|PRIVACY_REVIEW/.test(g.key))) {
+    dependencies.push('SECURITY DEPENDENCY');
+  }
+  if (openDecisions > 0) dependencies.push('FOUNDER DECISION REQUIRED');
+
+  const verdict = (gatesUnmet.length === 0 && blockingRisks.length === 0 && notPilotReady.length === 0)
+    ? 'READY'
+    : (gatesUnmet.length > 0 || blockingRisks.length > 0)
+      ? 'NOT READY'
+      : 'READY WITH CONDITIONS';
+
+  return { verdict, dependencies, gatesUnmet, blockingRisks, openDecisions, notPilotReady };
+}
+
+function generatePilotReadiness() {
+  const v = computeVerdict();
+  const stageCounts = new Map();
+  for (const module of MODULES) {
+    stageCounts.set(module.stage, (stageCounts.get(module.stage) ?? 0) + 1);
+  }
+
+  const lines = [];
+  lines.push('# 25 — Pilot readiness report');
+  lines.push('');
+  lines.push(`## Verdict: **${v.verdict}**`);
+  lines.push('');
+  lines.push(v.dependencies.map((d) => `**${d}**`).join(' · '));
+  lines.push('');
+  lines.push('This verdict is computed when the document is generated, from the actual state of the');
+  lines.push('release gates, the blocking risks, the open founder decisions and the honest build stage');
+  lines.push('of every module. It is not a sentence somebody typed. It cannot read "ready" while any of');
+  lines.push('those says otherwise, which is the only way a readiness report stays worth reading.');
+  lines.push('');
+  lines.push('| | |');
+  lines.push('|---|---|');
+  lines.push(`| Release gates met | ${RELEASE_GATES.length - v.gatesUnmet.length} of ${RELEASE_GATES.length} |`);
+  lines.push(`| Risks that block a pilot | ${v.blockingRisks.length} of ${RISK_REGISTER.length} |`);
+  lines.push(`| Founder decisions open | ${v.openDecisions} of ${FOUNDER_DECISIONS.length} |`);
+  lines.push(`| Modules at pilot-ready | ${MODULES.length - v.notPilotReady.length} of ${MODULES.length} |`);
+  lines.push('');
+  lines.push('## What the verdict is not saying');
+  lines.push('');
+  lines.push('It is not saying the software does not work. It does: a payment runs end to end, the');
+  lines.push('ledger balances, every failure path can be produced deliberately and is handled, and');
+  lines.push('every screen renders for every role in a real browser.');
+  lines.push('');
+  lines.push('It is saying that a pilot is a regulated activity with real customers and real money, and');
+  lines.push('the things standing between this build and one are mostly not engineering.');
+  lines.push('');
+  lines.push('## Release gates');
+  lines.push('');
+  lines.push('Each requires named evidence. None is settable from any interface; they are process-level');
+  lines.push('configuration read once at start-up. Setting one without the evidence behind it is not a');
+  lines.push('configuration change — it is a false statement about the state of the business.');
+  lines.push('');
+  lines.push('| Gate | Evidence required | Met |');
+  lines.push('|---|---|---|');
+  for (const gate of RELEASE_GATES) {
+    const met = process.env[gate.key] === 'true';
+    lines.push(`| \`${gate.key}\` | ${esc(gate.evidence)} | ${met ? 'yes' : '**no**'} |`);
+  }
+  lines.push('');
+  lines.push('## What blocks a pilot');
+  lines.push('');
+  lines.push(`### Risks (${v.blockingRisks.length})`);
+  lines.push('');
+  lines.push('| Ref | Risk | What would clear it |');
+  lines.push('|---|---|---|');
+  for (const risk of v.blockingRisks) {
+    lines.push(`| \`${risk.ref}\` | ${esc(risk.title)} | ${esc(risk.action)} |`);
+  }
+  lines.push('');
+  lines.push(`### Decisions (${v.openDecisions})`);
+  lines.push('');
+  lines.push('| Ref | Decision | Blocks |');
+  lines.push('|---|---|---|');
+  for (const decision of FOUNDER_DECISIONS) {
+    lines.push(`| \`${decision.ref}\` | ${esc(decision.title)} | ${esc(decision.blocks)} |`);
+  }
+  lines.push('');
+  lines.push('## Build status, module by module');
+  lines.push('');
+  lines.push('The stage shown is the highest each module has GENUINELY reached. An interface existing');
+  lines.push('is not a stage. `security_reviewed` requires an independent review, which has not taken');
+  lines.push('place, so nothing here is above `tested`.');
+  lines.push('');
+  lines.push('| Stage | Modules |');
+  lines.push('|---|---|');
+  for (const stage of STAGE_ORDER) {
+    const count = stageCounts.get(stage) ?? 0;
+    if (count > 0) lines.push(`| \`${stage}\` | ${count} |`);
+  }
+  lines.push('');
+  lines.push('| Module | Stage | What is simulated | Known limitations |');
+  lines.push('|---|---|---|---|');
+  for (const module of MODULES) {
+    lines.push(
+      `| ${esc(module.title)} | \`${module.stage}\` | ${esc(module.simulatedParts)} | ` +
+      `${esc(module.knownLimitations)} |`,
+    );
+  }
+  lines.push('');
+  lines.push('## What works, stated as plainly as what does not');
+  lines.push('');
+  lines.push('- A payment runs from creation to completion with a balanced ledger, without anybody');
+  lines.push('  touching the database.');
+  lines.push('- Eleven partner failure scenarios can be produced deliberately, and each is handled:');
+  lines.push('  a timeout stops rather than retries, a shortfall goes to suspense with an owner, a');
+  lines.push('  return is a new event rather than a reversal.');
+  lines.push('- The ledger balances in every currency, checked in SQL at start-up and on demand.');
+  lines.push('- The audit chain verifies, and refusals are recorded as carefully as successes.');
+  lines.push('- Separation of duties is refused at the state machine, at the service and at the');
+  lines.push('  database — three independent times.');
+  lines.push('- Every console renders for every role in a real browser, and the client makes no');
+  lines.push('  request it is not entitled to make.');
+  lines.push('- A compliance decision made today can be reconstructed from the record alone.');
+  lines.push('');
+  lines.push('## What does not work, or does not exist');
+  lines.push('');
+  lines.push('| | |');
+  lines.push('|---|---|');
+  lines.push('| No corridor is confirmed | A rule fires on every transaction. **No transaction in this build can clear compliance automatically.** Intended behaviour, not a defect |');
+  lines.push('| No partner is real | Every partner is a simulator. No agreement with any institution has been confirmed |');
+  lines.push('| No independent security review | Nothing in the risk register has reached `implemented_and_independently_reviewed` |');
+  lines.push('| No restoration test | The procedure exists and has never been executed. Backups that have not been restored are not backups |');
+  lines.push('| No antivirus | Document checks are structural and are not described as scanning anywhere |');
+  lines.push('| No blob store | Documents are metadata-tracked and encrypted; no managed object store is connected |');
+  lines.push('| No managed key store | The encryption key derives from process configuration on the same host as the data |');
+  lines.push('| No partner callback authentication | No signature scheme exists, because no partner can call in. Must be designed before one is connected |');
+  lines.push('| No access-pattern monitoring | Insider browsing is recorded and nobody is told |');
+  lines.push('| No uptime measurement | Therefore no availability figure is claimed anywhere |');
+  lines.push('| No subject access process | An individual has no route to request their data |');
+  lines.push('| No accounting period close | The daily reconciliation is not a close and is not presented as one |');
+  lines.push('| One person | Every separation of duties in the software is held by one pair of hands |');
+  lines.push('');
+  lines.push('## The shortest path to a pilot');
+  lines.push('');
+  lines.push('In dependency order. Steps 1 and 2 are not engineering, and nothing after them can start');
+  lines.push('until they are done.');
+  lines.push('');
+  lines.push('1. **Attach the CBN Regulatory Sandbox application to this repository.** It resolves');
+  lines.push('   FD-002, FD-003, FD-005, FD-006 and FD-007 between them, and until it exists no');
+  lines.push('   transaction can clear compliance.');
+  lines.push('2. **Contract a settlement partner and a screening provider**, and verify the licence');
+  lines.push('   under which each activity is performed. FD-004.');
+  lines.push('3. **Appoint a compliance officer and a second engineer.** R-16. No amount of further');
+  lines.push('   engineering substitutes for this.');
+  lines.push('4. **Commission an independent security review** and close its findings.');
+  lines.push('5. **Perform and evidence a restoration test.** R-14.');
+  lines.push('6. **Connect a managed key store and a virus-scanning service.** R-08 and R-12.');
+  lines.push('7. **Complete the privacy impact assessment** and the cross-border transfer assessment.');
+  lines.push('   FD-008.');
+  lines.push('8. **Design partner callback authentication** before any partner is connected.');
+  lines.push('9. **Rehearse the incident, continuity and recovery plans.** All three are written and');
+  lines.push('   none has been practised.');
+  lines.push('10. **Replace each placeholder under maker-checker**, and re-run this report.');
+  lines.push('');
+  lines.push('## The build journal');
+  lines.push('');
+  for (const entry of BUILD_JOURNAL) {
+    lines.push(`### ${entry.milestone} — ${entry.date}`);
+    lines.push('');
+    lines.push(`**Built:** ${entry.built}`);
+    lines.push('');
+    lines.push(`**Still simulated:** ${entry.simulated}`);
+    lines.push('');
+    lines.push(`**Known limitations:** ${entry.limitations}`);
+    lines.push('');
+    lines.push(`**Open:** ${entry.open}`);
+    lines.push('');
+    lines.push(`**For the founder:** ${entry.questions}`);
+    lines.push('');
+  }
+
+  emit('25-pilot-readiness-report.md', lines.join('\n'));
+}
+
+// ---------------------------------------------------------------------------
 // A — Founder decisions
 // ---------------------------------------------------------------------------
 
@@ -1207,6 +1414,7 @@ generateRoleMatrix();
 generateComplianceMatrix();
 generateTraceability();
 generateRiskRegister();
+generatePilotReadiness();
 generateFounderDecisions();
 generateClaimsLint();
 

@@ -26,7 +26,15 @@ interface ModuleSeed {
   questions: Array<{ question: string; options: string[]; correct: number; explanation: string }>;
 }
 
-const MODULES: ModuleSeed[] = [
+/**
+ * The sixteen modules, with the build stage each has GENUINELY reached.
+ *
+ * Exported so `docs/25-pilot-readiness-report.md` is generated from the same objects the
+ * Learning Center's product map is seeded from. A report claiming a module is further
+ * along than the application says would be the exact failure the eight-stage scale exists
+ * to prevent.
+ */
+export const MODULES: ModuleSeed[] = [
   {
     key: 'onboarding', ordinal: 1, title: 'Organisation onboarding (KYB)',
     whatItDoes:
@@ -705,6 +713,421 @@ const MODULES: ModuleSeed[] = [
           'Data residency is a property of where the data physically sits and what law reaches it. ' +
           'The deployment region is an unresolved placeholder (FD-008) and the system makes no ' +
           'residency claim.',
+      },
+    ],
+  },
+  {
+    key: 'document_management', ordinal: 8, title: 'Document management',
+    whatItDoes:
+      'Takes the documents a business uploads, checks them structurally, encrypts them, records ' +
+      'what each one is and when it expires, and tracks which transaction relied on which document.',
+    whyItExists:
+      'A compliance decision rests on evidence, and evidence that cannot be produced later is not ' +
+      'evidence. This module is what makes the file reconstructable.',
+    whoUsesIt:
+      'A Business Initiator uploads. A Compliance Analyst reads. An auditor asks for the document a ' +
+      'specific decision relied on.',
+    regulatorySignificance:
+      'Record-keeping is a standalone AML obligation, separate from the obligation to do the check ' +
+      'in the first place. A supervisor will ask for the document behind a decision made two years ago.',
+    mainOperationalRisk:
+      'Documents that expire silently. A certificate of incorporation from four years ago tells you ' +
+      'about a company that may no longer exist in that form.',
+    whatIfItFails:
+      'You can show that you made a decision and not what you made it on, which reads to a supervisor ' +
+      'exactly like not having made it.',
+    stage: 'integrated',
+    simulatedParts:
+      'Nothing here is simulated, but two things are absent: there is NO antivirus scanning, and ' +
+      'there is NO blob store. Documents are metadata-tracked and encrypted; the bytes are held ' +
+      'inline rather than in a managed object store.',
+    knownLimitations:
+      'The structural checks are type, size and magic-byte checks. They are NOT virus scanning and ' +
+      'are not described as such anywhere. Expiry raises a rule against the next transaction that ' +
+      'relies on the document; it does not suspend the customer.',
+    questions: [
+      {
+        question: 'What do the checks performed on an uploaded document actually establish?',
+        options: [
+          'That the document is free of malware',
+          'That the file is the type and size it claims to be — nothing about its safety',
+          'That the document is genuine',
+          'That the document has not expired',
+        ],
+        correct: 1,
+        explanation:
+          'They are structural checks. No antivirus service is connected, and calling a magic-byte ' +
+          'check a virus scan would be the kind of claim this system exists to avoid making.',
+      },
+      {
+        question: 'What happens when a document a customer relies on expires?',
+        options: [
+          'The customer is suspended immediately',
+          'Nothing — expiry is informational',
+          'A rule fires against the next transaction that relies on it',
+          'The document is deleted',
+        ],
+        correct: 2,
+        explanation:
+          'Suspending a customer because a certificate lapsed on a Friday is rarely right. Letting a ' +
+          'payment proceed on stale evidence never is. The rule sits between the two.',
+      },
+    ],
+  },
+  {
+    key: 'ai_extraction', ordinal: 9, title: 'AI-assisted document extraction',
+    whatItDoes:
+      'Proposes field values read out of an uploaded document — an invoice number, a total, a date — ' +
+      'so that a person confirming them types less. It proposes. It never confirms.',
+    whyItExists:
+      'Transcribing invoice details by hand is slow and error-prone. Automating the reading while ' +
+      'keeping the confirming is the part of the trade-off that is safe to take.',
+    whoUsesIt: 'A Business Initiator confirms or corrects each proposed value.',
+    regulatorySignificance:
+      'An automated system that decided anything about a customer would raise questions about ' +
+      'automated decision-making. This one decides nothing, which is why those questions do not arise.',
+    mainOperationalRisk:
+      'Somebody describing this as verification. Extraction reads what a document says; it cannot ' +
+      'establish that the document is true, and the difference matters enormously.',
+    whatIfItFails:
+      'A wrong value reaches a transaction. The confirmation step is what stops that, which is why ' +
+      'it cannot be skipped or defaulted.',
+    stage: 'tested',
+    simulatedParts:
+      'The extractor is a stub. No model is connected, and the proposals it produces are structural ' +
+      'rather than read from the document.',
+    knownLimitations:
+      'No confidence threshold gates anything: a low-confidence proposal and a high-confidence one ' +
+      'are both proposals and both need confirming. That is deliberate, because a threshold would ' +
+      'create a class of value nobody looked at.',
+    questions: [
+      {
+        question: 'Can an unconfirmed extraction affect a compliance outcome?',
+        options: [
+          'Yes, if its confidence is above the threshold',
+          'Yes, for low-risk customers',
+          'No — the compliance engine never reads extraction output at all',
+          'Only for invoice numbers',
+        ],
+        correct: 2,
+        explanation:
+          'The engine does not read the extraction table, confirmed or otherwise. A test asserts it ' +
+          'against the engine\'s source, because a behavioural test could pass by coincidence.',
+      },
+      {
+        question: 'Why is the word "verified" never used about extraction?',
+        options: [
+          'It is a licensing term',
+          'Because reading what a document says is not establishing that it is true',
+          'Because the model is a stub',
+          'To keep the interface short',
+        ],
+        correct: 1,
+        explanation:
+          'Extraction transcribes. Verification would mean establishing that the document is genuine ' +
+          'and its contents correct, which nothing here does. The build fails on the claim.',
+      },
+    ],
+  },
+  {
+    key: 'screening', ordinal: 10, title: 'Sanctions, PEP and adverse-media screening',
+    whatItDoes:
+      'Sends a name to a screening provider and records what comes back: matches, their scores, the ' +
+      'list they came from, and the reference of the listed entry.',
+    whyItExists:
+      'Paying a sanctioned party is the one AML failure with no proportionality defence. Screening is ' +
+      'the check that stops it, and the record of the check is what proves you did it.',
+    whoUsesIt:
+      'It runs automatically at onboarding and on every transaction. A Compliance Analyst disposes of ' +
+      'each match.',
+    regulatorySignificance:
+      'Sanctions screening is a strict-liability obligation in most regimes. What a supervisor examines ' +
+      'is not whether you had matches — everybody does — but what you did about each one.',
+    mainOperationalRisk:
+      'Clearing a match without recording what distinguished the two people. "False positive" with no ' +
+      'comparison behind it is the single most common failing in an AML file.',
+    whatIfItFails:
+      'Either you pay a sanctioned party, or you refuse a legitimate customer because their name ' +
+      'resembles one. Both are serious and the second is far more common.',
+    stage: 'tested',
+    simulatedParts:
+      'The provider is a simulator with a fictional list. No commercial screening data is connected ' +
+      'and no provider has been contracted.',
+    knownLimitations:
+      'No ongoing rescreening: a customer cleared today is not automatically rechecked when a list ' +
+      'changes tomorrow. Nothing classifies what an adverse-media result contains, so a special-category ' +
+      'result is indistinguishable from an ordinary one.',
+    questions: [
+      {
+        question: 'A director matches a sanctioned individual with the same name. What is the system\'s answer?',
+        options: [
+          'Reject the customer automatically',
+          'Clear it automatically if the score is below the threshold',
+          'Nothing automatic — a person compares identifiers and records what distinguished them',
+          'Escalate to the regulator',
+        ],
+        correct: 2,
+        explanation:
+          'A match is a proposal. Names collide constantly. The disposition, and the reason for it, ' +
+          'is what a supervisor reads later.',
+      },
+    ],
+  },
+  {
+    key: 'case_management', ordinal: 11, title: 'Compliance case management',
+    whatItDoes:
+      'Turns an engine outcome into a piece of work: a case with a priority, a service target, an ' +
+      'owner, notes and a permanent decision.',
+    whyItExists:
+      'An alert nobody owns is an alert nobody works. The case is what converts a finding into an ' +
+      'accountable action.',
+    whoUsesIt: 'Compliance Analysts and Compliance Managers.',
+    regulatorySignificance:
+      'The case file is what a supervisor asks for. It has to show what was found, who looked at it, ' +
+      'what they concluded and why, and whether the right person made the decision.',
+    mainOperationalRisk:
+      'Cases closed to clear a queue rather than because they were resolved. A breached service target ' +
+      'creates exactly that pressure.',
+    whatIfItFails:
+      'Alerts accumulate unworked, or are cleared without reasoning. Both look identical in a metric ' +
+      'and completely different in a file.',
+    stage: 'tested',
+    simulatedParts: 'Nothing. Case management operates on real records of simulated transactions.',
+    knownLimitations:
+      'No case assignment workflow beyond an owner field, no workload balancing, and no escalation ' +
+      'that fires on its own when a target is breached — the breach is visible and nobody is told.',
+    questions: [
+      {
+        question: 'A case has breached its service target. What should that change?',
+        options: [
+          'Decide it faster',
+          'Close it and reopen a new one',
+          'Nothing about the decision — but the reason should record why it took longer',
+          'Escalate automatically',
+        ],
+        correct: 2,
+        explanation:
+          'A breached target is a reason to explain the delay, not to make a worse decision more ' +
+          'quickly. The reason field is where that explanation belongs.',
+      },
+    ],
+  },
+  {
+    key: 'beneficiary', ordinal: 12, title: 'Beneficiary management',
+    whatItDoes:
+      'Holds who a business pays, approves each one before first use, and sends a beneficiary back for ' +
+      'review when its account details change.',
+    whyItExists:
+      'The most common fraud in cross-border trade payments is a substituted account, arriving in an ' +
+      'email that appears to come from the supplier. Approving the destination separately from the ' +
+      'payment is what breaks that.',
+    whoUsesIt: 'A Business Initiator adds. A Compliance Analyst approves.',
+    regulatorySignificance:
+      'Beneficiary screening is part of the transaction-monitoring obligation. The re-review on change ' +
+      'is also the control most directly aimed at authorised push-payment fraud.',
+    mainOperationalRisk:
+      'Approving a beneficiary on the strength of the same email that supplied the account details.',
+    whatIfItFails:
+      'A customer pays an attacker, using a system that recorded the payment as entirely legitimate.',
+    stage: 'tested',
+    simulatedParts: 'Screening of the beneficiary goes to the simulator. Account identifiers are fictional.',
+    knownLimitations:
+      'No account-name verification against the destination bank, because no destination bank is ' +
+      'connected. That check is the one that would catch a substituted account before the money moves.',
+    questions: [
+      {
+        question: 'Why does changing a beneficiary\'s account number send it back for review?',
+        options: [
+          'To keep the audit trail tidy',
+          'Because a changed account is exactly what an attacker produces after compromising an email',
+          'Because the bank requires it',
+          'To recalculate fees',
+        ],
+        correct: 1,
+        explanation:
+          'The change is the event the control exists for. Re-reviewing on change is inconvenient ' +
+          'precisely when it matters most.',
+      },
+    ],
+  },
+  {
+    key: 'fx_quoting', ordinal: 13, title: 'FX quoting',
+    whatItDoes:
+      'Produces a rate with the spread stated separately, the fees itemised, and an expiry. Indicative ' +
+      'until the customer accepts it.',
+    whyItExists:
+      'A customer needs to know what a payment will cost before committing. Stating the spread ' +
+      'separately is what makes that number honest.',
+    whoUsesIt: 'A Treasury Operator issues. A Business Approver accepts.',
+    regulatorySignificance:
+      'Conduct rather than AML. Misrepresenting a rate — or hiding a fee inside one — is a consumer ' +
+      'and business-conduct issue and, at scale, a supervisory one.',
+    mainOperationalRisk:
+      'Describing a rate as guaranteed or locked when it is neither. The second is subtler: "locked" ' +
+      'means a partner has contractually locked it, and no partner here has.',
+    whatIfItFails:
+      'The customer is charged more than they understood, or a rate moves between quotation and ' +
+      'settlement and somebody absorbs a loss nobody agreed to.',
+    stage: 'tested',
+    simulatedParts:
+      'Every rate is produced by a simulator. No liquidity provider is connected and no rate here ' +
+      'reflects any market.',
+    knownLimitations:
+      'A simulated quote can never be marked as contractually locked, which a test asserts. There is ' +
+      'no rate-of-the-day, no forward pricing and no hedging.',
+    questions: [
+      {
+        // The phrase below is the one the claims lint watches for. It appears here because
+        // the question is teaching when the wording is permitted — only where a partner has
+        // contractually locked the rate, which none has in this build.
+        question: 'When may a rate be described as "locked until 16:00"?',
+        options: [
+          'When the customer has accepted it',
+          'When the quote has an expiry',
+          'Only where a partner has contractually locked it — which none has here',
+          'Whenever treasury issues it',
+        ],
+        correct: 2,
+        explanation:
+          'An expiry is a deadline for the customer, not a commitment from a partner. Conflating the ' +
+          'two is how a customer ends up believing a rate was promised.',
+      },
+    ],
+  },
+  {
+    key: 'partner_integration', ordinal: 14, title: 'Partner integration',
+    whatItDoes:
+      'Talks to the institutions that actually hold funds, convert currency, settle payments and credit ' +
+      'beneficiaries, through provider-neutral adapters with idempotency keys.',
+    whyItExists:
+      'Every licensed activity in this product is performed by somebody else. This module is the ' +
+      'boundary between what EKORails does and what it coordinates.',
+    whoUsesIt: 'A Treasury Operator, indirectly. A System Administrator configures the adapters.',
+    regulatorySignificance:
+      'The division of activity across this boundary is what determines whether EKORails is performing ' +
+      'a licensed activity. Getting it wrong is not a technical problem.',
+    mainOperationalRisk:
+      'A retry after a timeout causing a second payment. This is why an unknown outcome disables ' +
+      'automatic retry rather than treating it as a failure.',
+    whatIfItFails:
+      'Money moves twice, or is reported as moved when it has not, or the record of what was instructed ' +
+      'does not survive.',
+    stage: 'tested',
+    simulatedParts:
+      'EVERY partner is a simulator. No agreement with any institution has been confirmed to this ' +
+      'build, and no partner name here is a claim that an institution has agreed to anything.',
+    knownLimitations:
+      'There is NO callback authentication, because no partner can call in. A signature scheme must be ' +
+      'designed before a real partner is connected — this is a named gap in the threat model.',
+    questions: [
+      {
+        question: 'A settlement instruction times out. What does the system do?',
+        options: [
+          'Retry with the same idempotency key',
+          'Mark it failed and unwind the ledger',
+          'Move to under_investigation and disable automatic retry',
+          'Retry three times, then escalate',
+        ],
+        correct: 2,
+        explanation:
+          'The instruction may or may not have executed. Retrying is how a payment gets made twice. ' +
+          'A person establishes the true position with the partner first.',
+      },
+    ],
+  },
+  {
+    key: 'reporting', ordinal: 15, title: 'Reporting and export',
+    whatItDoes:
+      'Produces operational, compliance, financial, pilot and regulatory reports in JSON, CSV, XLSX and ' +
+      'PDF, recording each export with a content hash and the masking profile that produced it.',
+    whyItExists:
+      'A supervisor, a partner and an auditor each need a different view of the same activity, and each ' +
+      'needs to be able to tie an export back to what was asked for.',
+    whoUsesIt: 'Every role, filtered to the reports their permissions allow.',
+    regulatorySignificance:
+      'Regulatory returns are an obligation with named forms and a cadence. Both are UNCONFIRMED here ' +
+      '(FD-006), so no form identifier has been invented.',
+    mainOperationalRisk:
+      'An export carrying more than the recipient is entitled to see. Masking is applied server-side ' +
+      'for exactly this reason.',
+    whatIfItFails:
+      'Either a return is filed on wrong figures, or personal data leaves the system in a spreadsheet.',
+    stage: 'tested',
+    simulatedParts:
+      'The data is real records of simulated activity. The regulatory report carries no statutory form ' +
+      'identifier because none has been supplied.',
+    knownLimitations:
+      'No scheduled or automated filing, and no submission route — a report is produced and downloaded ' +
+      'by a person. Formula injection is neutralised in CSV, but a spreadsheet remains a spreadsheet ' +
+      'once it leaves.',
+    questions: [
+      {
+        question: 'Why does the regulatory report carry no statutory form identifier?',
+        options: [
+          'It is not required',
+          'Because the filing that would specify it was not available, and inventing one would be a false regulatory fact',
+          'Because the format is still being designed',
+          'Because the regulator supplies it later',
+        ],
+        correct: 1,
+        explanation:
+          'A form identifier on a document that reaches a supervisor is a regulatory assertion. FD-006 ' +
+          'is open and the field says so rather than guessing.',
+      },
+    ],
+  },
+  {
+    key: 'learning_center', ordinal: 16, title: 'Founder Learning Center',
+    whatItDoes:
+      'Explains the system to the person responsible for it: the product map, a walkthrough of a real ' +
+      'payment, the ledger, the rules, the architecture, the state machine, the decisions, the build ' +
+      'journal, the risks, a glossary, a demonstration script and short assessments.',
+    whyItExists:
+      'A founder who cannot explain their own system cannot defend it, and the conversations that ' +
+      'matter — with a supervisor, a partner bank, a reviewer — are exactly the ones where being told ' +
+      'about it is not enough.',
+    whoUsesIt: 'Anyone. Every role holds learning.read.',
+    regulatorySignificance:
+      'None directly. Indirectly, significant: a supervisor forms a view of a business partly from how ' +
+      'well the people running it understand it.',
+    mainOperationalRisk:
+      'That it flatters the build. A learning centre reporting everything as done teaches the one thing ' +
+      'a founder must not learn.',
+    whatIfItFails:
+      'The founder learns a version of the system that is more finished than the real one, and says so ' +
+      'in a room where somebody checks.',
+    stage: 'integrated',
+    simulatedParts: 'Nothing. It reports on the real state of the real system.',
+    knownLimitations:
+      'Assessment results are recorded and never gate anything, deliberately. The guided demonstration ' +
+      'is a script a person follows rather than an automated tour, also deliberately — a tour that runs ' +
+      'itself demonstrates the tour.',
+    questions: [
+      {
+        question: 'What does a "designed" completion stage mean?',
+        options: [
+          'The interface is built',
+          'The behaviour is specified and the data model supports it — no code yet',
+          'It is ready for a pilot',
+          'It has been tested',
+        ],
+        correct: 1,
+        explanation:
+          'There are eight stages, and a module is reported at the highest one it has genuinely ' +
+          'reached. An interface existing is not one of them.',
+      },
+      {
+        question: 'Why is "pilot ready" not the same as "tested"?',
+        options: [
+          'It requires more tests',
+          'Pilot ready additionally requires the regulatory dependencies to be cleared',
+          'They are the same thing',
+          'Pilot ready means a customer has used it',
+        ],
+        correct: 1,
+        explanation:
+          'A module can be complete in every engineering sense and still be unusable in a pilot because ' +
+          'a corridor, a licence or a partner contract is missing.',
       },
     ],
   },
