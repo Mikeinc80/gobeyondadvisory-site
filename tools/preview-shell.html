@@ -96,7 +96,19 @@ body{
 .urlbar .lock{color:var(--stage-ink);opacity:.6}
 .urlbar .u{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .urlbar .u b{font-weight:600;color:inherit}
-.urlbar .meta{margin-left:auto;opacity:.65;white-space:nowrap}
+.urlbar .meta{margin-left:auto;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.urlbar .todo{
+  flex:0 0 auto;font:600 11px/1 var(--mono);letter-spacing:.4px;
+  color:#7A5F22;background:rgba(168,134,63,.14);border:1px dashed rgba(122,95,34,.5);
+  border-radius:3px;padding:5px 7px;white-space:nowrap;
+}
+.urlbar .todo[hidden]{display:none}
+.copyref{
+  flex:0 0 auto;appearance:none;cursor:pointer;white-space:nowrap;
+  background:none;border:1px solid var(--stage-line);color:var(--stage-ink);
+  border-radius:3px;padding:5px 9px;font:500 11px/1 var(--ui);
+}
+.copyref:hover{border-color:var(--stage-ink)}
 .holder{flex:1;min-height:0;overflow:auto;display:flex;justify-content:center;padding:0}
 .holder.framed{padding:22px 22px 40px}
 #frame{
@@ -172,7 +184,9 @@ body{
     <div class="urlbar">
       <span class="lock" aria-hidden="true">&#128274;</span>
       <span class="u" id="url"></span>
+      <span class="todo" id="todo" hidden></span>
       <span class="meta" id="meta"></span>
+      <button class="copyref" type="button" id="copyref">Copy reference</button>
     </div>
     <div class="holder" id="holder">
       <iframe id="frame" title="Site preview"></iframe>
@@ -243,6 +257,12 @@ function show(site, path, hash) {
   document.getElementById("url").innerHTML =
     "https://<b>" + host + "</b>" + (path === "/" ? "/" : path) + (hash ? hash : "");
   document.getElementById("meta").textContent = doc.t;
+  var todo = document.getElementById("todo");
+  todo.hidden = !doc.p;
+  todo.textContent = doc.p
+    ? doc.p + (doc.p === 1 ? " ITEM NEEDS YOUR INPUT" : " ITEMS NEED YOUR INPUT")
+    : "";
+  window.__ekoRef = "https://" + host + (path === "/" ? "/" : path) + " — " + doc.t;
 
   frame.srcdoc = doc.h.replace("__CSS__", "<style>" + CSS[site] + "</style>");
   frame.onload = function () {
@@ -314,6 +334,28 @@ window.addEventListener("message", function (e) {
   var bits = href.split("#");
   var path = bits[0].split("?")[0].replace(/\/$/, "") || "/";
   show(state.site, path, bits[1] ? "#" + bits[1] : "");
+});
+
+document.getElementById("copyref").addEventListener("click", function () {
+  var text = window.__ekoRef || "";
+  var done = function () { flash("Copied: <code>" + text + "</code>"); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, fallback);
+  } else {
+    fallback();
+  }
+  function fallback() {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); done(); }
+    catch (e) { flash("Copy this reference: <code>" + text + "</code>"); }
+    document.body.removeChild(ta);
+  }
 });
 
 setWidth("full");

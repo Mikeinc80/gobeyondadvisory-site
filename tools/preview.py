@@ -15,6 +15,10 @@ import json
 import re
 from pathlib import Path
 
+PLACEHOLDER_RE = re.compile(
+    r"\[(?:CONFIRM WITH EKORAILS|INSERT VERIFIED FIGURE|SUBJECT TO REGULATORY APPROVAL)[^\]]*\]"
+)
+
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
 OUT = ROOT / "preview" / "ekorails-preview.html"
@@ -87,7 +91,11 @@ def collect():
             html = html.replace('<link rel="stylesheet" href="/assets/css/site.css">', "__CSS__")
             html = html.replace('src="/assets/img/person-placeholder.svg"', 'src="%s"' % portrait)
             html = html.replace("</body>", INJECT + "</body>")
-            found[path] = {"t": title, "h": html}
+            found[path] = {
+                "t": title,
+                "h": html,
+                "p": len(PLACEHOLDER_RE.findall(html)),
+            }
         ordered = [p for p in ORDER[sid] if p in found] + [p for p in found if p not in ORDER[sid]]
         pages[sid] = {"order": ordered, "docs": found}
     return pages, css
