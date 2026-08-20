@@ -1891,7 +1891,7 @@ export const BUILD_JOURNAL = [
     milestone: 'Phases 2 to 5 — Onboarding, transactions, settlement, reconciliation and reporting',
     date: '2026-08-20',
     built:
-      'KYB onboarding with beneficial ownership and screening; a 22-rule compliance engine writing ' +
+      'KYB onboarding with beneficial ownership and screening; a 26-rule compliance engine writing ' +
       'reproducible immutable evaluations; beneficiaries with automatic approval invalidation on ' +
       'material change; a double-entry ledger with FX clearing; an auditable FX quotation engine; ' +
       'a 22-state settlement machine where every edge is declared and guarded; partner simulators ' +
@@ -1911,14 +1911,89 @@ export const BUILD_JOURNAL = [
     limitations:
       'No document blob store and no antivirus service (R-12). No statement file ingestion. ' +
       'Settlement finality is out of scope by design.',
-    open: 'All nine founder decisions remain unapproved.',
+    open: 'All ten founder decisions remain unapproved.',
     risks:
       'R-11 (alert fatigue) is new and follows directly from the corridor placeholder: every ' +
       'transaction currently requires manual review.',
     questions:
-      'Review the twenty-two compliance rules in the Learning Center. Are any missing for your ' +
+      'Review the twenty-six compliance rules in the Learning Center. Are any missing for your ' +
       'corridor, and are any so noisy they would be cleared without being read?',
   },
+  {
+    milestone: 'Phase 6 — The six consoles and the Founder Learning Center',
+    date: '2026-08-20',
+    built:
+      'Six role-scoped interfaces — business, operations, compliance, finance, oversight and ' +
+      'administration — plus the ten-component Learning Center. Plain ES modules under a strict ' +
+      'Content-Security-Policy: no framework, no build step, no third-party JavaScript reaching a ' +
+      'browser. Navigation is built from the permissions the server reports, and every route is ' +
+      'guarded again by the API and again by row-level security.',
+    changed:
+      'The client gained a permission oracle so it stops asking for things it knows it may not ' +
+      'have. /api/me now reports whether MFA is enrolled; /api/corridors was added so a customer ' +
+      'can discover the corridor they send on without permission to read system configuration; ' +
+      'and the transaction submit and withdraw actions were added, because POST /submit had ' +
+      'existed since the first commit with no screen reaching it.',
+    test:
+      'scripts/smoke-web.mjs signs in as each of the nine roles with a genuine time-based code and ' +
+      'opens every item that role\'s own navigation offers — 126 page loads — then runs a write ' +
+      'journey through initiate, submit and authorise. It asserts the banner, the fictional-data ' +
+      'label, that content rendered, that nothing shows as "undefined", and that the browser ' +
+      'console is silent. scripts/check-web.mjs does statically what a bundler would: unresolved ' +
+      'imports, routes naming views that do not exist, menu items pointing at absent routes, and ' +
+      'any use of innerHTML, eval, or Number() on a monetary field.',
+    simulated: 'Nothing new. The interfaces render real records of simulated activity.',
+    limitations:
+      'The CSP permits inline styles, because the client sets style attributes from literals. ' +
+      'script-src is properly locked with a nonce. This is recorded as an accepted finding rather ' +
+      'than described away.',
+    open: 'FD-010 records the no-build-step decision and its cost.',
+    risks:
+      'A client with no build step has no bundler to catch a renamed export, which is a real class ' +
+      'of defect. check-web.mjs exists to pay that back and is itself verified against deliberate ' +
+      'breakage in each of its four categories.',
+    questions:
+      'The consoles are usable and every screen renders for every role. Nobody outside the build ' +
+      'has used them. Founder acceptance is a completion stage and no module has reached it.',
+  },
+  {
+    milestone: 'Phase 7 — Verification, documentation, and what running it found',
+    date: '2026-08-20',
+    built:
+      'Twenty-nine documents, of which ten are GENERATED from the definitions the software uses — ' +
+      'the data model, API reference, state machine, role matrix, compliance control matrix, ' +
+      'traceability, risk register, pilot readiness, founder decisions and the claims-lint word ' +
+      'list. Regenerating them is part of the build and a drift fails it.',
+    changed:
+      'Five checks now fail the build rather than allowing drift: the claims lint, the web link ' +
+      'check, the environment check, the generated-document check and the traceability check. The ' +
+      'traceability matrix matches every test it names against the actual test names, because the ' +
+      'failure mode of every such matrix is a row asserting coverage by a test renamed away two ' +
+      'quarters ago.',
+    test:
+      'The suite grew from 165 to 181. Writing the traceability matrix showed that the requirement ' +
+      'about AI extraction had NO test at all, despite the Phase 0 review naming one. Three were ' +
+      'written, including the strong form: an unconfirmed proposal claiming a source of funds ' +
+      'cannot influence a compliance outcome, asserted against the engine\'s source because a ' +
+      'behavioural test could pass by coincidence.',
+    simulated: 'Unchanged.',
+    limitations:
+      'The prose documents — the threat model, the privacy assessment, the manuals — carry no ' +
+      'automated check, because judgement cannot be regenerated. They will drift, and they should ' +
+      'be re-read whenever the thing they describe changes.',
+    open: 'All ten founder decisions remain open. None can be resolved by the build.',
+    risks:
+      'Every finding in the red-team pass came from RUNNING the system as the role that would run ' +
+      'it. Reading the code found none of them. That is the transferable lesson: the compliance ' +
+      'engine failed with a 500 for every real customer action while the seeded database looked ' +
+      'exactly as it should, because the seeder runs in a different security context. The rate ' +
+      'limiter could be switched off by varying a header. The Documents screen was broken for ' +
+      'every back-office role. Each was invisible to inspection and obvious to use.',
+    questions:
+      'The four things that would move this build furthest are not engineering: attach the CBN ' +
+      'filing, contract a partner, appoint a second person, and commission an independent security ' +
+      'review. Which of those can you start this month?',
+  }
 ];
 
 export async function seedBuildJournal(db: Queryable): Promise<number> {

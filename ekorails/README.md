@@ -47,11 +47,12 @@ npm test                              # 181 tests against a real PostgreSQL
 node scripts/lint-claims.mjs          # language this entity may not use
 node scripts/check-web.mjs            # the client's links, which no bundler checks here
 node scripts/check-env.mjs            # .env.example matches what the code reads
+node scripts/check-counts.mjs         # numbers written in prose match the code
 node scripts/generate-docs.mjs --check  # documents match the code they describe
 node scripts/smoke-web.mjs            # six consoles, nine roles, in a real browser
 ```
 
-`npm test` runs the first five. The last needs Playwright and skips cleanly without it.
+`npm test` runs the first six. The last needs Playwright and skips cleanly without it.
 
 ## What is in here
 
@@ -61,7 +62,7 @@ node scripts/smoke-web.mjs            # six consoles, nine roles, in a real brow
 | `services/api/src/` | The service. One runtime dependency: `pg` |
 | `apps/web/public/` | Six consoles. Plain ES modules, no build step |
 | `services/api/test/` | Three suites, run against a real database |
-| `scripts/` | Provisioning, reset, tests, and five checks that fail the build |
+| `scripts/` | Provisioning, reset, tests, and six checks that fail the build |
 | `docs/` | 25 documents, plus two appendices. Eight are generated from the code |
 | `infra/terraform/` | A skeleton. Nothing has been deployed |
 

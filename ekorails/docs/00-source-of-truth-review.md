@@ -170,7 +170,8 @@ Enforced by `audit.immutability.test.ts` and `ledger.immutability.test.ts`.
 
 ## 6. Founder decisions required before pilot
 
-Nine decisions block progression from *Tested* to *Pilot Ready*. They are recorded in full — with
+Ten decisions are open. Nine of them block progression from *Tested* to *Pilot Ready*; FD-010
+records a choice already made and blocks nothing. They are recorded in full — with
 options, recommendation, risk, reversibility and regulatory impact — in
 `docs/A-founder-decisions.md` and are readable and approvable inside the Founder Learning Center
 Decision Log.
@@ -186,6 +187,7 @@ Decision Log.
 | FD-007 | Pilot duration and success thresholds | Adopt the filing's duration and targets verbatim | Pilot report targets |
 | FD-008 | Data residency and approved cloud region | Complete a residency assessment before selecting a region; do not claim African residency by ownership | Deployment region |
 | FD-009 | Public statement of sandbox status | Say nothing until an admission letter exists | All external-facing copy |
+| FD-010 | Framework choice: minimal dependencies versus a conventional stack | Keep the minimal stack through the pilot, then reassess | Nothing — recorded because a reviewer will ask why |
 
 ---
 
@@ -201,7 +203,7 @@ Decision Log.
 | Partner responsibility map | Complete (structural) — `docs/19-partner-integration-guide.md` |
 | Data classification | Complete — `docs/13-data-classification.md` |
 | Risk register | Complete — `docs/11-risk-register.md` |
-| Founder decisions raised | Complete — 9 raised, 0 approved |
+| Founder decisions raised | Complete — 10 raised, 0 approved |
 | Major contradictions identified before architecture | Complete — 4 found and resolved, §5 |
 
 **Phase 0 verdict: proceed to build with the placeholder regime. Do not proceed to CONTROLLED PILOT

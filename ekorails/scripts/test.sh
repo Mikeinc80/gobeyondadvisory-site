@@ -40,6 +40,11 @@ node scripts/generate-docs.mjs --check
 echo "==> Checking environment configuration"
 node scripts/check-env.mjs
 
+# Generated documents cannot drift. Prose can, and the way it drifts is a count: "22 rules"
+# written when there were 22 and still there when there are 26.
+echo "==> Checking counts written in prose"
+node scripts/check-counts.mjs
+
 TOTAL_PASS=0
 TOTAL_FAIL=0
 FAILED_SUITES=()

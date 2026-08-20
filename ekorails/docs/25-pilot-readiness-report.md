@@ -193,12 +193,36 @@ until they are done.
 
 ### Phases 2 to 5 — Onboarding, transactions, settlement, reconciliation and reporting — 2026-08-20
 
-**Built:** KYB onboarding with beneficial ownership and screening; a 22-rule compliance engine writing reproducible immutable evaluations; beneficiaries with automatic approval invalidation on material change; a double-entry ledger with FX clearing; an auditable FX quotation engine; a 22-state settlement machine where every edge is declared and guarded; partner simulators covering eleven failure scenarios with idempotency; six reconciliation run types; exception management with four-eyes closure; eight reports exportable as CSV, XLSX and PDF; and the Founder Learning Center.
+**Built:** KYB onboarding with beneficial ownership and screening; a 26-rule compliance engine writing reproducible immutable evaluations; beneficiaries with automatic approval invalidation on material change; a double-entry ledger with FX clearing; an auditable FX quotation engine; a 22-state settlement machine where every edge is declared and guarded; partner simulators covering eleven failure scenarios with idempotency; six reconciliation run types; exception management with four-eyes closure; eight reports exportable as CSV, XLSX and PDF; and the Founder Learning Center.
 
 **Still simulated:** Every partner. Funding, FX execution, settlement and the beneficiary credit are all simulated. Screening uses a clearly labelled fictional list. Email and SMS have no transport configured and say so in the delivery record.
 
 **Known limitations:** No document blob store and no antivirus service (R-12). No statement file ingestion. Settlement finality is out of scope by design.
 
-**Open:** All nine founder decisions remain unapproved.
+**Open:** All ten founder decisions remain unapproved.
 
-**For the founder:** Review the twenty-two compliance rules in the Learning Center. Are any missing for your corridor, and are any so noisy they would be cleared without being read?
+**For the founder:** Review the twenty-six compliance rules in the Learning Center. Are any missing for your corridor, and are any so noisy they would be cleared without being read?
+
+### Phase 6 — The six consoles and the Founder Learning Center — 2026-08-20
+
+**Built:** Six role-scoped interfaces — business, operations, compliance, finance, oversight and administration — plus the ten-component Learning Center. Plain ES modules under a strict Content-Security-Policy: no framework, no build step, no third-party JavaScript reaching a browser. Navigation is built from the permissions the server reports, and every route is guarded again by the API and again by row-level security.
+
+**Still simulated:** Nothing new. The interfaces render real records of simulated activity.
+
+**Known limitations:** The CSP permits inline styles, because the client sets style attributes from literals. script-src is properly locked with a nonce. This is recorded as an accepted finding rather than described away.
+
+**Open:** FD-010 records the no-build-step decision and its cost.
+
+**For the founder:** The consoles are usable and every screen renders for every role. Nobody outside the build has used them. Founder acceptance is a completion stage and no module has reached it.
+
+### Phase 7 — Verification, documentation, and what running it found — 2026-08-20
+
+**Built:** Twenty-nine documents, of which ten are GENERATED from the definitions the software uses — the data model, API reference, state machine, role matrix, compliance control matrix, traceability, risk register, pilot readiness, founder decisions and the claims-lint word list. Regenerating them is part of the build and a drift fails it.
+
+**Still simulated:** Unchanged.
+
+**Known limitations:** The prose documents — the threat model, the privacy assessment, the manuals — carry no automated check, because judgement cannot be regenerated. They will drift, and they should be re-read whenever the thing they describe changes.
+
+**Open:** All ten founder decisions remain open. None can be resolved by the build.
+
+**For the founder:** The four things that would move this build furthest are not engineering: attach the CBN filing, contract a partner, appoint a second person, and commission an independent security review. Which of those can you start this month?
