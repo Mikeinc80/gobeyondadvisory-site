@@ -1,0 +1,158 @@
+<!--meta
+{
+  "path": "technology.html",
+  "title": "Technology | Architecture and security | EKORails",
+  "description": "How EKORails is being engineered: service architecture, idempotency and state, data model, security posture, environments and testing, observability, and the technology decisions we have deliberately not made yet. Every unbuilt component is labelled.",
+  "breadcrumbs": [{ "name": "Home", "path": "index.html" }, { "name": "Technology", "path": "technology.html" }],
+  "priority": "0.7"
+}
+-->
+<section class="section section--tight" style="background:var(--navy-900);color:var(--on-dark)" data-section="tech_intro">
+  <div class="shell">
+    <p class="eyebrow" style="color:var(--emerald-300)">Technology</p>
+    <h1 style="font-size:var(--step-4);color:var(--white);max-width:24ch">Engineered for evidence, not for demonstration.</h1>
+    <p class="lede" style="color:var(--on-dark-2);margin-top:var(--s-4)">Payment infrastructure is
+      judged on what it can prove after something goes wrong. This page describes how EKORails is being
+      built, at the level of detail that is useful to a reviewer without weakening the controls it
+      describes.</p>
+    <p class="hero-status" style="max-width:72ch">
+      <span aria-hidden="true">▲</span>
+      <span>Architecture is in development. Nothing described here is running in production or
+        carrying customer value. Specific security configuration is shared with partners and reviewers
+        under NDA rather than published.</span>
+    </p>
+  </div>
+</section>
+
+<section class="section" data-section="tech_principles">
+  <div class="shell">
+    <div class="section-head">
+      <p class="eyebrow">Engineering principles</p>
+      <h2>Six commitments that shape every decision below.</h2>
+    </div>
+    <div class="grid grid-3">
+      <article class="card"><p class="card-index">Principle 01</p><h3>One state, always knowable</h3><p>A transaction is in exactly one state, and that state can be established independently by every party to it. Ambiguity is treated as an incident.</p></article>
+      <article class="card"><p class="card-index">Principle 02</p><h3>Idempotent by default</h3><p>A retried instruction never creates a second payment. Every write path is safe to repeat, because in a distributed corridor it will be repeated.</p></article>
+      <article class="card"><p class="card-index">Principle 03</p><h3>Controls before routing</h3><p>Limits, screening and data completeness are enforced before an instruction reaches a partner, not reconciled afterwards.</p></article>
+      <article class="card"><p class="card-index">Principle 04</p><h3>Append-only history</h3><p>Records are written once. Corrections reference what they correct, so the history of what was known, and when, survives.</p></article>
+      <article class="card"><p class="card-index">Principle 05</p><h3>Fail closed</h3><p>When a dependency is unavailable or a control cannot be evaluated, the instruction stops. Accepting work that cannot complete is the worse failure.</p></article>
+      <article class="card"><p class="card-index">Principle 06</p><h3>Least privilege, least data</h3><p>Access is granted narrowly and reviewed; data is collected only where a rule or the transaction requires it.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ivory2" data-section="tech_architecture">
+  <div class="shell">
+    <div class="section-head">
+      <p class="eyebrow">Architecture</p>
+      <h2>Components and their status.</h2>
+      <p>Status labels here match those used on the <a href="/platform">Platform</a> page and are applied
+        against the same evidence standard.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <caption>Component register. In development means built and testing in a non-production environment; planned means designed but not built.</caption>
+        <thead><tr><th scope="col">Component</th><th scope="col">Responsibility</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          <tr><td>API gateway and authentication</td><td>Mutual authentication, request signing, rate limiting, idempotency keys.</td><td><span class="chip chip-progress">In development</span></td></tr>
+          <tr><td>Instruction service</td><td>Validation, canonical instruction record, duplicate suppression.</td><td><span class="chip chip-progress">In development</span></td></tr>
+          <tr><td>Orchestration and state machine</td><td>Transitions, retries, timeouts, compensation on failure.</td><td><span class="chip chip-progress">In development</span></td></tr>
+          <tr><td>Control engine</td><td>Limits, velocity, party-data completeness, routing eligibility.</td><td><span class="chip chip-progress">In development</span></td></tr>
+          <tr><td>Screening integration</td><td>Sanctions and watchlist calls, result capture, case creation.</td><td><span class="chip chip-planned">Planned</span></td></tr>
+          <tr><td>Case management</td><td>Ownership, service levels, disposition and rationale capture.</td><td><span class="chip chip-planned">Planned</span></td></tr>
+          <tr><td>Partner adapters</td><td>Per-partner integration for quotes, settlement and payout.</td><td><span class="chip chip-planned">Planned</span></td></tr>
+          <tr><td>Append-only ledger</td><td>Immutable state history with hash chaining and time stamps.</td><td><span class="chip chip-progress">In development</span></td></tr>
+          <tr><td>Reporting and extracts</td><td>Operational, financial and supervisory reporting.</td><td><span class="chip chip-planned">Planned</span></td></tr>
+          <tr><td>Operator portal</td><td>Instruction entry, approvals, queues, status, role-based access.</td><td><span class="chip chip-planned">Planned</span></td></tr>
+          <tr><td>Observability stack</td><td>Metrics, tracing, structured logs, alerting on control failure.</td><td><span class="chip chip-progress">In development</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section" data-section="tech_detail">
+  <div class="shell">
+    <div class="split split--sidebar">
+      <div class="prose">
+        <h2 id="data-model" style="font-size:var(--step-2)">Data model</h2>
+        <p>A small number of long-lived entities — participant, user, beneficiary, instruction, quote,
+          transaction, case, report — with explicit relationships and no implicit shared state between
+          services. Money amounts are stored as integer minor units with an explicit currency, never as
+          floating point.</p>
+        <p>Every record carries the identity of the actor that created it, the time it was created and,
+          where applicable, the rule version that was in force. That is what makes a supervisory question
+          about a past date answerable.</p>
+
+        <h2 id="security" style="font-size:var(--step-2)">Security posture</h2>
+        <p>Authentication between institutions is mutual and certificate-based; human access to
+          operational systems requires multi-factor authentication and is granted by role, reviewed on a
+          defined cycle and revoked on leaving. Production access is not routine and is logged.</p>
+        <p>Data is encrypted in transit and at rest with managed keys and a documented rotation policy.
+          Environments are segregated, and production data is not used in development or test.
+          Dependencies are inventoried and patched to a defined schedule; secrets are managed centrally
+          and never held in source control.</p>
+        <p>Independent penetration testing is performed before any pilot and on a defined cycle
+          thereafter, with findings tracked to closure. Provider, scope and dates:
+          <span class="placeholder">[CONFIRM WITH EKORAILS]</span></p>
+        <p>Specific configurations, network topology, control thresholds and vendor names are not
+          published on this website, because publishing them would help an attacker more than a reviewer.
+          They are provided to partners, auditors and supervisors under NDA.</p>
+
+        <h2 id="environments" style="font-size:var(--step-2)">Environments and testing</h2>
+        <p>Separate development, test and production environments, with change moving in one direction
+          through peer review and automated checks. Test coverage focuses where the risk is: state
+          transitions, idempotency, control enforcement, partner failure modes and reconciliation.</p>
+        <p>A partner sandbox with representative fixtures is planned so that an integrating institution
+          can test failure paths — not only the path where everything works.</p>
+
+        <h2 id="observability" style="font-size:var(--step-2)">Observability</h2>
+        <p>Structured logs, metrics and distributed tracing across the transaction lifecycle, with alerts
+          defined on the things that matter operationally: stuck transactions, control-engine failures,
+          partner latency and error rates, screening backlogs and reconciliation breaks.</p>
+        <p>Logs exclude sensitive payload content by design, and access to operational telemetry is
+          itself access-controlled.</p>
+
+        <h2 id="decisions" style="font-size:var(--step-2)">Decisions we have deliberately not made</h2>
+        <p>Some choices depend on the regulatory outcome and on partner selection, and making them early
+          would be a false signal of progress rather than progress.</p>
+        <ul>
+          <li>Final settlement asset and mechanism. <span class="placeholder">[CONFIRM WITH EKORAILS — as filed]</span></li>
+          <li>Hosting region and data residency for a pilot. <span class="placeholder">[CONFIRM WITH EKORAILS]</span></li>
+          <li>Screening, monitoring and identity vendors. <span class="placeholder">[CONFIRM WITH EKORAILS]</span></li>
+          <li>Whether netting is used between institutions, where permitted.</li>
+        </ul>
+        <p>We publish these as open rather than describing an architecture as complete. It is not.</p>
+      </div>
+      <aside class="sticky-side">
+        <nav class="toc" aria-label="On this page">
+          <h2>On this page</h2>
+          <ol>
+            <li><a href="#data-model">Data model</a></li>
+            <li><a href="#security">Security posture</a></li>
+            <li><a href="#environments">Environments and testing</a></li>
+            <li><a href="#observability">Observability</a></li>
+            <li><a href="#decisions">Open decisions</a></li>
+          </ol>
+        </nav>
+        <div class="callout" style="margin-top:var(--s-4)">
+          <h3>Security reviewers</h3>
+          <p>Architecture documentation, threat model and test reports are available to institutional
+            reviewers under NDA.</p>
+          <p style="margin-top:var(--s-3)"><a class="link-arrow" href="mailto:compliance@ekorails.com">Request a review pack</a></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band" data-section="tech_cta">
+  <div class="shell">
+    <h2>Technical due diligence welcome.</h2>
+    <p>We would rather have the architecture challenged now than defended later.</p>
+    <div class="btn-row">
+      <a class="btn btn-emerald" href="/partners?type=technology" data-cta="tech_partner">Technology partnership</a>
+      <a class="btn btn-on-dark" href="/platform#boundary" data-cta="tech_boundary">System boundary</a>
+    </div>
+  </div>
+</section>

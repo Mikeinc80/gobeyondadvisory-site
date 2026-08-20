@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="EKORails">
+  <rect width="32" height="32" rx="4" fill="#08151F"/>
+  <path d="M7 23 L24 9" stroke="#6FC3A2" stroke-width="2" stroke-linecap="round"/>
+  <path d="M7 26.5 L24 12.5" stroke="#6FC3A2" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <circle cx="23.6" cy="8.6" r="3" fill="#A8863F"/>
+</svg>

@@ -1,0 +1,117 @@
+<!--meta
+{
+  "path": "news.html",
+  "title": "News and Updates | EKORails LTD",
+  "description": "Company and regulatory updates from EKORails LTD. Every update states what changed, the date it changed and the evidence for it. Updates that would change our regulatory status description are reviewed by the compliance officer before publication.",
+  "breadcrumbs": [{ "name": "Home", "path": "index.html" }, { "name": "News and Updates", "path": "news.html" }],
+  "priority": "0.6",
+  "changefreq": "weekly"
+}
+-->
+<section class="section section--tight" style="background:var(--navy-900);color:var(--on-dark)" data-section="news_intro">
+  <div class="shell">
+    <p class="eyebrow" style="color:var(--emerald-300)">News and updates</p>
+    <h1 style="font-size:var(--step-4);color:var(--white);max-width:22ch">What changed, when, and what proves it.</h1>
+    <p class="lede" style="color:var(--on-dark-2);margin-top:var(--s-4)">This page is deliberately
+      quiet. We publish an update when something has actually changed — an incorporation, a filing, an
+      executed agreement, a completed test, a published research piece — and not to maintain momentum.</p>
+  </div>
+</section>
+
+<section class="section" data-section="news_list">
+  <div class="shell">
+    <div class="callout" style="margin-bottom:var(--s-6)">
+      <h2>Publication standard</h2>
+      <p>Any update that touches regulatory status, partner relationships or platform capability is
+        reviewed by the named compliance officer before publication, against the same evidence standard
+        used for the <a href="/pilot-and-regulatory-pathway">regulatory pathway tracker</a>. We do not
+        announce intentions as achievements, and we do not name a partner before that partner has agreed
+        in writing to be named.</p>
+    </div>
+
+    <article class="news-item">
+      <p class="news-date"><span class="placeholder">[CONFIRM WITH EKORAILS — date]</span></p>
+      <div>
+        <h3>EKORails LTD applies to the Central Bank of Nigeria Regulatory Sandbox</h3>
+        <p class="muted small">Category: Regulatory</p>
+        <p style="margin-top:.6rem">EKORails LTD has applied to participate in the Central Bank of
+          Nigeria Regulatory Sandbox with a proposal for a compliance-first settlement and
+          interoperability layer serving a single initial corridor. Participation and all proposed pilot
+          activities remain subject to regulatory review and approval. No decision, admission or approval
+          has been received.</p>
+        <p style="margin-top:.6rem"><a class="link-arrow" href="/pilot-and-regulatory-pathway">Regulatory pathway</a></p>
+      </div>
+    </article>
+
+    <article class="news-item">
+      <p class="news-date"><span class="placeholder">[CONFIRM WITH EKORAILS — date]</span></p>
+      <div>
+        <h3>EKORails LTD incorporated as the operating entity</h3>
+        <p class="muted small">Category: Company</p>
+        <p style="margin-top:.6rem">EKORails LTD is incorporated as the legal applicant and operating
+          entity for the proposed settlement platform. Jurisdiction, company number and date:
+          <span class="placeholder">[CONFIRM WITH EKORAILS]</span></p>
+      </div>
+    </article>
+
+    <article class="news-item">
+      <p class="news-date"><span class="placeholder">[CONFIRM WITH EKORAILS — date]</span></p>
+      <div>
+        <h3>Eko Infrastructure research platform published</h3>
+        <p class="muted small">Category: Research</p>
+        <p style="margin-top:.6rem">Eko Infrastructure, the research, policy and market-intelligence
+          platform operated by EKORails LTD, publishes explanatory and corridor research with named
+          authors, publication and revision dates, and a public source register.</p>
+        <p style="margin-top:.6rem"><a class="link-arrow" href="https://ekoinfrastructure.com">Visit Eko Infrastructure</a></p>
+      </div>
+    </article>
+
+    <div class="callout callout--gold" style="margin-top:var(--s-6)">
+      <h3>Editorial note</h3>
+      <p>The three entries above are the complete set of company updates at the time of publication.
+        Each carries a placeholder where a verified date is required. Nothing is listed here that has not
+        happened, and no forward-looking milestone is presented as an update.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ivory2" data-section="news_subscribe">
+  <div class="shell shell-narrow">
+    <div class="section-head">
+      <p class="eyebrow">Updates</p>
+      <h2>Institutional update list.</h2>
+      <p>Occasional updates for institutions following the regulatory pathway and corridor research. No
+        marketing sequences, no investment communications, unsubscribe in one click.</p>
+    </div>
+    <form class="form" data-form="updates" name="updates" method="POST" action="/thank-you"
+          data-netlify="true" netlify-honeypot="company_website" novalidate>
+      <input type="hidden" name="form-name" value="updates">
+      <input type="hidden" name="form_render_ts" value="">
+      <p class="hp" aria-hidden="true"><label>Company website<input type="text" id="company_website" name="company_website" tabindex="-1" autocomplete="off" aria-label="Leave this field empty"></label></p>
+      <div class="form-grid">
+        <div class="field">
+          <label for="u_name">Full name <span class="req" aria-hidden="true">*</span></label>
+          <input id="u_name" name="full_name" type="text" autocomplete="name" required maxlength="120">
+          <span class="error">Please enter your full name.</span>
+        </div>
+        <div class="field">
+          <label for="u_org">Organisation <span class="req" aria-hidden="true">*</span></label>
+          <input id="u_org" name="organization" type="text" autocomplete="organization" required maxlength="160">
+          <span class="error">Please enter your organisation.</span>
+        </div>
+        <div class="field span-2">
+          <label for="u_email">Work email <span class="req" aria-hidden="true">*</span></label>
+          <input id="u_email" name="work_email" type="email" autocomplete="email" required maxlength="180">
+          <span class="error">Please enter a valid work email address.</span>
+        </div>
+      </div>
+      <div class="checkbox">
+        <input id="u_consent" name="consent" type="checkbox" required value="yes">
+        <label for="u_consent">I consent to receiving occasional updates from EKORails LTD and to my
+          details being processed as described in the <a href="/privacy-policy">privacy policy</a>.
+          <span class="req" aria-hidden="true">*</span></label>
+      </div>
+      <div class="btn-row"><button class="btn btn-emerald" type="submit">Subscribe to updates</button></div>
+    </form>
+  </div>
+</section>

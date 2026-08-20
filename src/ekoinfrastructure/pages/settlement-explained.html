@@ -1,0 +1,176 @@
+<!--meta
+{
+  "path": "settlement-explained.html",
+  "title": "Settlement Explained | Eko Infrastructure",
+  "description": "What settlement means, how clearing differs from settlement, how correspondent banking and FX liquidity work, what settlement finality is, and how stable-value settlement models are being discussed. Neutral, sourced explanations.",
+  "h1": "Settlement, explained.",
+  "topic": "Settlement",
+  "breadcrumbs": [{ "name": "Research", "path": "index.html" }, { "name": "Settlement Explained", "path": "settlement-explained.html" }],
+  "priority": "0.9",
+  "faq": [
+    { "q": "What is the difference between clearing and settlement?", "a": "Clearing is the process of transmitting, reconciling and confirming payment instructions between institutions, and calculating the resulting obligations. Settlement is the actual discharge of those obligations by a transfer of value between the institutions. Clearing establishes who owes what; settlement is the payment that extinguishes the obligation." },
+    { "q": "Is SWIFT a settlement system?", "a": "No. SWIFT is primarily a financial messaging network. It carries standardised instructions between institutions. The movement of value happens through accounts those institutions hold with each other or with a central bank, not through SWIFT itself." },
+    { "q": "What is settlement finality?", "a": "Settlement finality is the point at which a transfer of value becomes irrevocable and unconditional, so it cannot be reversed by the sender, by an insolvency of a participant, or by the operator of the system. Finality is normally defined in the rules of the settlement system and in the law of the jurisdiction that governs it." }
+  ]
+}
+-->
+<section class="hero hero--research" data-section="settlement_hero">
+  <div class="shell">
+    <p class="eyebrow">Settlement explained</p>
+    <h1>Settlement, explained.</h1>
+    <p class="hero-lede">Six concepts that account for most of the confusion in cross-border payments.
+      Each one is explained on its own terms, before any argument is made about what should be built.</p>
+  </div>
+</section>
+
+<section class="section" data-section="settlement_body">
+  <div class="shell">
+    <div class="split split--sidebar">
+      <div class="prose article-body">
+        <h2 id="what-settlement-means">What settlement means</h2>
+        <p>Settlement is the discharge of an obligation between two parties by an actual transfer of
+          value. When a bank in one country owes value to a bank in another, that obligation is settled
+          when value moves between accounts the two institutions can each recognise as theirs — typically
+          accounts held with each other, with a shared correspondent, or with a central bank.</p>
+        <p>Everything else in a payment — the instruction, the compliance checks, the conversion, the
+          statement entry the customer eventually sees — surrounds that moment. Confusing the surrounding
+          activity with settlement itself is the most common error in market commentary, and it makes
+          systems look like competitors when they are in fact doing different jobs.</p>
+
+        <h2 id="clearing-versus-settlement">Clearing versus settlement</h2>
+        <p>Clearing is the transmission, reconciliation and confirmation of instructions, and the
+          calculation of the resulting obligations. Settlement is the transfer of value that discharges
+          them.</p>
+        <p>A clearing process may net many instructions into a single obligation per participant per
+          cycle, which reduces the value that must actually move. Settlement then happens once, for the
+          net figure, in central bank money or another agreed settlement asset. A real-time gross
+          settlement system takes the opposite approach: each instruction settles individually and
+          immediately, removing netting risk at the cost of requiring more liquidity.</p>
+        <p>Neither approach is better in the abstract. They trade liquidity efficiency against risk, and
+          different systems choose different points on that trade.</p>
+        <p><a class="link-arrow" href="/research/clearing-versus-settlement">Full explainer: clearing versus settlement</a></p>
+
+        <h2 id="correspondent-banking">Correspondent banking</h2>
+        <p>A bank that has no presence in a market reaches it through a bank that does. The local bank
+          holds an account for the foreign bank, and value moves between institutions by adjusting the
+          balances on those accounts. The account the foreign bank holds abroad is its nostro; the same
+          account, seen from the local bank&rsquo;s side, is a vostro.</p>
+        <p>The model works, and it carries an enormous share of world trade. Its costs are structural
+          rather than incidental: each institution in a chain applies its own compliance requirements,
+          holds its own liquidity, charges its own fees and provides its own cut-off times, and the
+          originating customer sees the sum of all of them.</p>
+        <p>Since the 2010s the number of correspondent relationships has declined in several regions as
+          banks reassessed the risk and cost of maintaining them — a trend documented in work by the
+          Financial Stability Board and the Bank for International Settlements. The consequence for
+          affected corridors is fewer routes, not necessarily worse ones.
+          <span class="placeholder">[INSERT VERIFIED FIGURE — de-risking trend data, with citation]</span></p>
+
+        <h2 id="fx-liquidity">FX and liquidity</h2>
+        <p>A cross-border payment that changes currency requires someone to hold both currencies and to
+          be willing to exchange them at a price, at a size, at a moment. That party takes a position and
+          is compensated for it.</p>
+        <p>Two things are often conflated here. Price is the rate obtained relative to a reference rate,
+          plus any margin. Availability is whether the currency can be obtained at all, at the size and
+          time needed. In several African corridors, availability rather than price has been the binding
+          constraint for businesses at various times — which is why a narrative built only around
+          &ldquo;spreads&rdquo; misdescribes the problem.
+          <span class="placeholder">[INSERT VERIFIED FIGURE — corridor FX availability evidence]</span></p>
+        <p>No settlement design removes the need for someone to hold and price currency risk. A design
+          can change who holds it, how it is priced, and how visible that price is. It cannot make it
+          free, and any claim that it does should be treated as a red flag.</p>
+
+        <h2 id="settlement-finality">Settlement finality</h2>
+        <p>Finality is the point after which a transfer cannot be revoked — not by the sender, not by the
+          insolvency of a participant, and not by the system operator. It is a legal property as much as
+          a technical one, defined by the rules of the system and by the law governing it.</p>
+        <p>This matters commercially. A payment that appears in a beneficiary&rsquo;s account but is not
+          final can still be reversed, and a business that releases goods against it is exposed. When
+          assessing any settlement proposal, the question is not how fast the balance updates but at what
+          point, under whose rules and under which law, the transfer became irrevocable.</p>
+
+        <h2 id="stable-value">Stable-value settlement models</h2>
+        <p>A recurring proposal is to settle between institutions using a stable-value instrument —
+          typically a token intended to hold a constant value against a reference currency — rather than
+          through correspondent balances.</p>
+        <p>The arguments in favour are that transfers can be effected outside domestic banking hours and
+          that the record of transfer is shared rather than reconciled. The arguments against are that
+          the instrument introduces its own credit, custody, redemption and legal risks; that finality
+          depends on the legal treatment of the instrument in each relevant jurisdiction; and that
+          somebody must still convert to and from local currency at each end, which is where much of the
+          cost sits.</p>
+        <p>Regulatory treatment differs sharply by jurisdiction and continues to change. Any claim that a
+          stable-value model removes foreign exchange cost, eliminates spread or guarantees value
+          stability is not supported by the mechanics: conversion still happens, and the party performing
+          it is still compensated.</p>
+        <p>Eko Infrastructure does not take the position that stable-value settlement is either the answer
+          or a distraction. It is one design among several, and its suitability is corridor-specific,
+          regulator-specific and legally contingent.
+          <span class="placeholder">[CONFIRM — current regulatory treatment by jurisdiction, with citation and date]</span></p>
+
+        <h2 id="the-five-things">The five things people call &ldquo;a payment&rdquo;</h2>
+        <div class="table-wrap" style="margin-top:var(--s-4)">
+          <table class="compare">
+            <caption>Separating the five functions makes most system comparisons tractable.</caption>
+            <thead><tr><th scope="col">Function</th><th scope="col">What happens</th><th scope="col">Typically performed by</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Messaging</strong></td><td>A standardised instruction travels between institutions.</td><td>Messaging networks such as SWIFT; domestic message formats; APIs.</td></tr>
+              <tr><td><strong>Clearing</strong></td><td>Instructions are reconciled and obligations calculated, sometimes netted.</td><td>Clearing houses, switches, regional systems.</td></tr>
+              <tr><td><strong>Conversion</strong></td><td>One currency is exchanged for another at a price.</td><td>Banks, authorised dealers, liquidity providers.</td></tr>
+              <tr><td><strong>Settlement</strong></td><td>Value transfers between institutions and becomes final.</td><td>Central bank systems, correspondent accounts, agreed settlement assets.</td></tr>
+              <tr><td><strong>Payout</strong></td><td>The beneficiary&rsquo;s account is credited domestically.</td><td>Licensed institutions on domestic rails.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A system that is excellent at one of these is not therefore a competitor to a system that
+          performs another. Most usable comparisons start by naming which of the five is under
+          discussion.</p>
+
+        <div class="callout" style="margin-top:var(--s-6)">
+          <h3>Where EKORails fits</h3>
+          <p>EKORails LTD, which operates this platform, is developing an orchestration and record layer
+            intended to sit across these functions rather than replace any of them. Its proposed design,
+            including what it explicitly does not do, is published on
+            <a href="https://ekorails.com/platform">ekorails.com/platform</a>. It is in development and
+            not operating.</p>
+        </div>
+      </div>
+
+      <aside class="sticky-side">
+        <nav class="toc" aria-label="On this page">
+          <h2>On this page</h2>
+          <ol>
+            <li><a href="#what-settlement-means">What settlement means</a></li>
+            <li><a href="#clearing-versus-settlement">Clearing versus settlement</a></li>
+            <li><a href="#correspondent-banking">Correspondent banking</a></li>
+            <li><a href="#fx-liquidity">FX and liquidity</a></li>
+            <li><a href="#settlement-finality">Settlement finality</a></li>
+            <li><a href="#stable-value">Stable-value models</a></li>
+            <li><a href="#the-five-things">The five functions</a></li>
+          </ol>
+        </nav>
+        <div class="callout" style="margin-top:var(--s-4)">
+          <h3>Related</h3>
+          <ul class="card-list" style="margin-top:.6rem">
+            <li><a href="/research/what-papss-does">What PAPSS does</a></li>
+            <li><a href="/research/swift-is-a-messaging-network">SWIFT as a messaging network</a></li>
+            <li><a href="/glossary">Glossary</a></li>
+            <li><a href="/data-and-sources">Data and sources</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <div class="sources">
+      <h2>Sources</h2>
+      <ol>
+        <li>Bank for International Settlements, Committee on Payments and Market Infrastructures — publications on correspondent banking and cross-border payments. <span class="placeholder">[CONFIRM — exact publication, year and URL]</span></li>
+        <li>Financial Stability Board — reporting on correspondent banking relationships. <span class="placeholder">[CONFIRM — exact publication, year and URL]</span></li>
+        <li>World Bank, Remittance Prices Worldwide — cost of sending money by region and corridor. <span class="placeholder">[CONFIRM — quarter, table and URL]</span></li>
+        <li>CPMI Principles for Financial Market Infrastructures — settlement finality definitions. <span class="placeholder">[CONFIRM — edition and URL]</span></li>
+      </ol>
+      <p class="small muted" style="margin-top:var(--s-3)">Every source is listed with a retrieval date in
+        the <a href="/data-and-sources">source register</a>. Corrections:
+        <a href="mailto:media@ekoinfrastructure.com">media@ekoinfrastructure.com</a>.</p>
+    </div>
+  </div>
+</section>

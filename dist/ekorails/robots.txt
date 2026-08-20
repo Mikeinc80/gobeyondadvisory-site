@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /thank-you
+Disallow: /admin/
+
+Sitemap: https://ekorails.com/sitemap.xml

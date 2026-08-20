@@ -1,0 +1,51 @@
+<!--meta
+{
+  "path": "search.html",
+  "title": "Search | Eko Infrastructure",
+  "description": "Search every article, explainer and definition published on Eko Infrastructure — settlement, corridors, policy, technology and reference material.",
+  "h1": "Search.",
+  "topic": "Reference",
+  "robots": "noindex,follow",
+  "noindex": true,
+  "scripts": "<script src=\"/assets/js/search.js\" defer></script>"
+}
+-->
+<section class="hero hero--research" data-section="search_hero">
+  <div class="shell">
+    <p class="eyebrow">Search</p>
+    <h1>Search.</h1>
+    <p class="hero-lede">Full-text search across every page on this site. Results are ranked by where
+      your terms appear — title, summary, then body.</p>
+  </div>
+</section>
+
+<section class="section" data-section="search_body">
+  <div class="shell shell-narrow">
+    <form class="search-form" role="search" action="/search" method="get" data-search-form>
+      <div class="field">
+        <label for="q">Search Eko Infrastructure</label>
+        <input id="q" name="q" type="search" autocomplete="off" spellcheck="false"
+               placeholder="settlement finality, PAPSS, corridor, ISO 20022…">
+      </div>
+      <button class="btn btn-solid" type="submit">Search</button>
+    </form>
+
+    <p id="search-status" role="status" aria-live="polite">Enter a term to search. JavaScript is
+      required for search; every page is also reachable from the navigation and the
+      <a href="/glossary">glossary</a>.</p>
+
+    <div id="search-results"></div>
+
+    <div class="callout" style="margin-top:var(--s-7)">
+      <h2>Popular starting points</h2>
+      <ul class="card-list" style="margin-top:.6rem">
+        <li><a href="/settlement-explained">Settlement explained</a> — clearing, finality, correspondent banking, FX</li>
+        <li><a href="/research/what-papss-does">What PAPSS does</a> — a factual account</li>
+        <li><a href="/research/swift-is-a-messaging-network">SWIFT as a messaging network</a></li>
+        <li><a href="/corridor-intelligence">Corridor intelligence</a> — the method</li>
+        <li><a href="/glossary">Glossary</a> — definitions</li>
+        <li><a href="/data-and-sources">Data and sources</a> — the source register</li>
+      </ul>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" role="img" aria-label="Portrait photograph to be supplied">
+  <rect width="480" height="600" fill="#E4DED2"/>
+  <circle cx="240" cy="238" r="72" fill="none" stroke="#C6BEAE" stroke-width="2"/>
+  <path d="M132 420c0-60 48-104 108-104s108 44 108 104" fill="none" stroke="#C6BEAE" stroke-width="2"/>
+  <text x="240" y="500" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" letter-spacing="1.4" fill="#7A5F22">PHOTOGRAPH TO BE SUPPLIED</text>
+  <text x="240" y="524" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" letter-spacing="1.2" fill="#5C6B75">[CONFIRM WITH EKORAILS]</text>
+</svg>

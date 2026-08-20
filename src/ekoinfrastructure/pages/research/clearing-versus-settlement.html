@@ -1,0 +1,153 @@
+<!--meta
+{
+  "path": "research/clearing-versus-settlement.html",
+  "title": "Clearing versus settlement | Eko Infrastructure",
+  "description": "Messaging, clearing, conversion, settlement and payout are five different functions performed by different parties under different rules. Separating them resolves most arguments about what a payment system does.",
+  "h1": "Clearing versus settlement: the distinction that explains most cross-border confusion",
+  "topic": "Settlement",
+  "og_type": "article",
+  "breadcrumbs": [{ "name": "Research", "path": "index.html" }, { "name": "Settlement Explained", "path": "settlement-explained.html" }, { "name": "Clearing versus settlement", "path": "research/clearing-versus-settlement.html" }],
+  "article": {
+    "type": "Article",
+    "author": "Eko Infrastructure editorial team",
+    "published": "2026-08-20",
+    "updated": "2026-08-20"
+  },
+  "priority": "0.8"
+}
+-->
+<article class="section" data-section="article">
+  <div class="shell">
+    <div class="split split--sidebar">
+      <div>
+        <header class="article-header">
+          <p class="eyebrow">Settlement · Explainer</p>
+          <h1>Clearing versus settlement: the distinction that explains most cross-border confusion</h1>
+          <p class="lede">Messaging, clearing, conversion, settlement and payout are five different
+            things, performed by different parties, under different rules. Most disagreements about what
+            a payment system &ldquo;does&rdquo; dissolve once they are separated.</p>
+          <p class="byline">
+            <span>By <strong>Eko Infrastructure editorial team</strong></span>
+            <span>Published <strong><span class="placeholder">[DATE]</span></strong></span>
+            <span>Last updated <strong><span class="placeholder">[DATE]</span></strong></span>
+            <span>12 min read</span>
+            <span class="review-badge">Source-checked</span>
+          </p>
+        </header>
+
+        <div class="prose article-body">
+          <p>Ask five people in a payments conversation what happens when money moves across a border and
+            you will get five answers that are each partly right. That is not carelessness. It is because
+            the phrase &ldquo;a payment&rdquo; bundles together at least five distinct functions, and
+            different specialists have different ones in mind.</p>
+          <p>Separating them is not pedantry. It determines which system is relevant to a given problem,
+            which institution bears which risk, and whether a proposed improvement addresses the actual
+            constraint or merely relocates it.</p>
+
+          <h2>The five functions</h2>
+          <p><strong>Messaging</strong> is the transmission of a standardised instruction between
+            institutions. It says who is paying whom, how much, in what currency, for what purpose, with
+            what references. Messaging moves information, not value.</p>
+          <p><strong>Clearing</strong> is the reconciliation and confirmation of those instructions and
+            the calculation of the resulting obligations. It establishes who owes what to whom. Clearing
+            may net many instructions into a single obligation per participant per cycle.</p>
+          <p><strong>Conversion</strong> is the exchange of one currency for another at a price, performed
+            by a party who holds both and takes a position. Conversion has a cost because holding and
+            pricing currency risk has a cost.</p>
+          <p><strong>Settlement</strong> is the transfer of value that discharges the obligation, in an
+            agreed settlement asset, between accounts the institutions recognise. Settlement is the
+            moment the obligation is extinguished.</p>
+          <p><strong>Payout</strong> is the domestic credit to the beneficiary&rsquo;s account, performed
+            by a licensed institution on domestic rails within domestic cut-off times.</p>
+
+          <h2>Why the distinction matters commercially</h2>
+          <p>Consider a common complaint: &ldquo;the payment took four days&rdquo;. Which of the five
+            functions consumed the four days? If it was messaging, the fix is a data or connectivity
+            problem. If it was clearing, the answer may be a netting cycle that runs once a day by design.
+            If it was compliance holds arising from incomplete party data in the message, the fix is
+            upstream data quality, not a faster network. If it was conversion waiting on currency
+            availability, no technology changes that. If it was payout arriving after a domestic cut-off,
+            the constraint is a local operating window.</p>
+          <p>Five different diagnoses, five different remedies, one symptom. A vendor who cannot say which
+            one they address is not offering a solution; they are offering a slogan.</p>
+
+          <h2>Netting versus gross settlement</h2>
+          <p>Clearing systems that net obligations reduce the value that must move. If a hundred
+            instructions in both directions collapse into one net figure, only that figure needs to be
+            settled. That is efficient in liquidity terms, and it is why netting is used widely.</p>
+          <p>The cost is exposure between cycles. Until settlement occurs, participants carry obligations
+            to one another. Real-time gross settlement takes the opposite trade: each instruction settles
+            individually and immediately, typically in central bank money, which removes that exposure but
+            requires participants to hold more liquidity through the day.</p>
+          <p>Neither is better in the abstract. Systems choose different points on this trade for good
+            reasons, and a design that criticises another for its choice is usually ignoring the
+            constraint that produced it.</p>
+
+          <h2>Finality is a legal property</h2>
+          <p>The most consequential point, and the one most often skipped. Settlement finality is the
+            moment a transfer becomes irrevocable and unconditional — not reversible by the sender, by a
+            participant&rsquo;s insolvency, or by the operator. It is defined by the rules of the system
+            and by the law governing it.</p>
+          <p>A balance that updates instantly on a screen is not therefore final. A business releasing
+            goods against a credit that is not final is carrying a risk it has probably not priced.
+            Whenever a settlement design is presented, the question to ask is: at what point, under whose
+            rules, and under which law, does this become irrevocable?</p>
+
+          <h2>Applying the frame</h2>
+          <p>Once the five functions are separated, comparisons become tractable. A messaging network and
+            a settlement system are not competitors. A currency conversion service and a clearing system
+            are not substitutes. An orchestration layer that coordinates the sequence is not a settlement
+            system, whatever its marketing says, unless it provides finality — which requires legal
+            standing, not software.</p>
+          <p>The frame is also a useful test of any proposition, including ours. Which of the five does it
+            perform? Which does it depend on others to perform? If the answer is unclear, the design is
+            unclear.</p>
+
+          <div class="callout callout--gold">
+            <h3>Disclosure and regulatory note</h3>
+            <p>Eko Infrastructure is operated by EKORails LTD, which is developing an orchestration and
+              record layer for cross-border transactions. EKORails LTD has applied to participate in the
+              Central Bank of Nigeria Regulatory Sandbox; participation and all proposed pilot activities
+              remain subject to regulatory review and approval. EKORails LTD is not licensed, authorised,
+              approved, endorsed or supervised by any financial services regulator. Its proposed design
+              — including which of the five functions it does not perform — is published at
+              <a href="https://ekorails.com/platform#boundary">ekorails.com/platform</a>. This article is
+              general information and is not financial, investment, legal or payment-services advice.</p>
+          </div>
+        </div>
+
+        <div class="sources">
+          <h2>Sources</h2>
+          <ol>
+            <li>CPMI–IOSCO, <em>Principles for Financial Market Infrastructures</em> — definitions of clearing, settlement and finality. <span class="placeholder">[CONFIRM — edition, year, URL]</span> <span class="source-date">Retrieved <span class="placeholder">[DATE]</span></span></li>
+            <li>Bank for International Settlements, Committee on Payments and Market Infrastructures — cross-border payments programme material. <span class="placeholder">[CONFIRM — publication, year, URL]</span></li>
+            <li>ISO 20022 — message standard documentation. <span class="placeholder">[CONFIRM — URL]</span></li>
+          </ol>
+        </div>
+
+        <nav class="section--tight" aria-label="Related articles" style="padding-bottom:0">
+          <h2 style="font-size:var(--step-1);margin-bottom:var(--s-3)">Related</h2>
+          <ul class="card-list">
+            <li><a href="/research/swift-is-a-messaging-network">SWIFT is a messaging network: what that means for comparisons</a></li>
+            <li><a href="/research/what-papss-does">What PAPSS does, where it operates, and where private platforms may complement it</a></li>
+            <li><a href="/settlement-explained">Settlement explained — the full topic page</a></li>
+            <li><a href="/glossary">Glossary: finality, netting, RTGS, nostro and vostro</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <aside class="sticky-side">
+        <div class="callout">
+          <h3>In one line</h3>
+          <p>Clearing establishes who owes what. Settlement is the transfer that extinguishes the
+            obligation. Everything else is messaging, conversion or payout.</p>
+        </div>
+        <div class="callout" style="margin-top:var(--s-4)">
+          <h3>On EKORails.com</h3>
+          <p><a href="https://ekorails.com/platform#lifecycle">The proposed transaction lifecycle</a> —
+            how these functions are sequenced in the EKORails design, and which parties own each.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</article>

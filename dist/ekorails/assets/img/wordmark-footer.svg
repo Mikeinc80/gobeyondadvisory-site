@@ -1,0 +1,8 @@
+<svg width="132" height="30" viewBox="0 0 132 30" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="EKORails">
+  <rect x="0.6" y="0.6" width="28.8" height="28.8" rx="3" fill="none" stroke="rgba(243,241,236,0.3)"/>
+  <path d="M7 21.5 L23 8.5" stroke="#6FC3A2" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M7 24.5 L23 11.5" stroke="#6FC3A2" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+  <path d="M9.4 22.9 L10.6 21.2 M13.4 19.6 L14.6 17.9 M17.4 16.3 L18.6 14.6" stroke="#6FC3A2" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+  <circle cx="22.6" cy="8.2" r="2.6" fill="#A8863F"/>
+  <text x="38" y="21" font-family="Inter, Helvetica, Arial, sans-serif" font-size="17" letter-spacing="0.2"><tspan font-weight="700" fill="#FFFFFF">EKO</tspan><tspan font-weight="400" fill="#C2CDD5">Rails</tspan></text>
+</svg>

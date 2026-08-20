@@ -1,0 +1,221 @@
+# ==========================================================================
+# EKORails.com — Netlify site configuration
+# Netlify UI: Base directory = "" (repo root), Build command = "python3 build.py",
+# Publish directory = "dist/ekorails".
+# ==========================================================================
+
+[build]
+  command = "python3 build.py ekorails"
+  publish = "dist/ekorails"
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+# --------------------------------------------------------------- headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+    Permissions-Policy = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+# Content-Security-Policy is emitted per page into dist/<site>/_headers by build.py,
+# because each page carries inline JSON-LD that must be allowed by SHA-256 hash
+# rather than by weakening the policy with 'unsafe-inline'.
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# --------------------------------------------------------------- redirects
+# Legacy domains (configure eco-rails.com and eco-rail.com as domain aliases,
+# or point them at this site and let these rules canonicalise the path).
+[[redirects]]
+  from = "https://eco-rails.com/*"
+  to = "https://ekorails.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.eco-rails.com/*"
+  to = "https://ekorails.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://eco-rail.com/*"
+  to = "https://ekorails.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.eco-rail.com/*"
+  to = "https://ekorails.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.ekorails.com/*"
+  to = "https://ekorails.com/:splat"
+  status = 301
+  force = true
+
+# Legacy ECO Infrastructure / ECO Rails paths preserved to their nearest equivalent.
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/about"
+  to = "/leadership"
+  status = 301
+
+[[redirects]]
+  from = "/about-us"
+  to = "/leadership"
+  status = 301
+
+[[redirects]]
+  from = "/team"
+  to = "/leadership"
+  status = 301
+
+[[redirects]]
+  from = "/product"
+  to = "/platform"
+  status = 301
+
+[[redirects]]
+  from = "/products"
+  to = "/platform"
+  status = 301
+
+[[redirects]]
+  from = "/solutions"
+  to = "/use-cases"
+  status = 301
+
+[[redirects]]
+  from = "/network"
+  to = "/corridors"
+  status = 301
+
+[[redirects]]
+  from = "/rails"
+  to = "/platform"
+  status = 301
+
+[[redirects]]
+  from = "/infrastructure"
+  to = "/platform"
+  status = 301
+
+[[redirects]]
+  from = "/security"
+  to = "/compliance-and-risk"
+  status = 301
+
+[[redirects]]
+  from = "/compliance"
+  to = "/compliance-and-risk"
+  status = 301
+
+[[redirects]]
+  from = "/regulation"
+  to = "/pilot-and-regulatory-pathway"
+  status = 301
+
+[[redirects]]
+  from = "/regulatory"
+  to = "/pilot-and-regulatory-pathway"
+  status = 301
+
+[[redirects]]
+  from = "/sandbox"
+  to = "/pilot-and-regulatory-pathway"
+  status = 301
+
+[[redirects]]
+  from = "/roadmap"
+  to = "/pilot-and-regulatory-pathway"
+  status = 301
+
+[[redirects]]
+  from = "/partners-and-investors"
+  to = "/partners"
+  status = 301
+
+[[redirects]]
+  from = "/investors"
+  to = "/partners"
+  status = 301
+
+[[redirects]]
+  from = "/invest"
+  to = "/partners"
+  status = 301
+
+[[redirects]]
+  from = "/contact-us"
+  to = "/contact"
+  status = 301
+
+[[redirects]]
+  from = "/blog"
+  to = "https://ekoinfrastructure.com/"
+  status = 301
+
+[[redirects]]
+  from = "/blog/*"
+  to = "https://ekoinfrastructure.com/"
+  status = 301
+
+[[redirects]]
+  from = "/insights"
+  to = "https://ekoinfrastructure.com/"
+  status = 301
+
+[[redirects]]
+  from = "/insights/*"
+  to = "https://ekoinfrastructure.com/"
+  status = 301
+
+[[redirects]]
+  from = "/research"
+  to = "https://ekoinfrastructure.com/"
+  status = 301
+
+[[redirects]]
+  from = "/settlement"
+  to = "https://ekoinfrastructure.com/settlement-explained"
+  status = 301
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy-policy"
+  status = 301
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms-of-use"
+  status = 301
+
+[[redirects]]
+  from = "/disclaimer"
+  to = "/regulatory-disclaimer"
+  status = 301

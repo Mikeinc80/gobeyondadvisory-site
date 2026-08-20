@@ -1,0 +1,208 @@
+# ==========================================================================
+# EkoInfrastructure.com — Netlify site configuration
+# Netlify UI: Base directory = "" (repo root), Build command = "python3 build.py",
+# Publish directory = "dist/ekoinfrastructure".
+# ==========================================================================
+
+[build]
+  command = "python3 build.py ekoinfrastructure"
+  publish = "dist/ekoinfrastructure"
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+    Permissions-Policy = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+# Content-Security-Policy is emitted per page into dist/<site>/_headers by build.py,
+# because each page carries inline JSON-LD that must be allowed by SHA-256 hash.
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/search-index.json"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# --------------------------------------------------------------- redirects
+# eco-settlement.com is redirected to the settlement explainer, per the SEO plan.
+[[redirects]]
+  from = "https://eco-settlement.com/"
+  to = "https://ekoinfrastructure.com/settlement-explained"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.eco-settlement.com/"
+  to = "https://ekoinfrastructure.com/settlement-explained"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://eco-settlement.com/*"
+  to = "https://ekoinfrastructure.com/settlement-explained"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.eco-settlement.com/*"
+  to = "https://ekoinfrastructure.com/settlement-explained"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.ekoinfrastructure.com/*"
+  to = "https://ekoinfrastructure.com/:splat"
+  status = 301
+  force = true
+
+# Legacy ECO Settlement content paths preserved to their nearest equivalent.
+[[redirects]]
+  from = "/settlement"
+  to = "/settlement-explained"
+  status = 301
+
+[[redirects]]
+  from = "/what-is-settlement"
+  to = "/settlement-explained"
+  status = 301
+
+[[redirects]]
+  from = "/clearing"
+  to = "/research/clearing-versus-settlement"
+  status = 301
+
+[[redirects]]
+  from = "/clearing-vs-settlement"
+  to = "/research/clearing-versus-settlement"
+  status = 301
+
+[[redirects]]
+  from = "/correspondent-banking"
+  to = "/settlement-explained#correspondent-banking"
+  status = 301
+
+[[redirects]]
+  from = "/fx"
+  to = "/settlement-explained#fx-liquidity"
+  status = 301
+
+[[redirects]]
+  from = "/fx-liquidity"
+  to = "/settlement-explained#fx-liquidity"
+  status = 301
+
+[[redirects]]
+  from = "/finality"
+  to = "/settlement-explained#settlement-finality"
+  status = 301
+
+[[redirects]]
+  from = "/stablecoins"
+  to = "/settlement-explained#stable-value"
+  status = 301
+
+[[redirects]]
+  from = "/stablecoin-settlement"
+  to = "/settlement-explained#stable-value"
+  status = 301
+
+[[redirects]]
+  from = "/papss"
+  to = "/research/what-papss-does"
+  status = 301
+
+[[redirects]]
+  from = "/swift"
+  to = "/research/swift-is-a-messaging-network"
+  status = 301
+
+[[redirects]]
+  from = "/compliance"
+  to = "/policy-and-regulation#aml"
+  status = 301
+
+[[redirects]]
+  from = "/compliance-architecture"
+  to = "/technology#compliance-architecture"
+  status = 301
+
+[[redirects]]
+  from = "/transaction-monitoring"
+  to = "/technology#monitoring"
+  status = 301
+
+[[redirects]]
+  from = "/auditability"
+  to = "/technology#auditability"
+  status = 301
+
+[[redirects]]
+  from = "/data-sovereignty"
+  to = "/technology#data-sovereignty"
+  status = 301
+
+[[redirects]]
+  from = "/switches"
+  to = "/settlement-explained#the-five-things"
+  status = 301
+
+[[redirects]]
+  from = "/central-bank-settlement"
+  to = "/settlement-explained#settlement-finality"
+  status = 301
+
+[[redirects]]
+  from = "/corridors"
+  to = "/corridor-intelligence"
+  status = 301
+
+[[redirects]]
+  from = "/african-trade-corridors"
+  to = "/corridor-intelligence"
+  status = 301
+
+[[redirects]]
+  from = "/blog"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/blog/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/about-us"
+  to = "/about"
+  status = 301
+
+[[redirects]]
+  from = "/sources"
+  to = "/data-and-sources"
+  status = 301
+
+[[redirects]]
+  from = "/privacy"
+  to = "https://ekorails.com/privacy-policy"
+  status = 301
+
+[[redirects]]
+  from = "/terms"
+  to = "https://ekorails.com/terms-of-use"
+  status = 301

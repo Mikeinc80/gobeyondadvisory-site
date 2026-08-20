@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="EKORails — settlement infrastructure for African trade">
+  <rect width="1200" height="630" fill="#08151F"/>
+  <g opacity="0.5">
+    <path d="M120 470 C 380 470, 520 250, 900 250" stroke="#12855F" stroke-width="2" fill="none" stroke-dasharray="6 8"/>
+    <circle cx="120" cy="470" r="9" fill="#6FC3A2"/>
+    <circle cx="900" cy="250" r="9" fill="#A8863F"/>
+  </g>
+  <rect x="80" y="80" width="52" height="52" rx="6" fill="none" stroke="#6FC3A2" stroke-width="2"/>
+  <path d="M92 118 L122 94" stroke="#6FC3A2" stroke-width="2.4" stroke-linecap="round"/>
+  <text x="152" y="116" font-family="Inter, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" letter-spacing="1" fill="#FFFFFF">EKORAILS</text>
+  <text x="80" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="66" font-weight="600" fill="#FFFFFF">Settlement infrastructure</text>
+  <text x="80" y="378" font-family="Georgia, 'Times New Roman', serif" font-size="66" font-weight="600" fill="#FFFFFF">for African trade.</text>
+  <text x="80" y="440" font-family="Inter, Helvetica, Arial, sans-serif" font-size="24" fill="#C2CDD5">Compliance-first settlement and interoperability, in development.</text>
+  <line x1="80" y1="520" x2="1120" y2="520" stroke="rgba(243,241,236,0.2)"/>
+  <text x="80" y="562" font-family="monospace" font-size="19" letter-spacing="2" fill="#93A3AD">EKORAILS LTD · PROPOSED PILOT ACTIVITIES SUBJECT TO REGULATORY APPROVAL</text>
+</svg>

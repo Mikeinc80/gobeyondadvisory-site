@@ -1,0 +1,209 @@
+<!--meta
+{
+  "path": "partners.html",
+  "title": "Institutional Partnerships | EKORails",
+  "description": "EKORails works with banks and licensed payment institutions, enterprise and trade partners, FX and liquidity providers, technology and cybersecurity providers, identity and compliance providers, regulators and policy institutions, and research partners. Partnership enquiry form.",
+  "breadcrumbs": [{ "name": "Home", "path": "index.html" }, { "name": "Partners", "path": "partners.html" }],
+  "priority": "0.9",
+  "scripts": "<script src=\"/assets/js/partner-form.js\" defer></script>"
+}
+-->
+<section class="section section--tight" style="background:var(--navy-900);color:var(--on-dark)" data-section="partners_intro">
+  <div class="shell">
+    <p class="eyebrow" style="color:var(--emerald-300)">Institutional partnerships</p>
+    <h1 style="font-size:var(--step-4);color:var(--white);max-width:24ch">Built with institutions, or not built at all.</h1>
+    <p class="lede" style="color:var(--on-dark-2);margin-top:var(--s-4)">Every function in a corridor
+      that requires a licence is performed by an institution that holds one. That makes partnership the
+      whole strategy rather than a channel within it.</p>
+    <p class="hero-status" style="max-width:74ch">
+      <span aria-hidden="true">▲</span>
+      <span>This page is for institutional, enterprise, technology, regulatory and research
+        partnerships only. EKORails does not solicit investment through this website, does not publish
+        investment terms and does not accept investment enquiries through this form.</span>
+    </p>
+  </div>
+</section>
+
+<section class="section" data-section="partners_categories">
+  <div class="shell">
+    <div class="section-head">
+      <p class="eyebrow">Partner categories</p>
+      <h2>Seven kinds of partner, each with a different first conversation.</h2>
+    </div>
+    <div class="partner-cat">
+      <h3>Banks and licensed payment institutions</h3>
+      <p>Institutions that can hold customer funds, execute conversion, provide settlement or effect
+        payout in either market of the corridor. First conversation: scope, licensing, control
+        expectations, data sharing and the split of regulated responsibilities.</p>
+    </div>
+    <div class="partner-cat">
+      <h3>Enterprise and trade partners</h3>
+      <p>Businesses with recurring, documented corridor obligations who are willing to participate in a
+        controlled pilot within the approved scope. First conversation: your actual flows, your current
+        reconciliation problem and whether it is in scope.</p>
+    </div>
+    <div class="partner-cat">
+      <h3>FX and liquidity providers</h3>
+      <p>Licensed counterparties able to quote and execute the conversion leg at the sizes and times the
+        corridor requires. First conversation: currency pairs, size bands, quote mechanics and settlement
+        arrangements.</p>
+    </div>
+    <div class="partner-cat">
+      <h3>Technology and cybersecurity providers</h3>
+      <p>Infrastructure, resilience, testing and assurance partners supporting a platform intended for
+        institutional use. First conversation: scope of engagement, security requirements and
+        subcontracting.</p>
+    </div>
+    <div class="partner-cat">
+      <h3>Identity and compliance providers</h3>
+      <p>Verification, screening, monitoring and case-management capabilities meeting institutional
+        standards in both markets of a corridor. First conversation: coverage, list sources, latency,
+        accuracy and evidence retention.</p>
+    </div>
+    <div class="partner-cat">
+      <h3>Regulators and policy institutions</h3>
+      <p>Supervisors, policy bodies, development finance institutions and trade organisations engaging on
+        interoperability, corridor economics, controls and market structure. Enquiries route directly to
+        the named compliance officer.</p>
+    </div>
+    <div class="partner-cat">
+      <h3>Research and development partners</h3>
+      <p>Institutions collaborating on corridor data, settlement research and market analysis, published
+        through <a href="https://ekoinfrastructure.com">Eko Infrastructure</a> with sources and named
+        authors.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ivory2" id="enquiry" data-section="partners_form">
+  <div class="shell shell-narrow">
+    <div class="section-head">
+      <p class="eyebrow">Partnership enquiry</p>
+      <h2>Discuss a partnership.</h2>
+      <p>One form, routed by organisation type to the right person. Bank, payment institution and
+        regulator enquiries go to the named compliance officer; enterprise and technology enquiries go
+        to the partnerships team.</p>
+    </div>
+
+    <form class="form" data-form="partnership" name="partnership" method="POST"
+          action="/thank-you" data-netlify="true" netlify-honeypot="company_website" novalidate>
+      <input type="hidden" name="form-name" value="partnership">
+      <input type="hidden" name="form_render_ts" value="">
+      <input type="hidden" name="source_page" value="/partners">
+      <p class="hp" aria-hidden="true">
+        <label>Company website<input type="text" id="company_website" name="company_website" tabindex="-1" autocomplete="off" aria-label="Leave this field empty"></label>
+      </p>
+
+      <fieldset>
+        <legend>About you</legend>
+        <div class="form-grid" style="margin-top:var(--s-4)">
+          <div class="field">
+            <label for="full_name">Full name <span class="req" aria-hidden="true">*</span></label>
+            <input id="full_name" name="full_name" type="text" autocomplete="name" required maxlength="120">
+            <span class="error">Please enter your full name.</span>
+          </div>
+          <div class="field">
+            <label for="position">Position <span class="req" aria-hidden="true">*</span></label>
+            <input id="position" name="position" type="text" autocomplete="organization-title" required maxlength="120">
+            <span class="error">Please enter your position.</span>
+          </div>
+          <div class="field">
+            <label for="organization">Organisation <span class="req" aria-hidden="true">*</span></label>
+            <input id="organization" name="organization" type="text" autocomplete="organization" required maxlength="160">
+            <span class="error">Please enter your organisation.</span>
+          </div>
+          <div class="field">
+            <label for="country">Country <span class="req" aria-hidden="true">*</span></label>
+            <input id="country" name="country" type="text" autocomplete="country-name" required maxlength="80">
+            <span class="error">Please enter the country your organisation operates from.</span>
+          </div>
+          <div class="field span-2">
+            <label for="work_email">Work email <span class="req" aria-hidden="true">*</span></label>
+            <input id="work_email" name="work_email" type="email" autocomplete="email" required
+                   maxlength="180" pattern="[^@\s]+@[^@\s.]+\.[^@\s]{2,}">
+            <span class="hint">Please use an organisational email address. Free webmail addresses are
+              accepted but slow down verification.</span>
+            <span class="error">Please enter a valid work email address.</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>About the partnership</legend>
+        <div class="form-grid" style="margin-top:var(--s-4)">
+          <div class="field span-2">
+            <label for="organization_type">Organisation type <span class="req" aria-hidden="true">*</span></label>
+            <select id="organization_type" name="organization_type" required>
+              <option value="">Select organisation type…</option>
+              <option value="bank_or_payment_institution">Bank or licensed payment institution</option>
+              <option value="enterprise_or_trade">Enterprise or trade organisation</option>
+              <option value="fx_or_liquidity">FX or liquidity provider</option>
+              <option value="technology_provider">Technology or cybersecurity provider</option>
+              <option value="compliance_provider">Identity or compliance provider</option>
+              <option value="regulator_or_government">Government, regulator or policy institution</option>
+              <option value="research_organization">Research organisation</option>
+              <option value="general">General institutional enquiry</option>
+            </select>
+            <span class="error">Please select an organisation type.</span>
+          </div>
+          <div class="field span-2">
+            <label for="proposed_partnership">Proposed partnership <span class="req" aria-hidden="true">*</span></label>
+            <input id="proposed_partnership" name="proposed_partnership" type="text" required maxlength="200">
+            <span class="hint">In one line — for example &ldquo;settlement partner for the receiving market&rdquo; or &ldquo;sanctions screening provider&rdquo;.</span>
+            <span class="error">Please describe the partnership you are proposing.</span>
+          </div>
+          <div class="field span-2" data-if-regulated>
+            <label for="licence_status">Relevant licence or regulatory status</label>
+            <input id="licence_status" name="licence_status" type="text" maxlength="200">
+            <span class="hint">Licence type, issuing authority and licence number where applicable. Leave blank if not applicable.</span>
+          </div>
+          <div class="field">
+            <label for="expected_corridor">Expected transaction corridor</label>
+            <input id="expected_corridor" name="expected_corridor" type="text" maxlength="120">
+            <span class="hint">For example &ldquo;Nigeria to [market]&rdquo;. Leave blank if not applicable.</span>
+          </div>
+          <div class="field">
+            <label for="volume_range">Expected transaction volume range</label>
+            <select id="volume_range" name="volume_range">
+              <option value="">Not applicable / unknown</option>
+              <option value="under_100k_month">Under US$100,000 per month</option>
+              <option value="100k_1m_month">US$100,000 – US$1m per month</option>
+              <option value="1m_10m_month">US$1m – US$10m per month</option>
+              <option value="10m_50m_month">US$10m – US$50m per month</option>
+              <option value="over_50m_month">Over US$50m per month</option>
+            </select>
+            <span class="hint">Indicative only. Nothing here is a commitment by either party.</span>
+          </div>
+          <div class="field span-2">
+            <label for="message">Message <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="message" name="message" required maxlength="4000"></textarea>
+            <span class="hint">Please do not include confidential information in a first message. We will
+              put an NDA in place before that conversation.</span>
+            <span class="error">Please tell us what you would like to discuss.</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="checkbox">
+        <input id="consent" name="consent" type="checkbox" required value="yes">
+        <label for="consent">I consent to EKORails LTD storing and processing the information in this
+          form in order to respond to my enquiry, as described in the
+          <a href="/privacy-policy">privacy policy</a>. I understand this is not an application for a
+          financial service and does not create any obligation on either party.
+          <span class="req" aria-hidden="true">*</span></label>
+      </div>
+
+      <div class="callout callout--gold">
+        <p><strong>Please note.</strong> This form is not for investment enquiries. EKORails LTD does not
+          publish investment terms, equity offers, convertible-note opportunities, governance seats,
+          partner economics or fundraising deadlines on this website, and does not accept investment
+          enquiries here.</p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-emerald" type="submit">Send partnership enquiry</button>
+        <span class="small muted">Typical response time: <span class="placeholder">[CONFIRM WITH EKORAILS]</span></span>
+      </div>
+    </form>
+  </div>
+</section>

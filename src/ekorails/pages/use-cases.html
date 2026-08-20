@@ -1,0 +1,154 @@
+<!--meta
+{
+  "path": "use-cases.html",
+  "title": "Use Cases | Institutional settlement flows | EKORails",
+  "description": "The institutional and business use cases EKORails is designing for: B2B trade invoice settlement, institutional treasury movement, approved supplier and merchant payments, regulated partner settlement and corridor reconciliation. Pilot scope is limited to what regulators and partners approve.",
+  "breadcrumbs": [{ "name": "Home", "path": "index.html" }, { "name": "Use Cases", "path": "use-cases.html" }],
+  "priority": "0.8"
+}
+-->
+<section class="section section--tight" style="background:var(--navy-900);color:var(--on-dark)" data-section="usecases_intro">
+  <div class="shell">
+    <p class="eyebrow" style="color:var(--emerald-300)">Use cases</p>
+    <h1 style="font-size:var(--step-4);color:var(--white);max-width:24ch">Five flows, each one a real reconciliation problem before it is a payment problem.</h1>
+    <p class="lede" style="color:var(--on-dark-2);margin-top:var(--s-4)">The use cases below are the
+      ones set out in EKORails LTD&rsquo;s regulatory filing. Any pilot would be limited to the customer
+      groups, transaction types and value bands agreed with the regulator and with partners.</p>
+  </div>
+</section>
+
+<section class="section" data-section="usecases_detail">
+  <div class="shell">
+    <div class="section-head">
+      <p class="eyebrow">In scope</p>
+      <h2>What the platform is being designed to carry.</h2>
+    </div>
+
+    <details class="acc" open>
+      <summary>01 — B2B trade invoice settlement</summary>
+      <div>
+        <p><strong>The situation.</strong> An importer in one market owes a supplier in the other against
+          a specific invoice. The payment eventually arrives, but the invoice number does not travel with
+          it. The supplier&rsquo;s finance team cannot match the credit to the invoice, so goods release,
+          credit terms and the next order all wait on an email chain.</p>
+        <p><strong>What EKORails is designed to do.</strong> Carry the commercial reference — invoice
+          number, purchase order, and agreed remittance data — as structured fields through every leg, so
+          the confirmation the beneficiary receives already identifies what was paid and why.</p>
+        <p><strong>What partners do.</strong> The originating bank debits the payer. A licensed
+          counterparty performs any conversion. A licensed institution in the receiving market credits
+          the beneficiary.</p>
+        <p><strong>Controls.</strong> Both businesses verified before first use; beneficiary
+          pre-registration; per-relationship value and velocity limits; screening on every instruction.</p>
+        <p><strong>Status.</strong> <span class="chip chip-progress">In development</span>
+          <span class="placeholder">[SUBJECT TO REGULATORY APPROVAL]</span></p>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary>02 — Institutional treasury movement</summary>
+      <div>
+        <p><strong>The situation.</strong> A corporate or institutional treasury needs to move its own
+          funds across the corridor on a predictable schedule. The difficulty is rarely the transfer
+          itself; it is not knowing, at the point of instruction, when the value will land and at what
+          rate, and therefore having to hold defensive balances on both sides.</p>
+        <p><strong>What EKORails is designed to do.</strong> Give the treasury team a single instruction,
+          a recorded rate and executing party, a stated timing window with the corridor&rsquo;s cut-offs
+          made explicit, and one reconciled record per movement.</p>
+        <p><strong>What partners do.</strong> Hold the accounts on both sides, execute conversion,
+          provide settlement.</p>
+        <p><strong>Controls.</strong> Same-legal-entity verification, dual approval workflow, scheduled
+          limits, full audit trail.</p>
+        <p><strong>Status.</strong> <span class="chip chip-progress">In development</span></p>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary>03 — Approved supplier and merchant payments</summary>
+      <div>
+        <p><strong>The situation.</strong> A business pays the same set of suppliers or merchants every
+          month. Each payment is screened as though it were the first, which produces repeated
+          verification work and avoidable holds on relationships that are already well understood.</p>
+        <p><strong>What EKORails is designed to do.</strong> Support a whitelisted beneficiary model:
+          each beneficiary verified and registered once, with per-relationship limits, so that recurring
+          payments are screened proportionately and exceptions stand out instead of being buried.</p>
+        <p><strong>What partners do.</strong> Own the regulated due diligence decision on each
+          beneficiary and perform the payout.</p>
+        <p><strong>Controls.</strong> Beneficiary re-verification on a defined cycle; change-of-detail
+          controls to resist invoice redirection fraud; batch submission with individual results.</p>
+        <p><strong>Status.</strong> <span class="chip chip-planned">Proposed</span></p>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary>04 — Regulated partner settlement</summary>
+      <div>
+        <p><strong>The situation.</strong> Two licensed institutions with corridor obligations to each
+          other reconcile positions across statements, spreadsheets and email, and discover breaks days
+          after the fact.</p>
+        <p><strong>What EKORails is designed to do.</strong> Provide both institutions with the same
+          transaction record in the same form at the same time, with exceptions raised as cases rather
+          than discovered in a month-end reconciliation.</p>
+        <p><strong>What partners do.</strong> Everything that requires a licence: funds, conversion,
+          settlement and the filings of record with their own supervisors.</p>
+        <p><strong>Controls.</strong> Institution-level access control, segregation of duties,
+          supervisory reporting extracts, netting arrangements where permitted
+          <span class="placeholder">[CONFIRM WITH EKORAILS]</span>.</p>
+        <p><strong>Status.</strong> <span class="chip chip-planned">Proposed</span></p>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary>05 — Corridor reconciliation and reporting</summary>
+      <div>
+        <p><strong>The situation.</strong> No participant has a complete view of the corridor. Each holds
+          a fragment, and assembling the whole is manual work performed after something has already gone
+          wrong.</p>
+        <p><strong>What EKORails is designed to do.</strong> Maintain one authoritative record per
+          transaction — instruction, parties, states, timings, executing partners, fees and outcome —
+          available as scheduled extracts to finance, operations and compliance teams.</p>
+        <p><strong>What partners do.</strong> Confirm their legs; their own books remain their records
+          of account.</p>
+        <p><strong>Controls.</strong> Append-only audit record, role-based extract permissions, retention
+          to schedule.</p>
+        <p><strong>Status.</strong> <span class="chip chip-progress">In development</span></p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="section section--ivory2" data-section="usecases_out">
+  <div class="shell">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Out of scope</p>
+        <h2 style="font-size:var(--step-3)">What EKORails is not building, and will not market.</h2>
+        <p class="lede" style="margin-top:var(--s-4)">Being specific about exclusions is part of being
+          credible about inclusions. None of the following is in the proposed pilot scope.</p>
+      </div>
+      <div>
+        <ul class="card-list" style="gap:.7rem">
+          <li>Unrestricted consumer or retail remittance marketed to the public.</li>
+          <li>Any token, coin, digital asset offering or investment instrument.</li>
+          <li>Deposit taking, savings, interest-bearing accounts or e-money issuance in its own name.</li>
+          <li>Lending, credit, trade finance or guarantees.</li>
+          <li>Currency conversion as principal.</li>
+          <li>Custody of customer funds.</li>
+          <li>Card issuing or acquiring.</li>
+          <li>Services in any market where the required partner authorisations are not in place.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band" data-section="usecases_cta">
+  <div class="shell">
+    <h2>Have a corridor flow you would test in a pilot?</h2>
+    <p>Enterprise pilot interest is assessed against the approved scope. We would rather tell you early
+      that a flow is out of scope than keep you in a pipeline.</p>
+    <div class="btn-row">
+      <a class="btn btn-emerald" href="/partners?type=enterprise" data-cta="usecases_pilot">Enterprise Pilot Interest</a>
+      <a class="btn btn-on-dark" href="/corridors" data-cta="usecases_corridor">See corridor detail</a>
+    </div>
+  </div>
+</section>

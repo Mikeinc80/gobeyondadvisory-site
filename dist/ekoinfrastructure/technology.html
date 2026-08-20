@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" class="site-ekoinfrastructure">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Technology | Eko Infrastructure</title>
+<meta name="description" content="The engineering behind payment policy: ISO 20022 and messaging standards, compliance architecture, transaction monitoring, auditability, data sovereignty and what distributed ledger designs do and do not change.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://ekoinfrastructure.com/technology">
+<meta name="theme-color" content="#F8F6F1">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Eko Infrastructure">
+<meta property="og:title" content="Technology | Eko Infrastructure">
+<meta property="og:description" content="The engineering behind payment policy: ISO 20022 and messaging standards, compliance architecture, transaction monitoring, auditability, data sovereignty and what distributed ledger designs do and do not change.">
+<meta property="og:url" content="https://ekoinfrastructure.com/technology">
+<meta property="og:image" content="https://ekoinfrastructure.com/assets/img/og-default.png">
+<meta property="og:image:alt" content="Eko Infrastructure — research and intelligence for African settlement infrastructure.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Technology | Eko Infrastructure">
+<meta name="twitter:description" content="The engineering behind payment policy: ISO 20022 and messaging standards, compliance architecture, transaction monitoring, auditability, data sovereignty and what distributed ledger designs do and do not change.">
+<meta name="twitter:image" content="https://ekoinfrastructure.com/assets/img/og-default.png">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/css/site.css">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://ekoinfrastructure.com/#organization", "name": "EKORails LTD", "alternateName": "Eko Infrastructure", "url": "https://ekoinfrastructure.com/", "logo": "https://ekoinfrastructure.com/assets/img/og-default.png", "description": "Eko Infrastructure is the research, policy and market-intelligence platform operated by EKORails LTD, covering clearing, settlement, corridors, compliance and payment policy across African trade.", "slogan": "Research and intelligence for African settlement infrastructure.", "email": "media@ekoinfrastructure.com", "sameAs": ["https://ekorails.com"], "contactPoint": [{"@type": "ContactPoint", "contactType": "media", "email": "media@ekoinfrastructure.com", "availableLanguage": ["en"]}, {"@type": "ContactPoint", "contactType": "research", "email": "media@ekoinfrastructure.com", "availableLanguage": ["en"]}], "parentOrganization": {"@type": "Organization", "name": "EKORails LTD", "url": "https://ekorails.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "@id": "https://ekoinfrastructure.com/#website", "url": "https://ekoinfrastructure.com/", "name": "Eko Infrastructure", "publisher": {"@id": "https://ekoinfrastructure.com/#organization"}, "inLanguage": "en", "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": "https://ekoinfrastructure.com/search?q={search_term_string}"}, "query-input": "required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Research", "item": "https://ekoinfrastructure.com/"}, {"@type": "ListItem", "position": 2, "name": "Technology", "item": "https://ekoinfrastructure.com/technology"}]}</script>
+</head>
+<body class="">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header" data-header>
+  <div class="shell header-inner">
+    <a class="wordmark" href="/" aria-label="Eko Infrastructure — home">
+      <svg width="196" height="30" viewBox="0 0 196 30" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eko Infrastructure">
+  <rect x="0.6" y="0.6" width="28.8" height="28.8" rx="3" fill="none" stroke="#08151F" stroke-width="1.2"/>
+  <line x1="7" y1="10" x2="23" y2="10" stroke="#14344B" stroke-width="1.3"/>
+  <line x1="7" y1="15" x2="23" y2="15" stroke="#14344B" stroke-width="1.3" opacity="0.6"/>
+  <line x1="7" y1="20" x2="17" y2="20" stroke="#14344B" stroke-width="1.3" opacity="0.35"/>
+  <circle cx="21.5" cy="20" r="2.4" fill="#A8863F"/>
+  <text x="39" y="21" font-family="Georgia, 'Times New Roman', serif" font-size="17.5" font-weight="600" fill="#08151F">Eko</text>
+  <text x="76" y="21" font-family="Georgia, 'Times New Roman', serif" font-size="17.5" font-weight="400" fill="#14344B">Infrastructure</text>
+</svg>
+    </a>
+    <nav class="primary-nav" aria-label="Primary">
+      <ul><li><a href="/">Research</a></li><li><a href="/settlement-explained">Settlement</a></li><li><a href="/corridor-intelligence">Corridors</a></li><li><a href="/policy-and-regulation">Policy</a></li><li><a class="is-active" aria-current="page" href="/technology">Technology</a></li><li><a href="/glossary">Glossary</a></li><li><a href="/data-and-sources">Sources</a></li><li><a href="/about">About</a></li></ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-sm btn-solid" href="/search">Search</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav"
+              data-nav-toggle><span class="nav-toggle-bars" aria-hidden="true"></span>
+        <span class="sr-only">Open menu</span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav" data-mobile-nav hidden>
+    <ul><li><a href="/">Research</a></li><li><a href="/settlement-explained">Settlement</a></li><li><a href="/corridor-intelligence">Corridors</a></li><li><a href="/policy-and-regulation">Policy</a></li><li><a class="is-active" aria-current="page" href="/technology">Technology</a></li><li><a href="/glossary">Glossary</a></li><li><a href="/data-and-sources">Sources</a></li><li><a href="/about">About</a></li></ul>
+    <a class="btn btn-solid btn-block" href="/search">Search</a>
+    <p class="mobile-nav-note">Published by EKORails LTD. Not independent academic research.</p>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+<section class="hero hero--research" data-section="tech_hero">
+  <div class="shell">
+    <p class="eyebrow">Technology</p>
+    <h1>Technology.</h1>
+    <p class="hero-lede">Standards, architecture and evidence. The engineering questions that determine
+      whether a settlement design can actually be supervised.</p>
+  </div>
+</section>
+
+<section class="section" data-section="tech_body">
+  <div class="shell">
+    <div class="split split--sidebar">
+      <div class="prose article-body">
+        <h2 id="messaging">Messaging standards</h2>
+        <p>Payment messages carry more than an amount. They carry the parties, their identifiers, the
+          purpose, the charges and the references that let a beneficiary work out what the payment is
+          for. When those fields are lost or truncated between systems, the consequences appear later as
+          compliance holds and manual reconciliation.</p>
+        <p>ISO 20022 is the standard the industry has converged on, and its value is precisely that it
+          carries structured, extensible party and remittance data rather than free text. Migration
+          across markets and systems has been staged over years, and coexistence with older formats is
+          the normal condition rather than an exception.</p>
+        <p>For anyone designing a corridor product, the practical question is not whether to support
+          ISO 20022 but which fields survive each hop on the actual route, and what happens to a payment
+          when one of them does not.
+          <span class="placeholder">[CONFIRM — current migration status by market and system, with source]</span></p>
+
+        <h2 id="compliance-architecture">Compliance architecture</h2>
+        <p>Compliance is an architectural property, not a department. Three design decisions determine
+          whether a system can be supervised.</p>
+        <ul>
+          <li><strong>Where controls run.</strong> Controls enforced before routing prevent bad
+            instructions from entering the chain. Controls applied after the fact produce reports about
+            payments that already left.</li>
+          <li><strong>What is recorded.</strong> Recording an outcome is not enough. Recording the rule
+            version, the input data and the decision-maker is what allows a supervisor to ask about a
+            past date and get an answer.</li>
+          <li><strong>Who owns the decision.</strong> In a chain of institutions, exactly one party must
+            own each regulated decision. Designs that leave this ambiguous fail their first serious
+            review.</li>
+        </ul>
+
+        <h2 id="monitoring">Transaction monitoring</h2>
+        <p>Monitoring compares activity against an expected pattern and raises alerts on deviation. Its
+          engineering difficulties are well known: rules produce large numbers of false positives;
+          thresholds that are too tight bury analysts and too loose miss activity; and tuning without
+          versioning destroys the ability to explain past behaviour.</p>
+        <p>Two claims should always be treated sceptically. First, that a monitoring system detects all
+          illicit activity — none does. Second, that machine learning removes the need for explainability
+          — supervisors ask why an alert was or was not raised, and a model that cannot answer creates a
+          regulatory problem rather than solving one.</p>
+
+        <h2 id="auditability">Auditability</h2>
+        <p>An auditable system can answer, for any transaction and any date: what was known, what rule
+          applied, who decided, when, and what happened next. That requires append-only records,
+          versioned rules, time stamps from a trusted source, and retention for the longest applicable
+          period across the markets involved.</p>
+        <p>Auditability is also what makes disputes tractable. When two institutions disagree about a
+          payment, the party that can reconstruct the sequence with evidence resolves the matter; the
+          party that cannot absorbs the loss.</p>
+
+        <h2 id="dlt">What distributed ledger designs change</h2>
+        <p>Shared-ledger architectures change one thing genuinely: participants can read from a common
+          record rather than reconciling separate ones. That is a real reduction in a real cost.</p>
+        <p>Several things they do not change. Somebody must still convert currency and be compensated for
+          it. Somebody must still hold customer funds under a licence. Legal finality still depends on
+          the law and the system rules, not on the data structure. Compliance obligations still attach to
+          the institutions in the chain. And the last mile still runs through a licensed institution on
+          domestic rails.</p>
+        <p>Eko Infrastructure takes no position for or against these designs. The useful question is
+          always which of the five payment functions a proposal addresses, and what it leaves untouched.</p>
+
+        <h2 id="data-sovereignty">Data sovereignty</h2>
+        <p>Several markets have introduced requirements about where payment and personal data is stored
+          and processed, and about the conditions for transferring it abroad. For corridor designs this
+          is not a hosting preference; it determines architecture, because both markets&rsquo;
+          requirements apply at once and can conflict.</p>
+        <p>The practical questions are: which data must remain in-market, which may be transferred under
+          which mechanism, who can access it from where, and how that is evidenced.
+          <span class="placeholder">[CONFIRM — current residency requirements by market, with source and date]</span></p>
+      </div>
+      <aside class="sticky-side">
+        <nav class="toc" aria-label="On this page">
+          <h2>On this page</h2>
+          <ol>
+            <li><a href="#messaging">Messaging standards</a></li>
+            <li><a href="#compliance-architecture">Compliance architecture</a></li>
+            <li><a href="#monitoring">Transaction monitoring</a></li>
+            <li><a href="#auditability">Auditability</a></li>
+            <li><a href="#dlt">Distributed ledgers</a></li>
+            <li><a href="#data-sovereignty">Data sovereignty</a></li>
+          </ol>
+        </nav>
+        <div class="callout" style="margin-top:var(--s-4)">
+          <h3>Related</h3>
+          <ul class="card-list" style="margin-top:.6rem">
+            <li><a href="/research/swift-is-a-messaging-network">SWIFT as a messaging network</a></li>
+            <li><a href="https://ekorails.com/technology">EKORails engineering approach</a></li>
+            <li><a href="/glossary">Glossary</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <div class="sources">
+      <h2>Sources</h2>
+      <ol>
+        <li>ISO 20022 — standard documentation and migration material. <span class="placeholder">[CONFIRM — URL and date]</span></li>
+        <li>Committee on Payments and Market Infrastructures — Principles for Financial Market Infrastructures. <span class="placeholder">[CONFIRM — edition and URL]</span></li>
+        <li>FATF Recommendation 16 — wire transfer information requirements. <span class="placeholder">[CONFIRM — edition and URL]</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+</main>
+<div class="consent" data-consent role="region" aria-label="Cookie choices" hidden>
+  <div class="shell consent-inner">
+    <p>We use a privacy-preserving measurement tool to understand which pages institutional visitors
+      read. No advertising cookies, no cross-site tracking and no sale of data. Read the
+      <a href="https://ekorails.com/privacy-policy">privacy policy</a>.</p>
+    <div class="consent-actions">
+      <button class="btn btn-sm btn-ghost" type="button" data-consent-choice="denied">Essential only</button>
+      <button class="btn btn-sm btn-solid" type="button" data-consent-choice="granted">Allow measurement</button>
+    </div>
+  </div>
+</div>
+<footer class="site-footer" id="footer">
+  <div class="shell">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <svg width="196" height="30" viewBox="0 0 196 30" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eko Infrastructure">
+  <rect x="0.6" y="0.6" width="28.8" height="28.8" rx="3" fill="none" stroke="rgba(243,241,236,0.35)" stroke-width="1.2"/>
+  <line x1="7" y1="10" x2="23" y2="10" stroke="#6FC3A2" stroke-width="1.3"/>
+  <line x1="7" y1="15" x2="23" y2="15" stroke="#6FC3A2" stroke-width="1.3" opacity="0.6"/>
+  <line x1="7" y1="20" x2="17" y2="20" stroke="#6FC3A2" stroke-width="1.3" opacity="0.35"/>
+  <circle cx="21.5" cy="20" r="2.4" fill="#A8863F"/>
+  <text x="39" y="21" font-family="Georgia, 'Times New Roman', serif" font-size="17.5" font-weight="600" fill="#FFFFFF">Eko</text>
+  <text x="76" y="21" font-family="Georgia, 'Times New Roman', serif" font-size="17.5" font-weight="400" fill="#C2CDD5">Infrastructure</text>
+</svg>
+        <p class="footer-tag">Research and intelligence for African settlement infrastructure.</p>
+        <p class="footer-sub">A knowledge and policy platform operated by EKORails LTD. Editorially reviewed, sourced and dated.</p>
+      </div>
+      <div class="footer-cols"><div class="footer-col"><h2 class="footer-h">Knowledge</h2><ul><li><a href="/settlement-explained">Settlement explained</a></li><li><a href="/corridor-intelligence">Corridor intelligence</a></li><li><a href="/policy-and-regulation">Policy &amp; regulation</a></li><li><a href="/technology">Technology</a></li></ul></div><div class="footer-col"><h2 class="footer-h">Reference</h2><ul><li><a href="/glossary">Glossary</a></li><li><a href="/data-and-sources">Data &amp; sources</a></li><li><a href="/about#editorial">Editorial standards</a></li><li><a href="/search">Search</a></li></ul></div><div class="footer-col"><h2 class="footer-h">EKORails</h2><ul><li><a href="/ekorails">About EKORails</a></li><li><a href="https://ekorails.com" rel="noopener">EKORails.com</a></li><li><a href="https://ekorails.com/platform" rel="noopener">Platform</a></li><li><a href="https://ekorails.com/pilot-and-regulatory-pathway" rel="noopener">Regulatory pathway</a></li></ul></div><div class="footer-col"><h2 class="footer-h">Contact</h2><ul><li><a href="/contact">Research &amp; media</a></li><li><a href="mailto:media@ekoinfrastructure.com">media@ekoinfrastructure.com</a></li><li><a href="/about#corrections">Corrections</a></li><li><a href="https://ekorails.com/regulatory-disclaimer" rel="noopener">Regulatory disclaimer</a></li></ul></div></div>
+    </div>
+    <div class="footer-status" role="note">
+      <p><strong>Regulatory status.</strong> Eko Infrastructure is operated by EKORails LTD, a company developing settlement infrastructure. It is a commercially operated knowledge platform, not an independent academic or standards body, and its research should be read with that interest in mind. EKORails LTD has applied to participate in the Central Bank of Nigeria Regulatory Sandbox; participation and all proposed pilot activities remain subject to regulatory review and approval. EKORails LTD is not licensed, authorised, approved, endorsed or supervised by the Central Bank of Nigeria or any other financial services regulator.</p>
+    </div>
+    <div class="footer-legal">
+      <p class="disclaimer">EKORails LTD is developing financial infrastructure for institutional and enterprise use. Information on this website is provided for general and partnership purposes and does not constitute financial, investment, legal or payment-services advice. Products, pilot activities and services described may be subject to regulatory review, licensing, partner approval and geographic restrictions.</p>
+      <p class="colophon">&copy; 2026 EKORails LTD. Eko Infrastructure is a platform of EKORails LTD. Company number [CONFIRM WITH EKORAILS].</p>
+    </div>
+  </div>
+</footer>
+<script src="/assets/js/site.js" defer></script>
+
+</body>
+</html>

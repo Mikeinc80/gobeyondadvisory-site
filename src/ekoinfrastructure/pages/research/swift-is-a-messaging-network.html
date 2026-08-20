@@ -1,0 +1,136 @@
+<!--meta
+{
+  "path": "research/swift-is-a-messaging-network.html",
+  "title": "SWIFT is a messaging network | Eko Infrastructure",
+  "description": "SWIFT is routinely described as though it moves money. It does not. Understanding what it carries, and what banks do with what it carries, is a prerequisite for any serious comparison of settlement options.",
+  "h1": "SWIFT is a messaging network: what that means for anyone comparing payment systems",
+  "topic": "Technology",
+  "og_type": "article",
+  "breadcrumbs": [{ "name": "Research", "path": "index.html" }, { "name": "Technology", "path": "technology.html" }, { "name": "SWIFT is a messaging network", "path": "research/swift-is-a-messaging-network.html" }],
+  "article": { "type": "Article", "author": "Eko Infrastructure editorial team", "published": "2026-08-20", "updated": "2026-08-20" },
+  "priority": "0.8"
+}
+-->
+<article class="section" data-section="article">
+  <div class="shell">
+    <div class="split split--sidebar">
+      <div>
+        <header class="article-header">
+          <p class="eyebrow">Technology · Explainer</p>
+          <h1>SWIFT is a messaging network: what that means for anyone comparing payment systems</h1>
+          <p class="lede">&ldquo;SWIFT takes three to five days&rdquo; is one of the most repeated
+            statements in fintech marketing, and one of the least examined. The network carries
+            instructions. What happens to the value is a different question with a different answer for
+            every route.</p>
+          <p class="byline">
+            <span>By <strong>Eko Infrastructure editorial team</strong></span>
+            <span>Published <strong><span class="placeholder">[DATE]</span></strong></span>
+            <span>Last updated <strong><span class="placeholder">[DATE]</span></strong></span>
+            <span>9 min read</span>
+            <span class="review-badge">Source-checked</span>
+          </p>
+        </header>
+
+        <div class="prose article-body">
+          <h2>What the network actually does</h2>
+          <p>SWIFT is a cooperative that operates a secure messaging network used by financial
+            institutions to exchange standardised instructions. When a bank sends a payment instruction
+            over it, what travels is a message: parties, identifiers, amount, currency, charges, purpose
+            and references.</p>
+          <p>Value does not travel over the network. Value moves through accounts the institutions hold
+            with one another, with a shared correspondent, or with a central bank. The message tells the
+            other institution what to do; the accounts are where it happens.</p>
+
+          <h2>Why the &ldquo;three to five days&rdquo; claim fails</h2>
+          <p>Once messaging and settlement are separated, the generalisation collapses. Between two banks
+            with a direct relationship and aligned cut-offs, a payment may complete the same day. Through
+            a chain of intermediaries, across time zones, with a compliance hold at one hop, it may take
+            considerably longer. The determinants are the route, the currencies, the size, the time of
+            day, the completeness of the data and the compliance outcome — not the messaging network.</p>
+          <p>Presenting a worst case as a universal property of the network is a marketing device rather
+            than an analysis. Eko Infrastructure does not publish it, and treats its use elsewhere as a
+            signal about the publisher.</p>
+          <p>It is also worth noting that the industry has invested substantially in tracking and speed
+            for cross-border payments over the last decade, and that measured performance has changed as
+            a result. Any claim about timing needs a date attached to it.
+            <span class="placeholder">[CONFIRM — current published performance data, with source and date]</span></p>
+
+          <h2>What actually causes delay</h2>
+          <ul>
+            <li><strong>Incomplete party data.</strong> Missing or malformed originator and beneficiary
+              information triggers holds at downstream institutions, which is a data problem rather than a
+              network problem.</li>
+            <li><strong>Screening review.</strong> A potential sanctions match requires human
+              disposition, and correctly so.</li>
+            <li><strong>Cut-off times.</strong> An instruction arriving after a domestic cut-off waits for
+              the next processing window, however fast it travelled.</li>
+            <li><strong>Currency availability.</strong> Conversion cannot complete if the currency is not
+              obtainable at the required size.</li>
+            <li><strong>Chain length.</strong> Each additional intermediary adds its own checks, fees and
+              windows.</li>
+          </ul>
+          <p>Four of these five persist regardless of which messaging or settlement technology is used.
+            That is the point that matters for anyone evaluating a proposition: the proposition has to
+            address the causes, not the symptom.</p>
+
+          <h2>The ISO 20022 point</h2>
+          <p>The migration towards ISO 20022 messaging matters here because it targets the first cause
+            directly. Structured party and remittance fields carry more of the data that downstream
+            institutions need, which reduces holds and improves reconciliation. Coexistence with older
+            formats is the normal state across markets, and the practical question for any route is which
+            fields survive each hop.</p>
+
+          <h2>How to compare systems honestly</h2>
+          <p>A defensible comparison names the function under discussion. Comparing a messaging network to
+            a settlement system is a category error. Comparing two settlement arrangements requires
+            stating the settlement asset, the finality rules and the governing law. Comparing costs
+            requires stating the size band, the currency pair, the direction and the date.</p>
+          <p>Applied to our own operator: EKORails does not replace SWIFT, because it is not a messaging
+            network, and it does not replace a settlement system, because it does not provide finality.
+            It is being designed as an orchestration and record layer that depends on both. Any material
+            from us that suggests otherwise should be reported as an error.</p>
+
+          <div class="callout callout--gold">
+            <h3>Disclosure and regulatory note</h3>
+            <p>Eko Infrastructure is operated by EKORails LTD. EKORails LTD has applied to participate in
+              the Central Bank of Nigeria Regulatory Sandbox; participation and all proposed pilot
+              activities remain subject to regulatory review and approval. EKORails LTD is not licensed,
+              authorised, approved, endorsed or supervised by any financial services regulator, and has
+              no relationship with, affiliation to or endorsement from SWIFT. References to SWIFT are
+              descriptive. This article is general information and is not financial, investment, legal or
+              payment-services advice. See
+              <a href="https://ekorails.com/platform#api">how EKORails proposes to align to ISO 20022
+              semantics</a>.</p>
+          </div>
+        </div>
+
+        <div class="sources">
+          <h2>Sources</h2>
+          <ol>
+            <li>SWIFT — official documentation on the network, message standards and tracking. <span class="placeholder">[CONFIRM — URL and date]</span> <span class="source-date">Retrieved <span class="placeholder">[DATE]</span></span></li>
+            <li>ISO 20022 — standard and migration documentation. <span class="placeholder">[CONFIRM — URL]</span></li>
+            <li>FATF Recommendation 16 — information required to accompany wire transfers. <span class="placeholder">[CONFIRM — edition and URL]</span></li>
+            <li>Bank for International Settlements, CPMI — cross-border payments programme reporting. <span class="placeholder">[CONFIRM — publication and URL]</span></li>
+          </ol>
+        </div>
+
+        <nav aria-label="Related articles" style="margin-top:var(--s-6)">
+          <h2 style="font-size:var(--step-1);margin-bottom:var(--s-3)">Related</h2>
+          <ul class="card-list">
+            <li><a href="/research/clearing-versus-settlement">Clearing versus settlement</a></li>
+            <li><a href="/technology">Technology: messaging, monitoring and auditability</a></li>
+            <li><a href="/research/what-papss-does">What PAPSS does</a></li>
+            <li><a href="/glossary">Glossary: ISO 20022, travel rule, cut-off time</a></li>
+          </ul>
+        </nav>
+      </div>
+      <aside class="sticky-side">
+        <div class="callout">
+          <h3>In one line</h3>
+          <p>SWIFT carries instructions. Accounts carry value. Timing depends on the route, the data and
+            the compliance outcome — not on the network alone.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</article>

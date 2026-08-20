@@ -1,0 +1,165 @@
+{
+  "key": "ekoinfrastructure",
+  "name": "Eko Infrastructure",
+  "legal_name": "EKORails LTD",
+  "base_url": "https://ekoinfrastructure.com",
+  "html_class": "site-ekoinfrastructure",
+  "theme_color": "#F8F6F1",
+  "css_path": "/assets/css/site.css",
+  "font_css": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
+  "logo_path": "/assets/img/og-default.png",
+  "og_image": "/assets/img/og-default.png",
+  "og_image_alt": "Eko Infrastructure — research and intelligence for African settlement infrastructure.",
+  "tagline": "Research and intelligence for African settlement infrastructure.",
+  "supporting_line": "A knowledge and policy platform operated by EKORails LTD. Editorially reviewed, sourced and dated.",
+  "status_line": "Published by EKORails LTD. Not independent academic research.",
+  "org_description": "Eko Infrastructure is the research, policy and market-intelligence platform operated by EKORails LTD, covering clearing, settlement, corridors, compliance and payment policy across African trade.",
+  "primary_email": "media@ekoinfrastructure.com",
+  "search_path": "/search",
+  "same_as": [
+    "https://ekorails.com"
+  ],
+  "parent_organization": {
+    "@type": "Organization",
+    "name": "EKORails LTD",
+    "url": "https://ekorails.com/"
+  },
+  "contact_points": [
+    {
+      "type": "media",
+      "email": "media@ekoinfrastructure.com"
+    },
+    {
+      "type": "research",
+      "email": "media@ekoinfrastructure.com"
+    }
+  ],
+  "regulatory_status_html": "Eko Infrastructure is operated by EKORails LTD, a company developing settlement infrastructure. It is a commercially operated knowledge platform, not an independent academic or standards body, and its research should be read with that interest in mind. EKORails LTD has applied to participate in the Central Bank of Nigeria Regulatory Sandbox; participation and all proposed pilot activities remain subject to regulatory review and approval. EKORails LTD is not licensed, authorised, approved, endorsed or supervised by the Central Bank of Nigeria or any other financial services regulator.",
+  "disclaimer": "EKORails LTD is developing financial infrastructure for institutional and enterprise use. Information on this website is provided for general and partnership purposes and does not constitute financial, investment, legal or payment-services advice. Products, pilot activities and services described may be subject to regulatory review, licensing, partner approval and geographic restrictions.",
+  "registration_line": "Eko Infrastructure is a platform of EKORails LTD. Company number [CONFIRM WITH EKORAILS].",
+  "nav": [
+    {
+      "label": "Research",
+      "path": "index.html"
+    },
+    {
+      "label": "Settlement",
+      "path": "settlement-explained.html"
+    },
+    {
+      "label": "Corridors",
+      "path": "corridor-intelligence.html"
+    },
+    {
+      "label": "Policy",
+      "path": "policy-and-regulation.html"
+    },
+    {
+      "label": "Technology",
+      "path": "technology.html"
+    },
+    {
+      "label": "Glossary",
+      "path": "glossary.html"
+    },
+    {
+      "label": "Sources",
+      "path": "data-and-sources.html"
+    },
+    {
+      "label": "About",
+      "path": "about.html"
+    }
+  ],
+  "nav_cta": {
+    "label": "Search",
+    "path": "search.html"
+  },
+  "footer_columns": [
+    {
+      "title": "Knowledge",
+      "links": [
+        {
+          "label": "Settlement explained",
+          "href": "/settlement-explained"
+        },
+        {
+          "label": "Corridor intelligence",
+          "href": "/corridor-intelligence"
+        },
+        {
+          "label": "Policy & regulation",
+          "href": "/policy-and-regulation"
+        },
+        {
+          "label": "Technology",
+          "href": "/technology"
+        }
+      ]
+    },
+    {
+      "title": "Reference",
+      "links": [
+        {
+          "label": "Glossary",
+          "href": "/glossary"
+        },
+        {
+          "label": "Data & sources",
+          "href": "/data-and-sources"
+        },
+        {
+          "label": "Editorial standards",
+          "href": "/about#editorial"
+        },
+        {
+          "label": "Search",
+          "href": "/search"
+        }
+      ]
+    },
+    {
+      "title": "EKORails",
+      "links": [
+        {
+          "label": "About EKORails",
+          "href": "/ekorails"
+        },
+        {
+          "label": "EKORails.com",
+          "href": "https://ekorails.com"
+        },
+        {
+          "label": "Platform",
+          "href": "https://ekorails.com/platform"
+        },
+        {
+          "label": "Regulatory pathway",
+          "href": "https://ekorails.com/pilot-and-regulatory-pathway"
+        }
+      ]
+    },
+    {
+      "title": "Contact",
+      "links": [
+        {
+          "label": "Research & media",
+          "href": "/contact"
+        },
+        {
+          "label": "media@ekoinfrastructure.com",
+          "href": "mailto:media@ekoinfrastructure.com"
+        },
+        {
+          "label": "Corrections",
+          "href": "/about#corrections"
+        },
+        {
+          "label": "Regulatory disclaimer",
+          "href": "https://ekorails.com/regulatory-disclaimer"
+        }
+      ]
+    }
+  ],
+  "privacy_path": "https://ekorails.com/privacy-policy"
+}

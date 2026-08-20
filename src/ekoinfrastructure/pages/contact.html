@@ -1,0 +1,104 @@
+<!--meta
+{
+  "path": "contact.html",
+  "title": "Contact | Research, media and corrections | Eko Infrastructure",
+  "description": "Contact Eko Infrastructure for research enquiries, media requests, data and source questions, corrections, and research partnership discussions.",
+  "h1": "Contact.",
+  "topic": "About",
+  "breadcrumbs": [{ "name": "Research", "path": "index.html" }, { "name": "Contact", "path": "contact.html" }],
+  "priority": "0.6"
+}
+-->
+<section class="hero hero--research" data-section="contact_hero">
+  <div class="shell">
+    <p class="eyebrow">Contact</p>
+    <h1>Contact.</h1>
+    <p class="hero-lede">Research questions, corrections, media enquiries and research partnerships.
+      Commercial and partnership enquiries about the platform go to EKORails directly.</p>
+  </div>
+</section>
+
+<section class="section" data-section="contact_body">
+  <div class="shell">
+    <div class="split split--sidebar">
+      <div>
+        <form class="form" data-form="research_contact" name="research_contact" method="POST"
+              action="/thank-you" data-netlify="true" netlify-honeypot="company_website" novalidate>
+          <input type="hidden" name="form-name" value="research_contact">
+          <input type="hidden" name="form_render_ts" value="">
+          <p class="hp" aria-hidden="true"><label>Company website<input type="text" id="company_website" name="company_website" tabindex="-1" autocomplete="off" aria-label="Leave this field empty"></label></p>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="c_name">Full name <span class="req" aria-hidden="true">*</span></label>
+              <input id="c_name" name="full_name" type="text" autocomplete="name" required maxlength="120">
+              <span class="error">Please enter your full name.</span>
+            </div>
+            <div class="field">
+              <label for="c_org">Organisation</label>
+              <input id="c_org" name="organization" type="text" autocomplete="organization" maxlength="160">
+            </div>
+            <div class="field span-2">
+              <label for="c_email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input id="c_email" name="work_email" type="email" autocomplete="email" required maxlength="180">
+              <span class="error">Please enter a valid email address.</span>
+            </div>
+            <div class="field span-2">
+              <label for="c_type">Type of enquiry <span class="req" aria-hidden="true">*</span></label>
+              <select id="c_type" name="enquiry_type" required>
+                <option value="">Select…</option>
+                <option value="correction">Correction to a published piece</option>
+                <option value="data_question">Data or source question</option>
+                <option value="media">Media enquiry</option>
+                <option value="research_partnership">Research partnership</option>
+                <option value="republish">Permission to republish</option>
+                <option value="other">Other</option>
+              </select>
+              <span class="error">Please select the type of enquiry.</span>
+            </div>
+            <div class="field span-2">
+              <label for="c_page">Page this concerns</label>
+              <input id="c_page" name="page_url" type="text" maxlength="300" placeholder="/settlement-explained">
+              <span class="hint">If your message is about a specific page, the URL helps us respond faster.</span>
+            </div>
+            <div class="field span-2">
+              <label for="c_message">Message <span class="req" aria-hidden="true">*</span></label>
+              <textarea id="c_message" name="message" required maxlength="4000"></textarea>
+              <span class="hint">For a correction, please include the statement you believe is wrong and
+                the source you consider authoritative.</span>
+              <span class="error">Please enter your message.</span>
+            </div>
+          </div>
+
+          <div class="checkbox">
+            <input id="c_consent" name="consent" type="checkbox" required value="yes">
+            <label for="c_consent">I consent to EKORails LTD storing and processing the information in
+              this form in order to respond, as described in the
+              <a href="https://ekorails.com/privacy-policy">privacy policy</a>.
+              <span class="req" aria-hidden="true">*</span></label>
+          </div>
+
+          <div class="btn-row"><button class="btn btn-emerald" type="submit">Send message</button></div>
+        </form>
+      </div>
+      <aside class="sticky-side">
+        <div class="callout">
+          <h2>Direct addresses</h2>
+          <p><strong>Research and media</strong><br>
+            <a href="mailto:media@ekoinfrastructure.com">media@ekoinfrastructure.com</a></p>
+          <p style="margin-top:var(--s-3)"><strong>Institutional partnerships (EKORails)</strong><br>
+            <a href="mailto:partnerships@ekorails.com">partnerships@ekorails.com</a></p>
+          <p style="margin-top:var(--s-3)"><strong>Compliance and regulatory (EKORails)</strong><br>
+            <a href="mailto:compliance@ekorails.com">compliance@ekorails.com</a></p>
+          <p style="margin-top:var(--s-3)"><strong>General (EKORails)</strong><br>
+            <a href="mailto:info@ekorails.com">info@ekorails.com</a></p>
+        </div>
+        <div class="callout callout--gold" style="margin-top:var(--s-4)">
+          <h3>Corrections</h3>
+          <p>Corrections are made promptly and noted at the foot of the piece. See our
+            <a href="/about#corrections">corrections policy</a>.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

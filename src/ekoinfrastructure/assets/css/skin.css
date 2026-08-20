@@ -1,0 +1,114 @@
+/* ==========================================================================
+   EkoInfrastructure.com — research & knowledge platform skin
+   Same token system as EKORails (one family), different emphasis:
+   ivory-dominant, editorial serif reading column, navy rules, gold reserved
+   for source/citation furniture. Deliberately quieter than the corporate site.
+   ========================================================================== */
+
+:root {
+  --shell: 1160px;
+  --shell-narrow: 720px;
+  --header-h: 68px;
+}
+
+/* Editorial masthead treatment */
+.site-header { background: rgba(255, 255, 255, .95); border-bottom: 1px solid var(--navy-900); }
+.primary-nav a { font-size: .8125rem; }
+.primary-nav a.is-active { border-bottom-color: var(--navy-700); }
+body { background: var(--white); }
+.section--ivory2 { background: var(--ivory); }
+
+/* Research hero — light, typographic, no dark slab */
+.hero--research {
+  background: var(--ivory); color: var(--text);
+  border-bottom: 1px solid var(--line); padding-block: clamp(3rem, 2rem + 5vw, 5.5rem);
+}
+.hero--research::after { display: none; }
+.hero--research h1 { color: var(--navy-900); font-size: var(--step-4); max-width: 20ch; }
+.hero--research .hero-lede { color: var(--text-2); }
+.hero--research .eyebrow { color: var(--navy-700); }
+.hero--research .eyebrow::before { background: var(--navy-700); }
+
+/* Article cards */
+.article-card {
+  display: grid; gap: .55rem; padding: var(--s-5) 0; border-top: 1px solid var(--line);
+}
+.article-card:last-of-type { border-bottom: 1px solid var(--line); }
+.article-card h3 { font-size: var(--step-2); }
+.article-card h3 a { color: var(--navy-900); text-decoration: none; }
+.article-card h3 a:hover { color: var(--emerald); text-decoration: underline; }
+.article-meta {
+  display: flex; flex-wrap: wrap; gap: .35rem .9rem;
+  font: 500 .6875rem/1.5 var(--font-mono); letter-spacing: .09em;
+  text-transform: uppercase; color: var(--muted);
+}
+.article-meta .topic { color: var(--emerald); }
+.article-card p { color: var(--text-2); font-size: var(--step--1); max-width: 72ch; }
+@media (min-width: 900px) { .article-card { grid-template-columns: 190px 1fr; gap: var(--s-5); } .article-card .article-meta { flex-direction: column; gap: .3rem; } }
+
+/* Long-form reading column */
+.article-body { font-family: var(--font-display); font-size: clamp(1.0625rem, 1rem + .3vw, 1.1875rem); line-height: 1.72; }
+.article-body p { color: var(--text); }
+.article-body h2 { font-size: var(--step-2); margin-top: var(--s-6); }
+.article-body h3 { font-size: var(--step-1); margin-top: var(--s-5); }
+.article-body ul, .article-body ol { padding-left: 1.4rem; display: grid; gap: .5rem; }
+.article-body li { color: var(--text); }
+.article-body .callout, .article-body .table-wrap { font-family: var(--font-ui); font-size: var(--step--1); }
+.article-header { border-bottom: 1px solid var(--navy-900); padding-bottom: var(--s-5); margin-bottom: var(--s-5); }
+.article-header h1 { font-size: var(--step-4); max-width: 22ch; color: var(--navy-900); }
+.article-header .lede { margin-top: var(--s-3); }
+.byline {
+  display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin-top: var(--s-4);
+  font: 500 .6875rem/1.5 var(--font-mono); letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+}
+.byline strong { color: var(--text-2); font-weight: 600; }
+
+/* Sources & footnotes furniture */
+.sources { border-top: 2px solid var(--gold); padding-top: var(--s-4); margin-top: var(--s-6); }
+.sources h2 { font: 600 .6875rem/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gold-ink); margin-bottom: var(--s-3); }
+.sources ol { padding-left: 1.3rem; display: grid; gap: .6rem; font-family: var(--font-ui); font-size: .8125rem; color: var(--text-2); }
+.sources a { word-break: break-word; }
+.source-date { color: var(--muted); }
+sup.fn a { font-family: var(--font-ui); font-size: .7em; font-weight: 600; text-decoration: none; padding-inline: .1em; }
+
+/* Search */
+.search-form { display: grid; gap: var(--s-3); grid-template-columns: 1fr auto; align-items: end; }
+.search-form .field { grid-column: 1; }
+#search-status { font-size: var(--step--1); color: var(--muted); margin-top: var(--s-4); }
+.search-hit { padding: var(--s-4) 0; border-top: 1px solid var(--line); }
+.search-hit :is(h2, h3) { font-size: var(--step-1); }
+.search-hit h3 a { color: var(--navy-900); text-decoration: none; }
+.search-hit h3 a:hover { text-decoration: underline; }
+.search-hit p { font-size: var(--step--1); color: var(--text-2); }
+mark { background: rgba(228,214,180,.55); color: inherit; padding: 0 .1em; }
+
+/* Glossary */
+.glossary-nav { display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: var(--s-5); }
+.glossary-nav a {
+  display: grid; place-items: center; min-width: 36px; min-height: 36px; padding: 0 .4rem;
+  border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none;
+  font: 600 .8125rem/1 var(--font-mono); color: var(--navy-900); background: var(--white);
+}
+.glossary-nav a:hover { border-color: var(--navy-900); background: var(--ivory); }
+.glossary-group { margin-top: var(--s-6); }
+.glossary-group h2 { font-family: var(--font-mono); font-size: var(--step-1); color: var(--gold-ink); border-bottom: 1px solid var(--line); padding-bottom: .4rem; }
+
+/* Neutral-comparison table emphasis (PAPSS / SWIFT / switches) */
+.compare th:first-child { width: 22%; }
+.compare td strong { color: var(--navy-900); }
+
+/* Cross-site bridge to EKORails */
+.bridge-eko {
+  background: var(--navy-900); color: var(--on-dark); border-radius: var(--radius-lg);
+  padding: var(--s-5); display: grid; gap: var(--s-4); align-items: center;
+}
+.bridge-eko h2 { color: var(--white); font-size: var(--step-2); }
+.bridge-eko p { color: var(--on-dark-2); font-size: var(--step--1); max-width: 62ch; }
+@media (min-width: 860px) { .bridge-eko { grid-template-columns: 1fr auto; gap: var(--s-6); } }
+
+/* Editorial status / review workflow badges */
+.review-badge {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font: 500 .6875rem/1 var(--font-mono); letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--line); border-radius: 2px; padding: .3rem .5rem;
+}

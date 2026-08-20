@@ -1,0 +1,168 @@
+{
+  "key": "ekorails",
+  "name": "EKORails",
+  "legal_name": "EKORails LTD",
+  "base_url": "https://ekorails.com",
+  "html_class": "site-ekorails",
+  "theme_color": "#08151F",
+  "css_path": "/assets/css/site.css",
+  "font_css": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
+  "logo_path": "/assets/img/og-default.png",
+  "og_image": "/assets/img/og-default.png",
+  "og_image_alt": "EKORails — settlement infrastructure for African trade.",
+  "tagline": "Settlement infrastructure for African trade.",
+  "supporting_line": "Connecting regulated institutions, businesses and markets across African and global trade corridors.",
+  "status_line": "Proposed pilot activities remain subject to regulatory and partner approval.",
+  "org_description": "EKORails LTD is developing a compliance-first settlement and interoperability platform for regulated institutions and businesses operating across selected African and global trade corridors.",
+  "primary_email": "info@ekorails.com",
+  "same_as": [
+    "https://ekoinfrastructure.com"
+  ],
+  "parent_organization": null,
+  "contact_points": [
+    {
+      "type": "customer support",
+      "email": "info@ekorails.com"
+    },
+    {
+      "type": "partnerships",
+      "email": "partnerships@ekorails.com"
+    },
+    {
+      "type": "regulatory compliance",
+      "email": "compliance@ekorails.com"
+    }
+  ],
+  "regulatory_status_html": "EKORails LTD has applied to participate in the Central Bank of Nigeria Regulatory Sandbox. Participation and all proposed pilot activities remain subject to regulatory review and approval. EKORails LTD is not licensed, authorised, approved, endorsed or supervised by the Central Bank of Nigeria or by any other financial services regulator, and does not hold a payment services, banking or money transmission licence in any jurisdiction. See the <a href=\"/regulatory-disclaimer\">Regulatory Disclaimer</a>.",
+  "disclaimer": "EKORails LTD is developing financial infrastructure for institutional and enterprise use. Information on this website is provided for general and partnership purposes and does not constitute financial, investment, legal or payment-services advice. Products, pilot activities and services described may be subject to regulatory review, licensing, partner approval and geographic restrictions.",
+  "registration_line": "Registered company. Company number [CONFIRM WITH EKORAILS] · Registered office [CONFIRM WITH EKORAILS].",
+  "nav": [
+    {
+      "label": "Platform",
+      "path": "platform.html"
+    },
+    {
+      "label": "Use Cases",
+      "path": "use-cases.html"
+    },
+    {
+      "label": "Regulatory Pathway",
+      "path": "pilot-and-regulatory-pathway.html"
+    },
+    {
+      "label": "Corridors",
+      "path": "corridors.html"
+    },
+    {
+      "label": "Compliance",
+      "path": "compliance-and-risk.html"
+    },
+    {
+      "label": "Technology",
+      "path": "technology.html"
+    },
+    {
+      "label": "Partners",
+      "path": "partners.html"
+    },
+    {
+      "label": "Leadership",
+      "path": "leadership.html"
+    },
+    {
+      "label": "News",
+      "path": "news.html"
+    }
+  ],
+  "nav_cta": {
+    "label": "Contact",
+    "path": "contact.html"
+  },
+  "footer_columns": [
+    {
+      "title": "Platform",
+      "links": [
+        {
+          "label": "Platform overview",
+          "href": "/platform"
+        },
+        {
+          "label": "Technology",
+          "href": "/technology"
+        },
+        {
+          "label": "Use cases",
+          "href": "/use-cases"
+        },
+        {
+          "label": "Corridors",
+          "href": "/corridors"
+        }
+      ]
+    },
+    {
+      "title": "Governance",
+      "links": [
+        {
+          "label": "Pilot & regulatory pathway",
+          "href": "/pilot-and-regulatory-pathway"
+        },
+        {
+          "label": "Compliance & risk",
+          "href": "/compliance-and-risk"
+        },
+        {
+          "label": "Regulatory disclaimer",
+          "href": "/regulatory-disclaimer"
+        },
+        {
+          "label": "Leadership",
+          "href": "/leadership"
+        }
+      ]
+    },
+    {
+      "title": "Engage",
+      "links": [
+        {
+          "label": "Institutional partnerships",
+          "href": "/partners"
+        },
+        {
+          "label": "Contact",
+          "href": "/contact"
+        },
+        {
+          "label": "News & updates",
+          "href": "/news"
+        },
+        {
+          "label": "Eko Infrastructure research",
+          "href": "https://ekoinfrastructure.com"
+        }
+      ]
+    },
+    {
+      "title": "Legal",
+      "links": [
+        {
+          "label": "Privacy policy",
+          "href": "/privacy-policy"
+        },
+        {
+          "label": "Terms of use",
+          "href": "/terms-of-use"
+        },
+        {
+          "label": "Regulatory disclaimer",
+          "href": "/regulatory-disclaimer"
+        },
+        {
+          "label": "compliance@ekorails.com",
+          "href": "mailto:compliance@ekorails.com"
+        }
+      ]
+    }
+  ],
+  "privacy_path": "/privacy-policy"
+}

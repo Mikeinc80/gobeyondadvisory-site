@@ -1,0 +1,375 @@
+<!--meta
+{
+  "path": "platform.html",
+  "title": "Platform | EKORails settlement and interoperability architecture",
+  "description": "The proposed EKORails platform architecture: participants, transaction lifecycle, integration options, ledger and record-keeping, settlement model, compliance controls, reporting and resilience. Every unbuilt component is labelled planned or under development.",
+  "breadcrumbs": [{ "name": "Home", "path": "index.html" }, { "name": "Platform", "path": "platform.html" }],
+  "priority": "0.9"
+}
+-->
+<section class="section section--tight" style="background:var(--navy-900);color:var(--on-dark)" data-section="platform_intro">
+  <div class="shell">
+    <p class="eyebrow" style="color:var(--emerald-300)">Platform</p>
+    <h1 style="font-size:var(--step-4);color:var(--white);max-width:22ch">A coordination layer for regulated cross-border transactions.</h1>
+    <p class="lede" style="color:var(--on-dark-2);margin-top:var(--s-4)">EKORails is being designed to
+      sit between the institutions that already hold licences, funds and market access — orchestrating
+      the sequence, enforcing the controls and holding the record, without taking on the functions that
+      licensed institutions are there to perform.</p>
+    <p class="hero-status" style="max-width:70ch">
+      <span aria-hidden="true">▲</span>
+      <span>The platform is in development. No component described on this page is operating in
+        production or carrying customer value. Component status labels are applied consistently
+        throughout.</span>
+    </p>
+  </div>
+</section>
+
+<section class="section" data-section="platform_overview">
+  <div class="shell">
+    <div class="split split--sidebar">
+      <div>
+        <h2 id="overview" style="font-size:var(--step-3)">Platform overview</h2>
+        <div class="prose" style="margin-top:var(--s-4)">
+          <p>A cross-border business payment is not one action. It is a sequence of dependent actions
+            performed by different institutions under different rules, where any step can fail and the
+            whole must still be explainable afterwards.</p>
+          <p>Most of the difficulty in a corridor is not the movement of value itself. It is holding
+            that sequence together: knowing which party is responsible for the current step, what data
+            they need, what they returned, what the customer should be told, and what the supervisor
+            will later expect to see.</p>
+          <p>EKORails is being built as that coordination layer. It orchestrates the steps, enforces the
+            agreed controls before an instruction is routed, and writes an append-only record of every
+            state change. Funds, conversion, settlement finality and payout remain with licensed
+            institutions.</p>
+        </div>
+      </div>
+      <aside class="sticky-side">
+        <nav class="toc" aria-label="On this page">
+          <h2>On this page</h2>
+          <ol>
+            <li><a href="#overview">Platform overview</a></li>
+            <li><a href="#participants">Participants</a></li>
+            <li><a href="#lifecycle">Transaction lifecycle</a></li>
+            <li><a href="#boundary">System boundary</a></li>
+            <li><a href="#integration">Integration options</a></li>
+            <li><a href="#api">API and messaging layer</a></li>
+            <li><a href="#ledger">Ledger and record-keeping</a></li>
+            <li><a href="#settlement">Settlement model</a></li>
+            <li><a href="#controls">Compliance controls</a></li>
+            <li><a href="#reporting">Reporting</a></li>
+            <li><a href="#resilience">Resilience and continuity</a></li>
+            <li><a href="#data">Data handling</a></li>
+            <li><a href="#responsibilities">Partner responsibilities</a></li>
+          </ol>
+        </nav>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ivory2" data-section="platform_participants">
+  <div class="shell">
+    <div class="section-head">
+      <p class="eyebrow">Participants</p>
+      <h2 id="participants">Who is in a transaction, and what each one is for.</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <caption>Proposed participant model. Roles reflect the design filed with the regulator and are subject to partner agreement.</caption>
+        <thead><tr><th scope="col">Participant</th><th scope="col">Role in the transaction</th><th scope="col">Licensing expectation</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Originating business or institution</strong></td><td>Submits the instruction, holds the commercial relationship with the payer, supplies payment references.</td><td>Regulated or verified enterprise, onboarded before use.</td></tr>
+          <tr><td><strong>Originating bank or payment institution</strong></td><td>Holds the payer&rsquo;s funds, confirms funding, executes the debit.</td><td>Licensed in the origination market.</td></tr>
+          <tr><td><strong>EKORails</strong></td><td>Orchestration, control enforcement, routing, status, audit record and reporting.</td><td>Technology and orchestration provider. No customer funds held. <span class="placeholder">[SUBJECT TO REGULATORY APPROVAL]</span></td></tr>
+          <tr><td><strong>FX or liquidity counterparty</strong></td><td>Quotes and executes the conversion leg as principal.</td><td>Licensed bank, authorised dealer or equivalent.</td></tr>
+          <tr><td><strong>Settlement partner</strong></td><td>Effects settlement between institutions using the mechanism agreed for the corridor.</td><td>Licensed and approved for that mechanism.</td></tr>
+          <tr><td><strong>Payout institution</strong></td><td>Credits the beneficiary in the receiving market through domestic rails.</td><td>Licensed in the receiving market.</td></tr>
+          <tr><td><strong>Beneficiary business</strong></td><td>Receives value and the reference data needed to reconcile it.</td><td>Verified before first receipt.</td></tr>
+          <tr><td><strong>Regulator and supervisors</strong></td><td>Set scope and conditions; receive reporting.</td><td>Central Bank of Nigeria and other applicable authorities.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section" data-section="platform_lifecycle">
+  <div class="shell">
+    <div class="section-head">
+      <p class="eyebrow">Transaction lifecycle</p>
+      <h2 id="lifecycle">Eleven states, each of which can be evidenced.</h2>
+      <p>A transaction is only ever in one state. Every transition is written to the audit record with
+        the actor, the timestamp and the reason. Failure states are first-class: a transaction that
+        cannot proceed must resolve to a defined outcome, not disappear.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <caption>Proposed transaction state model. Under development.</caption>
+        <thead><tr><th scope="col">State</th><th scope="col">Meaning</th><th scope="col">Owner</th></tr></thead>
+        <tbody>
+          <tr><td><code>received</code></td><td>Instruction accepted and structurally valid.</td><td>EKORails</td></tr>
+          <tr><td><code>screening</code></td><td>Parties and payment data under compliance validation.</td><td>EKORails / compliance provider</td></tr>
+          <tr><td><code>held</code></td><td>Stopped for review; a case exists and an owner is assigned.</td><td>Compliance officer</td></tr>
+          <tr><td><code>authorised</code></td><td>Within limits, approved by workflow, funding confirmed.</td><td>EKORails / originating institution</td></tr>
+          <tr><td><code>quoted</code></td><td>Conversion rate obtained from a licensed counterparty.</td><td>FX partner</td></tr>
+          <tr><td><code>converting</code></td><td>Conversion executing as principal by that counterparty.</td><td>FX partner</td></tr>
+          <tr><td><code>settling</code></td><td>Settlement instruction issued to the settlement partner.</td><td>Settlement partner</td></tr>
+          <tr><td><code>settled</code></td><td>Settlement confirmed by the responsible licensed institution.</td><td>Settlement partner</td></tr>
+          <tr><td><code>paid_out</code></td><td>Beneficiary credited in the receiving market.</td><td>Payout institution</td></tr>
+          <tr><td><code>returned</code></td><td>Value returned to the payer after a failed leg, with reason.</td><td>Partners / EKORails</td></tr>
+          <tr><td><code>rejected</code></td><td>Not routed. Reason recorded and communicated.</td><td>EKORails / partners</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ivory2" data-section="platform_boundary">
+  <div class="shell">
+    <div class="section-head">
+      <p class="eyebrow">System boundary</p>
+      <h2 id="boundary">What sits inside EKORails, and what does not.</h2>
+      <p>This is the diagram we expect every bank, regulator and security reviewer to test us against.
+        Anything in the centre column is ours to build and operate. Anything outside it depends on a
+        licensed or specialist third party.</p>
+    </div>
+    <figure class="boundary">
+      <svg viewBox="0 0 960 460" role="img" aria-labelledby="bnd-t bnd-d" style="width:100%;height:auto">
+        <title id="bnd-t">EKORails proposed system boundary</title>
+        <desc id="bnd-d">Three columns. On the left, originating participants and their licensed
+          institutions. In the centre, the EKORails platform: API and messaging, orchestration and state
+          machine, compliance and screening orchestration, routing, ledger and audit record, and
+          reporting. On the right, licensed partners performing conversion, settlement, custody of funds
+          and local payout, plus supervisory reporting recipients. Funds custody, settlement finality,
+          conversion as principal and payout licences all sit outside the EKORails boundary.</desc>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1" fill="#5C6B75">
+          <text x="20" y="26">ORIGINATION SIDE</text>
+          <text x="352" y="26">EKORAILS PLATFORM BOUNDARY</text>
+          <text x="760" y="26">LICENSED PARTNERS</text>
+        </g>
+        <!-- left column -->
+        <g>
+          <rect x="20" y="46" width="250" height="64" rx="4" fill="#EFEBE3" stroke="#5C6B75" stroke-dasharray="4 3"/>
+          <rect x="20" y="126" width="250" height="64" rx="4" fill="#EFEBE3" stroke="#5C6B75" stroke-dasharray="4 3"/>
+          <rect x="20" y="206" width="250" height="64" rx="4" fill="#EFEBE3" stroke="#5C6B75" stroke-dasharray="4 3"/>
+        </g>
+        <g font-family="Inter, Helvetica, Arial, sans-serif" font-size="13" fill="#14191E">
+          <text x="36" y="74">Enterprise / institution</text>
+          <text x="36" y="154">Originating bank</text>
+          <text x="36" y="234">Identity &amp; screening vendors</text>
+        </g>
+        <g font-family="Inter, Helvetica, Arial, sans-serif" font-size="11" fill="#5C6B75">
+          <text x="36" y="92">Submits instruction &amp; references</text>
+          <text x="36" y="172">Holds payer funds, confirms funding</text>
+          <text x="36" y="252">Verification, sanctions, watchlists</text>
+        </g>
+        <!-- centre boundary -->
+        <rect x="320" y="40" width="320" height="392" rx="6" fill="rgba(14,107,78,.05)" stroke="#0E6B4E" stroke-width="1.6"/>
+        <g>
+          <rect x="340" y="62" width="280" height="52" rx="4" fill="rgba(14,107,78,.14)" stroke="#0E6B4E"/>
+          <rect x="340" y="126" width="280" height="52" rx="4" fill="rgba(14,107,78,.14)" stroke="#0E6B4E"/>
+          <rect x="340" y="190" width="280" height="52" rx="4" fill="rgba(14,107,78,.14)" stroke="#0E6B4E"/>
+          <rect x="340" y="254" width="280" height="52" rx="4" fill="rgba(14,107,78,.14)" stroke="#0E6B4E"/>
+          <rect x="340" y="318" width="280" height="52" rx="4" fill="rgba(14,107,78,.14)" stroke="#0E6B4E"/>
+          <rect x="340" y="382" width="280" height="38" rx="4" fill="rgba(14,107,78,.08)" stroke="#0E6B4E" stroke-dasharray="4 3"/>
+        </g>
+        <g font-family="Inter, Helvetica, Arial, sans-serif" font-size="13" fill="#0B2A20">
+          <text x="356" y="84">API &amp; messaging layer</text>
+          <text x="356" y="148">Orchestration &amp; state machine</text>
+          <text x="356" y="212">Control enforcement &amp; case management</text>
+          <text x="356" y="276">Corridor routing &amp; partner selection</text>
+          <text x="356" y="340">Append-only ledger &amp; audit record</text>
+          <text x="356" y="406">Reporting &amp; extract service</text>
+        </g>
+        <g font-family="Inter, Helvetica, Arial, sans-serif" font-size="11" fill="#3B474F">
+          <text x="356" y="102">REST + webhooks, ISO 20022-aligned messages</text>
+          <text x="356" y="166">One state per transaction, all transitions logged</text>
+          <text x="356" y="230">Limits, velocity, screening results, holds</text>
+          <text x="356" y="294">Approved routes only, selection recorded</text>
+          <text x="356" y="358">Immutable record; not a store of customer value</text>
+        </g>
+        <!-- right column -->
+        <g>
+          <rect x="690" y="46" width="250" height="58" rx="4" fill="rgba(168,134,63,.12)" stroke="#A8863F"/>
+          <rect x="690" y="118" width="250" height="58" rx="4" fill="rgba(168,134,63,.12)" stroke="#A8863F"/>
+          <rect x="690" y="190" width="250" height="58" rx="4" fill="rgba(168,134,63,.12)" stroke="#A8863F"/>
+          <rect x="690" y="262" width="250" height="58" rx="4" fill="rgba(168,134,63,.12)" stroke="#A8863F"/>
+          <rect x="690" y="334" width="250" height="58" rx="4" fill="#EFEBE3" stroke="#5C6B75" stroke-dasharray="4 3"/>
+        </g>
+        <g font-family="Inter, Helvetica, Arial, sans-serif" font-size="13" fill="#14191E">
+          <text x="706" y="70">FX / liquidity counterparty</text>
+          <text x="706" y="142">Settlement partner</text>
+          <text x="706" y="214">Custody of customer funds</text>
+          <text x="706" y="286">Payout institution</text>
+          <text x="706" y="358">Supervisory reporting</text>
+        </g>
+        <g font-family="Inter, Helvetica, Arial, sans-serif" font-size="11" fill="#5C6B75">
+          <text x="706" y="88">Executes conversion as principal</text>
+          <text x="706" y="160">Provides settlement finality</text>
+          <text x="706" y="232">Always a licensed institution</text>
+          <text x="706" y="304">Local rails, domestic cut-offs</text>
+          <text x="706" y="376">Filings of record by licensed parties</text>
+        </g>
+        <g stroke="#5C6B75" stroke-width="1.2" fill="none">
+          <path d="M270 78 H 320" marker-end="url(#ar)"/>
+          <path d="M270 158 H 320" marker-end="url(#ar)"/>
+          <path d="M270 238 H 320" marker-end="url(#ar)"/>
+          <path d="M640 88 H 690" marker-end="url(#ar)"/>
+          <path d="M640 152 H 690" marker-end="url(#ar)"/>
+          <path d="M640 216 H 690" marker-end="url(#ar)"/>
+          <path d="M640 288 H 690" marker-end="url(#ar)"/>
+          <path d="M640 360 H 690" marker-end="url(#ar)"/>
+        </g>
+        <defs>
+          <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="#5C6B75"/>
+          </marker>
+        </defs>
+      </svg>
+      <div class="legend">
+        <span><i class="k-eko"></i> Built and operated by EKORails</span>
+        <span><i class="k-partner"></i> Performed by a licensed partner</span>
+        <span><i class="k-external"></i> External party or vendor</span>
+      </div>
+      <figcaption>Proposed system boundary. Every element inside the centre boundary is under
+        development. EKORails does not propose to hold customer funds, act as principal in currency
+        conversion, provide settlement finality or hold a payout licence.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section" data-section="platform_detail">
+  <div class="shell">
+    <h2 id="integration" style="font-size:var(--step-3)">Integration options</h2>
+    <div class="grid grid-3" style="margin-top:var(--s-5)">
+      <article class="card"><span class="chip chip-progress">Under development</span><h3>Direct API</h3><p>For institutions and enterprises with engineering capacity. Server-to-server, mutually authenticated, with webhooks for status.</p></article>
+      <article class="card"><span class="chip chip-planned">Planned</span><h3>Secure operator portal</h3><p>For treasury and operations teams. Instruction entry, approval workflow, case queues, status and extracts, with role-based access.</p></article>
+      <article class="card"><span class="chip chip-planned">Planned</span><h3>File-based batch</h3><p>For participants with existing batch processes. Signed file exchange over a secure channel with per-item results returned.</p></article>
+    </div>
+
+    <hr class="rule">
+
+    <h2 id="api" style="font-size:var(--step-3)">API and messaging layer</h2>
+    <div class="prose" style="margin-top:var(--s-4)">
+      <p>The interface is designed around a small number of resources — participants, beneficiaries,
+        instructions, quotes, transactions, cases and reports — with idempotent submission so that a
+        retried instruction cannot create a duplicate payment.</p>
+      <p>Message content is aligned to ISO 20022 semantics so that the data a partner bank needs arrives
+        in the form its systems already expect, rather than in a proprietary shape that has to be mapped
+        by hand. <span class="placeholder">[CONFIRM WITH EKORAILS — message standard as filed]</span></p>
+      <p>Status is delivered by signed webhook with a polling fallback, because a partner that misses a
+        callback must still be able to establish the truth of a transaction independently.</p>
+    </div>
+
+    <hr class="rule">
+
+    <h2 id="ledger" style="font-size:var(--step-3)">Ledger and record-keeping approach</h2>
+    <div class="prose" style="margin-top:var(--s-4)">
+      <p>EKORails maintains an append-only record of transaction state. Entries are written once, never
+        edited; a correction is a new entry that references the entry it corrects, so the history of what
+        was known and when remains intact.</p>
+      <p>This record is an operational and evidential ledger, not a store of customer value. Balances of
+        customer funds are held and reported by the licensed institutions that hold them.</p>
+      <p>Retention periods follow the longest applicable requirement across the markets in the corridor.
+        <span class="placeholder">[CONFIRM WITH EKORAILS — retention schedule]</span></p>
+    </div>
+
+    <hr class="rule">
+
+    <h2 id="settlement" style="font-size:var(--step-3)">Settlement model</h2>
+    <div class="prose" style="margin-top:var(--s-4)">
+      <p>The settlement asset, mechanism and timing proposed for the pilot corridor are those set out in
+        EKORails LTD&rsquo;s regulatory filing.
+        <span class="placeholder">[CONFIRM WITH EKORAILS — settlement asset and mechanism as filed]</span>
+        <span class="placeholder">[SUBJECT TO REGULATORY APPROVAL]</span></p>
+      <p>Three commitments hold regardless of the mechanism finally approved. Settlement finality is
+        provided by a licensed institution, not asserted by EKORails. Customer funds sit with licensed
+        institutions throughout. And the settlement leg is recorded with enough detail that both sides
+        and their supervisors can reconstruct it independently.</p>
+      <p>EKORails does not issue, offer, promote or sell any token, coin or investment instrument, and no
+        settlement mechanism described here is offered to the public as an asset.</p>
+    </div>
+
+    <hr class="rule">
+
+    <h2 id="controls" style="font-size:var(--step-3)">Compliance controls</h2>
+    <div class="prose" style="margin-top:var(--s-4)">
+      <p>Controls are enforced before routing, not reported after the fact. An instruction that breaches
+        a limit, fails screening or lacks required party data does not proceed to a partner; it becomes
+        a case with an owner and a clock.</p>
+      <p>The full framework — governance, AML and CFT, KYC and KYB, sanctions, monitoring, fraud, data
+        protection, cybersecurity, resilience, third-party risk, retention and complaints — is set out on
+        the <a href="/compliance-and-risk">Compliance and Risk</a> page.</p>
+    </div>
+
+    <hr class="rule">
+
+    <h2 id="reporting" style="font-size:var(--step-3)">Reporting</h2>
+    <div class="prose" style="margin-top:var(--s-4)">
+      <p>Three reporting audiences, three different products: operational reporting for participants
+        (status, exceptions, repair queues); financial reporting for finance teams (matched
+        transactions, fees, timing, reconciliation breaks); and supervisory reporting in the formats and
+        at the frequency agreed with the regulator for any approved pilot.</p>
+      <p><span class="placeholder">[CONFIRM WITH EKORAILS — reporting formats and frequency as filed]</span></p>
+    </div>
+
+    <hr class="rule">
+
+    <h2 id="resilience" style="font-size:var(--step-3)">Resilience and business continuity</h2>
+    <div class="prose" style="margin-top:var(--s-4)">
+      <p>The design assumption is that partners and networks will be unavailable at some point, and that
+        a payment stuck between two institutions is worse than a payment that was never accepted.</p>
+      <ul>
+        <li>Defined recovery time and recovery point objectives per component. <span class="placeholder">[CONFIRM WITH EKORAILS — RTO/RPO targets]</span></li>
+        <li>Degraded-mode behaviour: stop accepting new instructions for an affected route rather than accept and hold indefinitely.</li>
+        <li>Reconciliation-first recovery: establish the true state with each partner before resuming.</li>
+        <li>Tested restore procedures and a documented incident and communications plan.</li>
+        <li>An exit and wind-down plan so that participants are not stranded if the pilot ends.</li>
+      </ul>
+    </div>
+
+    <hr class="rule">
+
+    <h2 id="data" style="font-size:var(--step-3)">Data handling</h2>
+    <div class="prose" style="margin-top:var(--s-4)">
+      <p>Personal and transaction data is collected on a defined lawful basis, minimised to what the
+        transaction and the applicable rules require, encrypted in transit and at rest, segregated
+        between environments, and retained to a published schedule.</p>
+      <p>Cross-border transfers within a corridor are assessed against the data protection regimes of
+        both markets, including the Nigeria Data Protection Act 2023 where applicable. Data residency
+        commitments for any pilot: <span class="placeholder">[CONFIRM WITH EKORAILS]</span></p>
+      <p>See the <a href="/privacy-policy">privacy policy</a> for the full description of processing.</p>
+    </div>
+
+    <hr class="rule">
+
+    <h2 id="responsibilities" style="font-size:var(--step-3)">Partner responsibilities</h2>
+    <div class="table-wrap" style="margin-top:var(--s-4)">
+      <table>
+        <caption>Indicative split of responsibilities. Final allocation is set in each partner agreement.</caption>
+        <thead><tr><th scope="col">Function</th><th scope="col">EKORails</th><th scope="col">Licensed partner</th></tr></thead>
+        <tbody>
+          <tr><td>Customer due diligence of record</td><td>Orchestrates and stores evidence</td><td>Performs and owns the regulated decision</td></tr>
+          <tr><td>Sanctions screening</td><td>Triggers screening, records outcome, raises cases</td><td>Owns list coverage and final disposition</td></tr>
+          <tr><td>Custody of customer funds</td><td>None</td><td>Holds funds under its licence</td></tr>
+          <tr><td>Currency conversion</td><td>Requests quote, records rate and timestamp</td><td>Executes as principal</td></tr>
+          <tr><td>Settlement finality</td><td>Records confirmation</td><td>Provides finality</td></tr>
+          <tr><td>Local payout</td><td>Instructs and tracks</td><td>Credits the beneficiary</td></tr>
+          <tr><td>Regulatory filings of record</td><td>Supplies extracts and evidence</td><td>Files under its own authorisation</td></tr>
+          <tr><td>Complaint handling</td><td>Provides transaction evidence and status</td><td>Owns the regulated complaints process for its customers</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band" data-section="platform_cta">
+  <div class="shell">
+    <h2>Reviewing this architecture on behalf of an institution?</h2>
+    <p>We will walk a technical or compliance team through the design, the boundary and the open
+      questions, under NDA where appropriate.</p>
+    <div class="btn-row">
+      <a class="btn btn-emerald" href="/partners?type=institution" data-cta="platform_partner">Discuss a Partnership</a>
+      <a class="btn btn-on-dark" href="/technology" data-cta="platform_tech">Technology detail</a>
+    </div>
+  </div>
+</section>

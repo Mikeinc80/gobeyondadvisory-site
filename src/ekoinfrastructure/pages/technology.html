@@ -1,0 +1,124 @@
+<!--meta
+{
+  "path": "technology.html",
+  "title": "Technology | Eko Infrastructure",
+  "description": "The engineering behind payment policy: ISO 20022 and messaging standards, compliance architecture, transaction monitoring, auditability, data sovereignty and what distributed ledger designs do and do not change.",
+  "h1": "Technology.",
+  "topic": "Technology",
+  "breadcrumbs": [{ "name": "Research", "path": "index.html" }, { "name": "Technology", "path": "technology.html" }],
+  "priority": "0.8"
+}
+-->
+<section class="hero hero--research" data-section="tech_hero">
+  <div class="shell">
+    <p class="eyebrow">Technology</p>
+    <h1>Technology.</h1>
+    <p class="hero-lede">Standards, architecture and evidence. The engineering questions that determine
+      whether a settlement design can actually be supervised.</p>
+  </div>
+</section>
+
+<section class="section" data-section="tech_body">
+  <div class="shell">
+    <div class="split split--sidebar">
+      <div class="prose article-body">
+        <h2 id="messaging">Messaging standards</h2>
+        <p>Payment messages carry more than an amount. They carry the parties, their identifiers, the
+          purpose, the charges and the references that let a beneficiary work out what the payment is
+          for. When those fields are lost or truncated between systems, the consequences appear later as
+          compliance holds and manual reconciliation.</p>
+        <p>ISO 20022 is the standard the industry has converged on, and its value is precisely that it
+          carries structured, extensible party and remittance data rather than free text. Migration
+          across markets and systems has been staged over years, and coexistence with older formats is
+          the normal condition rather than an exception.</p>
+        <p>For anyone designing a corridor product, the practical question is not whether to support
+          ISO 20022 but which fields survive each hop on the actual route, and what happens to a payment
+          when one of them does not.
+          <span class="placeholder">[CONFIRM — current migration status by market and system, with source]</span></p>
+
+        <h2 id="compliance-architecture">Compliance architecture</h2>
+        <p>Compliance is an architectural property, not a department. Three design decisions determine
+          whether a system can be supervised.</p>
+        <ul>
+          <li><strong>Where controls run.</strong> Controls enforced before routing prevent bad
+            instructions from entering the chain. Controls applied after the fact produce reports about
+            payments that already left.</li>
+          <li><strong>What is recorded.</strong> Recording an outcome is not enough. Recording the rule
+            version, the input data and the decision-maker is what allows a supervisor to ask about a
+            past date and get an answer.</li>
+          <li><strong>Who owns the decision.</strong> In a chain of institutions, exactly one party must
+            own each regulated decision. Designs that leave this ambiguous fail their first serious
+            review.</li>
+        </ul>
+
+        <h2 id="monitoring">Transaction monitoring</h2>
+        <p>Monitoring compares activity against an expected pattern and raises alerts on deviation. Its
+          engineering difficulties are well known: rules produce large numbers of false positives;
+          thresholds that are too tight bury analysts and too loose miss activity; and tuning without
+          versioning destroys the ability to explain past behaviour.</p>
+        <p>Two claims should always be treated sceptically. First, that a monitoring system detects all
+          illicit activity — none does. Second, that machine learning removes the need for explainability
+          — supervisors ask why an alert was or was not raised, and a model that cannot answer creates a
+          regulatory problem rather than solving one.</p>
+
+        <h2 id="auditability">Auditability</h2>
+        <p>An auditable system can answer, for any transaction and any date: what was known, what rule
+          applied, who decided, when, and what happened next. That requires append-only records,
+          versioned rules, time stamps from a trusted source, and retention for the longest applicable
+          period across the markets involved.</p>
+        <p>Auditability is also what makes disputes tractable. When two institutions disagree about a
+          payment, the party that can reconstruct the sequence with evidence resolves the matter; the
+          party that cannot absorbs the loss.</p>
+
+        <h2 id="dlt">What distributed ledger designs change</h2>
+        <p>Shared-ledger architectures change one thing genuinely: participants can read from a common
+          record rather than reconciling separate ones. That is a real reduction in a real cost.</p>
+        <p>Several things they do not change. Somebody must still convert currency and be compensated for
+          it. Somebody must still hold customer funds under a licence. Legal finality still depends on
+          the law and the system rules, not on the data structure. Compliance obligations still attach to
+          the institutions in the chain. And the last mile still runs through a licensed institution on
+          domestic rails.</p>
+        <p>Eko Infrastructure takes no position for or against these designs. The useful question is
+          always which of the five payment functions a proposal addresses, and what it leaves untouched.</p>
+
+        <h2 id="data-sovereignty">Data sovereignty</h2>
+        <p>Several markets have introduced requirements about where payment and personal data is stored
+          and processed, and about the conditions for transferring it abroad. For corridor designs this
+          is not a hosting preference; it determines architecture, because both markets&rsquo;
+          requirements apply at once and can conflict.</p>
+        <p>The practical questions are: which data must remain in-market, which may be transferred under
+          which mechanism, who can access it from where, and how that is evidenced.
+          <span class="placeholder">[CONFIRM — current residency requirements by market, with source and date]</span></p>
+      </div>
+      <aside class="sticky-side">
+        <nav class="toc" aria-label="On this page">
+          <h2>On this page</h2>
+          <ol>
+            <li><a href="#messaging">Messaging standards</a></li>
+            <li><a href="#compliance-architecture">Compliance architecture</a></li>
+            <li><a href="#monitoring">Transaction monitoring</a></li>
+            <li><a href="#auditability">Auditability</a></li>
+            <li><a href="#dlt">Distributed ledgers</a></li>
+            <li><a href="#data-sovereignty">Data sovereignty</a></li>
+          </ol>
+        </nav>
+        <div class="callout" style="margin-top:var(--s-4)">
+          <h3>Related</h3>
+          <ul class="card-list" style="margin-top:.6rem">
+            <li><a href="/research/swift-is-a-messaging-network">SWIFT as a messaging network</a></li>
+            <li><a href="https://ekorails.com/technology">EKORails engineering approach</a></li>
+            <li><a href="/glossary">Glossary</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <div class="sources">
+      <h2>Sources</h2>
+      <ol>
+        <li>ISO 20022 — standard documentation and migration material. <span class="placeholder">[CONFIRM — URL and date]</span></li>
+        <li>Committee on Payments and Market Infrastructures — Principles for Financial Market Infrastructures. <span class="placeholder">[CONFIRM — edition and URL]</span></li>
+        <li>FATF Recommendation 16 — wire transfer information requirements. <span class="placeholder">[CONFIRM — edition and URL]</span></li>
+      </ol>
+    </div>
+  </div>
+</section>

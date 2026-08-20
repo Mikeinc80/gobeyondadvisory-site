@@ -1,0 +1,223 @@
+# ==========================================================================
+# Eko Infrastructure — CMS content model (Decap CMS / Netlify CMS compatible)
+#
+# Editors work in a browser at /admin/. Saving writes Markdown + front matter to
+# the repository through Git Gateway, which triggers a rebuild. Editors never
+# touch templates or code, and every change is a reviewable, revertible commit.
+#
+# The editorial_workflow setting turns saves into pull requests, which is what
+# gives us the Draft -> Source check -> Regulatory review -> Published states
+# described at /about#editorial.
+# ==========================================================================
+
+backend:
+  name: git-gateway
+  branch: main
+  commit_messages:
+    create: 'content: create {{collection}} "{{slug}}"'
+    update: 'content: update {{collection}} "{{slug}}"'
+    delete: 'content: delete {{collection}} "{{slug}}"'
+    openAuthoring: 'content: {{message}}'
+
+publish_mode: editorial_workflow
+media_folder: "src/ekoinfrastructure/assets/img/uploads"
+public_folder: "/assets/img/uploads"
+site_url: https://ekoinfrastructure.com
+display_url: https://ekoinfrastructure.com
+logo_url: /assets/img/favicon.svg
+
+collections:
+  # ---------------------------------------------------------------- articles
+  - name: research
+    label: Research articles
+    label_singular: Research article
+    folder: content/research
+    create: true
+    slug: "{{slug}}"
+    path: "{{slug}}"
+    extension: md
+    format: yaml-frontmatter
+    summary: "{{title}} — {{review_state}} (updated {{updated}})"
+    sortable_fields: [updated, published, title, review_state]
+    view_filters:
+      - { label: "Awaiting source check", field: review_state, pattern: source_check }
+      - { label: "Awaiting regulatory review", field: review_state, pattern: regulatory_review }
+      - { label: "Published", field: review_state, pattern: published }
+      - { label: "Review overdue", field: review_due, pattern: ".*" }
+    fields:
+      - { name: title, label: Title, widget: string, hint: "Sentence case. This becomes the H1 and the <title> prefix." }
+      - { name: slug, label: URL slug, widget: string, pattern: ['^[a-z0-9-]+$', 'Lowercase letters, numbers and hyphens only'] }
+      - { name: description, label: Meta description, widget: text, pattern: ['^.{80,165}$', 'Between 80 and 165 characters'] }
+      - { name: lede, label: Standfirst, widget: text, hint: "One or two sentences shown under the headline." }
+      - name: topic
+        label: Topic
+        widget: select
+        options: [Settlement, Corridors, Policy, Technology, Reference]
+      - name: format
+        label: Format
+        widget: select
+        options: [Explainer, Method, Corridor note, Analysis, Data note]
+      - { name: author, label: Author, widget: string, hint: "A named person or 'Eko Infrastructure editorial team'. Never blank." }
+      - { name: published, label: Publication date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
+      - { name: updated, label: Last updated, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
+      - { name: reading_time, label: Reading time (minutes), widget: number, value_type: int, min: 1, max: 60 }
+      - name: review_state
+        label: Editorial state
+        widget: select
+        default: draft
+        options:
+          - { label: "Draft", value: draft }
+          - { label: "Source check", value: source_check }
+          - { label: "Regulatory review", value: regulatory_review }
+          - { label: "Published", value: published }
+      - { name: review_due, label: Scheduled re-verification date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, required: false, hint: "Required for any piece containing market data or regulatory statements." }
+      - name: contains_market_data
+        label: Contains market data
+        widget: boolean
+        default: false
+        hint: "If on, every figure must have a source register entry before publication."
+      - name: contains_regulatory_statement
+        label: Contains a regulatory statement
+        widget: boolean
+        default: false
+        hint: "If on, the named compliance officer must approve before publication."
+      - { name: body, label: Body, widget: markdown, hint: "Use footnote markers [^1] for citations; list the sources below." }
+      - name: sources
+        label: Sources
+        widget: list
+        summary: "{{fields.source_id}} — {{fields.title}}"
+        required: false
+        fields:
+          - { name: source_id, label: Source register ID, widget: string, hint: "e.g. S-004. Must exist in the source register." }
+          - { name: title, label: Source title, widget: string }
+          - { name: publisher, label: Publisher, widget: string }
+          - { name: period, label: Period covered, widget: string, required: false }
+          - { name: url, label: URL, widget: string, required: false }
+          - { name: retrieved, label: Retrieved, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
+      - name: related
+        label: Related articles
+        widget: relation
+        collection: research
+        search_fields: [title]
+        value_field: slug
+        display_fields: [title]
+        multiple: true
+        required: false
+        hint: "Leave empty to let the build suggest related pieces by topic."
+      - { name: ekorails_link, label: Related EKORails page, widget: string, required: false, hint: "e.g. https://ekorails.com/platform#boundary" }
+      - name: corrections
+        label: Corrections
+        widget: list
+        required: false
+        fields:
+          - { name: date, label: Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
+          - { name: note, label: What was corrected, widget: text }
+
+  # ---------------------------------------------------------------- glossary
+  - name: glossary
+    label: Glossary terms
+    label_singular: Glossary term
+    folder: content/glossary
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: yaml-frontmatter
+    summary: "{{term}}"
+    sortable_fields: [term, updated]
+    fields:
+      - { name: term, label: Term, widget: string }
+      - { name: definition, label: Definition, widget: text, hint: "Plain language. Where a term is contested, say so." }
+      - { name: contested, label: Contested or jurisdiction-dependent, widget: boolean, default: false }
+      - { name: see_also, label: See also, widget: string, required: false }
+      - { name: source_id, label: Source register ID, widget: string, required: false }
+      - { name: updated, label: Last updated, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
+
+  # ---------------------------------------------------------------- sources
+  - name: sources
+    label: Source register
+    label_singular: Source
+    folder: content/sources
+    create: true
+    slug: "{{source_id}}"
+    extension: md
+    format: yaml-frontmatter
+    summary: "{{source_id}} — {{claim}} ({{status}})"
+    sortable_fields: [source_id, status, retrieved]
+    fields:
+      - { name: source_id, label: Register ID, widget: string, pattern: ['^S-[0-9]{3}$', 'Format S-001'] }
+      - { name: claim, label: Claim or figure, widget: text }
+      - { name: publisher, label: Primary source publisher, widget: string }
+      - { name: title, label: Publication title, widget: string }
+      - { name: url, label: URL, widget: string, required: false }
+      - { name: period, label: Period covered, widget: string, required: false }
+      - { name: retrieved, label: Retrieved on, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, required: false }
+      - { name: definition_note, label: What exactly is counted, widget: text, hint: "The definition travels with the number." }
+      - name: status
+        label: Status
+        widget: select
+        default: pending
+        options:
+          - { label: "Pending verification — must not be published", value: pending }
+          - { label: "Verified against primary source", value: verified }
+          - { label: "Estimate — method published", value: estimate }
+          - { label: "Withdrawn", value: withdrawn }
+      - { name: used_on, label: Used on pages, widget: list, required: false }
+      - { name: review_due, label: Next check due, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, required: false }
+
+  # ---------------------------------------------------------------- news
+  - name: news
+    label: EKORails news and updates
+    label_singular: Update
+    folder: content/news
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: md
+    format: yaml-frontmatter
+    summary: "{{date}} — {{title}} ({{review_state}})"
+    fields:
+      - { name: title, label: Headline, widget: string }
+      - { name: date, label: Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
+      - name: category
+        label: Category
+        widget: select
+        options: [Regulatory, Company, Partnership, Platform, Research]
+      - { name: body, label: Body, widget: markdown }
+      - { name: evidence, label: Evidence held, widget: text, hint: "What document supports this update? Required before publication." }
+      - name: review_state
+        label: Editorial state
+        widget: select
+        default: draft
+        options:
+          - { label: "Draft", value: draft }
+          - { label: "Regulatory review", value: regulatory_review }
+          - { label: "Published", value: published }
+      - { name: link_label, label: Link label, widget: string, required: false }
+      - { name: link_url, label: Link URL, widget: string, required: false }
+
+  # ---------------------------------------------------------------- singletons
+  - name: settings
+    label: Controlled statements
+    files:
+      - name: regulatory_status
+        label: Regulatory status (used site-wide)
+        file: content/regulatory-status.md
+        description: >
+          The single source of truth for how EKORails LTD's regulatory status is described.
+          Changing this changes the footer and status lines on every page of both websites.
+          Only the named compliance officer may approve a change.
+        fields:
+          - name: stage
+            label: Current stage
+            widget: select
+            options:
+              - { label: "Application prepared, not yet submitted", value: prepared }
+              - { label: "Applied — under regulatory review", value: applied }
+              - { label: "Admitted to sandbox — exact status below", value: admitted }
+              - { label: "Application unsuccessful or withdrawn", value: closed }
+          - { name: statement, label: Status statement (verbatim, published site-wide), widget: text }
+          - { name: not_licensed_statement, label: Not-licensed statement, widget: text }
+          - { name: evidence_held, label: Evidence held, widget: text }
+          - { name: evidence_date, label: Date of evidence, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, required: false }
+          - { name: approved_by, label: Approved by (named compliance officer), widget: string }
+          - { name: approved_on, label: Approved on, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
+          - { name: next_review, label: Next review due, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }

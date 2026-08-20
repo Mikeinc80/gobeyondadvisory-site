@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Eko Infrastructure — editorial</title>
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<!--
+  The CMS admin bundle must be VENDORED into this directory at deploy time
+  (npm install decap-cms-app && copy dist/decap-cms.js here). It is deliberately
+  not loaded from a CDN: the site ships a strict Content-Security-Policy with
+  script-src 'self', and loading an editor bundle from a third-party origin would
+  mean weakening that policy on the one route that can write to the repository.
+
+  Access is controlled by Netlify Identity with Git Gateway. Identity must be set
+  to invite-only, with two-factor authentication required for every editor
+  account, and the compliance officer holding the only account able to approve a
+  change to content/regulatory-status.md. See docs/15-deployment-checklist.md.
+-->
+<script src="/admin/decap-cms.js" defer></script>
+<noscript>The editorial interface requires JavaScript.</noscript>
+</body>
+</html>

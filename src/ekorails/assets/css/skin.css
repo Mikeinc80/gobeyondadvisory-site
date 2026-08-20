@@ -1,0 +1,54 @@
+/* ==========================================================================
+   EKORails.com — corporate & platform skin
+   Layered on top of _shared/base.css. Navy-forward, product-led.
+   ========================================================================== */
+
+.hero--home { padding-block: clamp(4rem, 2rem + 9vw, 8rem); }
+
+/* Capability card icon frame */
+.cap-icon {
+  width: 40px; height: 40px; border-radius: var(--radius);
+  border: 1px solid var(--emerald-100); background: rgba(14,107,78,.06);
+  display: grid; place-items: center; color: var(--emerald); margin-bottom: .35rem;
+}
+.section--dark .cap-icon { border-color: rgba(111,195,162,.28); background: rgba(111,195,162,.09); color: var(--emerald-300); }
+
+/* System boundary diagram */
+.boundary {
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: var(--white); padding: var(--s-4); overflow-x: auto;
+}
+.boundary figcaption { margin-top: var(--s-3); font-size: .8125rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); margin-top: var(--s-3); font-size: .8125rem; color: var(--text-2); }
+.legend span { display: inline-flex; align-items: center; gap: .45rem; }
+.legend i { width: 14px; height: 14px; border-radius: 2px; display: inline-block; }
+.legend .k-eko { background: rgba(14,107,78,.14); border: 1px solid var(--emerald); }
+.legend .k-partner { background: rgba(122,95,34,.12); border: 1px solid var(--gold); }
+.legend .k-external { background: var(--ivory-2); border: 1px dashed var(--muted); }
+
+/* Use-case cards with corridor tag */
+.usecase { border-top: 3px solid var(--emerald); }
+.usecase .card-index { color: var(--emerald); }
+
+/* Partner category grid */
+.partner-cat { display: grid; gap: .5rem; padding: var(--s-4) 0; border-top: 1px solid var(--line); }
+.partner-cat:last-of-type { border-bottom: 1px solid var(--line); }
+.partner-cat :is(h2, h3) { font-size: var(--step-1); }
+.partner-cat p { font-size: var(--step--1); color: var(--text-2); max-width: 68ch; }
+@media (min-width: 860px) { .partner-cat { grid-template-columns: 280px 1fr; gap: var(--s-4); } }
+
+/* News list */
+.news-item { display: grid; gap: .5rem; padding: var(--s-5) 0; border-top: 1px solid var(--line); }
+.news-item:last-of-type { border-bottom: 1px solid var(--line); }
+.news-item :is(h2, h3) { font-size: var(--step-2); }
+.news-date { font: 500 .6875rem/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+@media (min-width: 860px) { .news-item { grid-template-columns: 200px 1fr; gap: var(--s-5); } }
+
+/* Cross-site bridge band */
+.bridge {
+  border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--white);
+  padding: var(--s-5); display: grid; gap: var(--s-4); align-items: center;
+}
+.bridge :is(h2, h3) { font-size: var(--step-2); }
+.bridge p { color: var(--text-2); font-size: var(--step--1); max-width: 60ch; }
+@media (min-width: 860px) { .bridge { grid-template-columns: 1fr auto; gap: var(--s-6); } }

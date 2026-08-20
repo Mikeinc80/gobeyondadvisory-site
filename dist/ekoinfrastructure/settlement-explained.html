@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="site-ekoinfrastructure">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Settlement Explained | Eko Infrastructure</title>
+<meta name="description" content="What settlement means, how clearing differs from settlement, how correspondent banking and FX liquidity work, what settlement finality is, and how stable-value settlement models are being discussed. Neutral, sourced explanations.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://ekoinfrastructure.com/settlement-explained">
+<meta name="theme-color" content="#F8F6F1">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Eko Infrastructure">
+<meta property="og:title" content="Settlement Explained | Eko Infrastructure">
+<meta property="og:description" content="What settlement means, how clearing differs from settlement, how correspondent banking and FX liquidity work, what settlement finality is, and how stable-value settlement models are being discussed. Neutral, sourced explanations.">
+<meta property="og:url" content="https://ekoinfrastructure.com/settlement-explained">
+<meta property="og:image" content="https://ekoinfrastructure.com/assets/img/og-default.png">
+<meta property="og:image:alt" content="Eko Infrastructure — research and intelligence for African settlement infrastructure.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Settlement Explained | Eko Infrastructure">
+<meta name="twitter:description" content="What settlement means, how clearing differs from settlement, how correspondent banking and FX liquidity work, what settlement finality is, and how stable-value settlement models are being discussed. Neutral, sourced explanations.">
+<meta name="twitter:image" content="https://ekoinfrastructure.com/assets/img/og-default.png">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/css/site.css">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://ekoinfrastructure.com/#organization", "name": "EKORails LTD", "alternateName": "Eko Infrastructure", "url": "https://ekoinfrastructure.com/", "logo": "https://ekoinfrastructure.com/assets/img/og-default.png", "description": "Eko Infrastructure is the research, policy and market-intelligence platform operated by EKORails LTD, covering clearing, settlement, corridors, compliance and payment policy across African trade.", "slogan": "Research and intelligence for African settlement infrastructure.", "email": "media@ekoinfrastructure.com", "sameAs": ["https://ekorails.com"], "contactPoint": [{"@type": "ContactPoint", "contactType": "media", "email": "media@ekoinfrastructure.com", "availableLanguage": ["en"]}, {"@type": "ContactPoint", "contactType": "research", "email": "media@ekoinfrastructure.com", "availableLanguage": ["en"]}], "parentOrganization": {"@type": "Organization", "name": "EKORails LTD", "url": "https://ekorails.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "@id": "https://ekoinfrastructure.com/#website", "url": "https://ekoinfrastructure.com/", "name": "Eko Infrastructure", "publisher": {"@id": "https://ekoinfrastructure.com/#organization"}, "inLanguage": "en", "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": "https://ekoinfrastructure.com/search?q={search_term_string}"}, "query-input": "required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Research", "item": "https://ekoinfrastructure.com/"}, {"@type": "ListItem", "position": 2, "name": "Settlement Explained", "item": "https://ekoinfrastructure.com/settlement-explained"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between clearing and settlement?", "acceptedAnswer": {"@type": "Answer", "text": "Clearing is the process of transmitting, reconciling and confirming payment instructions between institutions, and calculating the resulting obligations. Settlement is the actual discharge of those obligations by a transfer of value between the institutions. Clearing establishes who owes what; settlement is the payment that extinguishes the obligation."}}, {"@type": "Question", "name": "Is SWIFT a settlement system?", "acceptedAnswer": {"@type": "Answer", "text": "No. SWIFT is primarily a financial messaging network. It carries standardised instructions between institutions. The movement of value happens through accounts those institutions hold with each other or with a central bank, not through SWIFT itself."}}, {"@type": "Question", "name": "What is settlement finality?", "acceptedAnswer": {"@type": "Answer", "text": "Settlement finality is the point at which a transfer of value becomes irrevocable and unconditional, so it cannot be reversed by the sender, by an insolvency of a participant, or by the operator of the system. Finality is normally defined in the rules of the settlement system and in the law of the jurisdiction that governs it."}}]}</script>
+</head>
+<body class="">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header" data-header>
+  <div class="shell header-inner">
+    <a class="wordmark" href="/" aria-label="Eko Infrastructure — home">
+      <svg width="196" height="30" viewBox="0 0 196 30" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eko Infrastructure">
+  <rect x="0.6" y="0.6" width="28.8" height="28.8" rx="3" fill="none" stroke="#08151F" stroke-width="1.2"/>
+  <line x1="7" y1="10" x2="23" y2="10" stroke="#14344B" stroke-width="1.3"/>
+  <line x1="7" y1="15" x2="23" y2="15" stroke="#14344B" stroke-width="1.3" opacity="0.6"/>
+  <line x1="7" y1="20" x2="17" y2="20" stroke="#14344B" stroke-width="1.3" opacity="0.35"/>
+  <circle cx="21.5" cy="20" r="2.4" fill="#A8863F"/>
+  <text x="39" y="21" font-family="Georgia, 'Times New Roman', serif" font-size="17.5" font-weight="600" fill="#08151F">Eko</text>
+  <text x="76" y="21" font-family="Georgia, 'Times New Roman', serif" font-size="17.5" font-weight="400" fill="#14344B">Infrastructure</text>
+</svg>
+    </a>
+    <nav class="primary-nav" aria-label="Primary">
+      <ul><li><a href="/">Research</a></li><li><a class="is-active" aria-current="page" href="/settlement-explained">Settlement</a></li><li><a href="/corridor-intelligence">Corridors</a></li><li><a href="/policy-and-regulation">Policy</a></li><li><a href="/technology">Technology</a></li><li><a href="/glossary">Glossary</a></li><li><a href="/data-and-sources">Sources</a></li><li><a href="/about">About</a></li></ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-sm btn-solid" href="/search">Search</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav"
+              data-nav-toggle><span class="nav-toggle-bars" aria-hidden="true"></span>
+        <span class="sr-only">Open menu</span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav" data-mobile-nav hidden>
+    <ul><li><a href="/">Research</a></li><li><a class="is-active" aria-current="page" href="/settlement-explained">Settlement</a></li><li><a href="/corridor-intelligence">Corridors</a></li><li><a href="/policy-and-regulation">Policy</a></li><li><a href="/technology">Technology</a></li><li><a href="/glossary">Glossary</a></li><li><a href="/data-and-sources">Sources</a></li><li><a href="/about">About</a></li></ul>
+    <a class="btn btn-solid btn-block" href="/search">Search</a>
+    <p class="mobile-nav-note">Published by EKORails LTD. Not independent academic research.</p>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+<section class="hero hero--research" data-section="settlement_hero">
+  <div class="shell">
+    <p class="eyebrow">Settlement explained</p>
+    <h1>Settlement, explained.</h1>
+    <p class="hero-lede">Six concepts that account for most of the confusion in cross-border payments.
+      Each one is explained on its own terms, before any argument is made about what should be built.</p>
+  </div>
+</section>
+
+<section class="section" data-section="settlement_body">
+  <div class="shell">
+    <div class="split split--sidebar">
+      <div class="prose article-body">
+        <h2 id="what-settlement-means">What settlement means</h2>
+        <p>Settlement is the discharge of an obligation between two parties by an actual transfer of
+          value. When a bank in one country owes value to a bank in another, that obligation is settled
+          when value moves between accounts the two institutions can each recognise as theirs — typically
+          accounts held with each other, with a shared correspondent, or with a central bank.</p>
+        <p>Everything else in a payment — the instruction, the compliance checks, the conversion, the
+          statement entry the customer eventually sees — surrounds that moment. Confusing the surrounding
+          activity with settlement itself is the most common error in market commentary, and it makes
+          systems look like competitors when they are in fact doing different jobs.</p>
+
+        <h2 id="clearing-versus-settlement">Clearing versus settlement</h2>
+        <p>Clearing is the transmission, reconciliation and confirmation of instructions, and the
+          calculation of the resulting obligations. Settlement is the transfer of value that discharges
+          them.</p>
+        <p>A clearing process may net many instructions into a single obligation per participant per
+          cycle, which reduces the value that must actually move. Settlement then happens once, for the
+          net figure, in central bank money or another agreed settlement asset. A real-time gross
+          settlement system takes the opposite approach: each instruction settles individually and
+          immediately, removing netting risk at the cost of requiring more liquidity.</p>
+        <p>Neither approach is better in the abstract. They trade liquidity efficiency against risk, and
+          different systems choose different points on that trade.</p>
+        <p><a class="link-arrow" href="/research/clearing-versus-settlement">Full explainer: clearing versus settlement</a></p>
+
+        <h2 id="correspondent-banking">Correspondent banking</h2>
+        <p>A bank that has no presence in a market reaches it through a bank that does. The local bank
+          holds an account for the foreign bank, and value moves between institutions by adjusting the
+          balances on those accounts. The account the foreign bank holds abroad is its nostro; the same
+          account, seen from the local bank&rsquo;s side, is a vostro.</p>
+        <p>The model works, and it carries an enormous share of world trade. Its costs are structural
+          rather than incidental: each institution in a chain applies its own compliance requirements,
+          holds its own liquidity, charges its own fees and provides its own cut-off times, and the
+          originating customer sees the sum of all of them.</p>
+        <p>Since the 2010s the number of correspondent relationships has declined in several regions as
+          banks reassessed the risk and cost of maintaining them — a trend documented in work by the
+          Financial Stability Board and the Bank for International Settlements. The consequence for
+          affected corridors is fewer routes, not necessarily worse ones.
+          <span class="placeholder">[INSERT VERIFIED FIGURE — de-risking trend data, with citation]</span></p>
+
+        <h2 id="fx-liquidity">FX and liquidity</h2>
+        <p>A cross-border payment that changes currency requires someone to hold both currencies and to
+          be willing to exchange them at a price, at a size, at a moment. That party takes a position and
+          is compensated for it.</p>
+        <p>Two things are often conflated here. Price is the rate obtained relative to a reference rate,
+          plus any margin. Availability is whether the currency can be obtained at all, at the size and
+          time needed. In several African corridors, availability rather than price has been the binding
+          constraint for businesses at various times — which is why a narrative built only around
+          &ldquo;spreads&rdquo; misdescribes the problem.
+          <span class="placeholder">[INSERT VERIFIED FIGURE — corridor FX availability evidence]</span></p>
+        <p>No settlement design removes the need for someone to hold and price currency risk. A design
+          can change who holds it, how it is priced, and how visible that price is. It cannot make it
+          free, and any claim that it does should be treated as a red flag.</p>
+
+        <h2 id="settlement-finality">Settlement finality</h2>
+        <p>Finality is the point after which a transfer cannot be revoked — not by the sender, not by the
+          insolvency of a participant, and not by the system operator. It is a legal property as much as
+          a technical one, defined by the rules of the system and by the law governing it.</p>
+        <p>This matters commercially. A payment that appears in a beneficiary&rsquo;s account but is not
+          final can still be reversed, and a business that releases goods against it is exposed. When
+          assessing any settlement proposal, the question is not how fast the balance updates but at what
+          point, under whose rules and under which law, the transfer became irrevocable.</p>
+
+        <h2 id="stable-value">Stable-value settlement models</h2>
+        <p>A recurring proposal is to settle between institutions using a stable-value instrument —
+          typically a token intended to hold a constant value against a reference currency — rather than
+          through correspondent balances.</p>
+        <p>The arguments in favour are that transfers can be effected outside domestic banking hours and
+          that the record of transfer is shared rather than reconciled. The arguments against are that
+          the instrument introduces its own credit, custody, redemption and legal risks; that finality
+          depends on the legal treatment of the instrument in each relevant jurisdiction; and that
+          somebody must still convert to and from local currency at each end, which is where much of the
+          cost sits.</p>
+        <p>Regulatory treatment differs sharply by jurisdiction and continues to change. Any claim that a
+          stable-value model removes foreign exchange cost, eliminates spread or guarantees value
+          stability is not supported by the mechanics: conversion still happens, and the party performing
+          it is still compensated.</p>
+        <p>Eko Infrastructure does not take the position that stable-value settlement is either the answer
+          or a distraction. It is one design among several, and its suitability is corridor-specific,
+          regulator-specific and legally contingent.
+          <span class="placeholder">[CONFIRM — current regulatory treatment by jurisdiction, with citation and date]</span></p>
+
+        <h2 id="the-five-things">The five things people call &ldquo;a payment&rdquo;</h2>
+        <div class="table-wrap" style="margin-top:var(--s-4)">
+          <table class="compare">
+            <caption>Separating the five functions makes most system comparisons tractable.</caption>
+            <thead><tr><th scope="col">Function</th><th scope="col">What happens</th><th scope="col">Typically performed by</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Messaging</strong></td><td>A standardised instruction travels between institutions.</td><td>Messaging networks such as SWIFT; domestic message formats; APIs.</td></tr>
+              <tr><td><strong>Clearing</strong></td><td>Instructions are reconciled and obligations calculated, sometimes netted.</td><td>Clearing houses, switches, regional systems.</td></tr>
+              <tr><td><strong>Conversion</strong></td><td>One currency is exchanged for another at a price.</td><td>Banks, authorised dealers, liquidity providers.</td></tr>
+              <tr><td><strong>Settlement</strong></td><td>Value transfers between institutions and becomes final.</td><td>Central bank systems, correspondent accounts, agreed settlement assets.</td></tr>
+              <tr><td><strong>Payout</strong></td><td>The beneficiary&rsquo;s account is credited domestically.</td><td>Licensed institutions on domestic rails.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A system that is excellent at one of these is not therefore a competitor to a system that
+          performs another. Most usable comparisons start by naming which of the five is under
+          discussion.</p>
+
+        <div class="callout" style="margin-top:var(--s-6)">
+          <h3>Where EKORails fits</h3>
+          <p>EKORails LTD, which operates this platform, is developing an orchestration and record layer
+            intended to sit across these functions rather than replace any of them. Its proposed design,
+            including what it explicitly does not do, is published on
+            <a href="https://ekorails.com/platform">ekorails.com/platform</a>. It is in development and
+            not operating.</p>
+        </div>
+      </div>
+
+      <aside class="sticky-side">
+        <nav class="toc" aria-label="On this page">
+          <h2>On this page</h2>
+          <ol>
+            <li><a href="#what-settlement-means">What settlement means</a></li>
+            <li><a href="#clearing-versus-settlement">Clearing versus settlement</a></li>
+            <li><a href="#correspondent-banking">Correspondent banking</a></li>
+            <li><a href="#fx-liquidity">FX and liquidity</a></li>
+            <li><a href="#settlement-finality">Settlement finality</a></li>
+            <li><a href="#stable-value">Stable-value models</a></li>
+            <li><a href="#the-five-things">The five functions</a></li>
+          </ol>
+        </nav>
+        <div class="callout" style="margin-top:var(--s-4)">
+          <h3>Related</h3>
+          <ul class="card-list" style="margin-top:.6rem">
+            <li><a href="/research/what-papss-does">What PAPSS does</a></li>
+            <li><a href="/research/swift-is-a-messaging-network">SWIFT as a messaging network</a></li>
+            <li><a href="/glossary">Glossary</a></li>
+            <li><a href="/data-and-sources">Data and sources</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <div class="sources">
+      <h2>Sources</h2>
+      <ol>
+        <li>Bank for International Settlements, Committee on Payments and Market Infrastructures — publications on correspondent banking and cross-border payments. <span class="placeholder">[CONFIRM — exact publication, year and URL]</span></li>
+        <li>Financial Stability Board — reporting on correspondent banking relationships. <span class="placeholder">[CONFIRM — exact publication, year and URL]</span></li>
+        <li>World Bank, Remittance Prices Worldwide — cost of sending money by region and corridor. <span class="placeholder">[CONFIRM — quarter, table and URL]</span></li>
+        <li>CPMI Principles for Financial Market Infrastructures — settlement finality definitions. <span class="placeholder">[CONFIRM — edition and URL]</span></li>
+      </ol>
+      <p class="small muted" style="margin-top:var(--s-3)">Every source is listed with a retrieval date in
+        the <a href="/data-and-sources">source register</a>. Corrections:
+        <a href="mailto:media@ekoinfrastructure.com">media@ekoinfrastructure.com</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+<div class="consent" data-consent role="region" aria-label="Cookie choices" hidden>
+  <div class="shell consent-inner">
+    <p>We use a privacy-preserving measurement tool to understand which pages institutional visitors
+      read. No advertising cookies, no cross-site tracking and no sale of data. Read the
+      <a href="https://ekorails.com/privacy-policy">privacy policy</a>.</p>
+    <div class="consent-actions">
+      <button class="btn btn-sm btn-ghost" type="button" data-consent-choice="denied">Essential only</button>
+      <button class="btn btn-sm btn-solid" type="button" data-consent-choice="granted">Allow measurement</button>
+    </div>
+  </div>
+</div>
+<footer class="site-footer" id="footer">
+  <div class="shell">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <svg width="196" height="30" viewBox="0 0 196 30" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eko Infrastructure">
+  <rect x="0.6" y="0.6" width="28.8" height="28.8" rx="3" fill="none" stroke="rgba(243,241,236,0.35)" stroke-width="1.2"/>
+  <line x1="7" y1="10" x2="23" y2="10" stroke="#6FC3A2" stroke-width="1.3"/>
+  <line x1="7" y1="15" x2="23" y2="15" stroke="#6FC3A2" stroke-width="1.3" opacity="0.6"/>
+  <line x1="7" y1="20" x2="17" y2="20" stroke="#6FC3A2" stroke-width="1.3" opacity="0.35"/>
+  <circle cx="21.5" cy="20" r="2.4" fill="#A8863F"/>
+  <text x="39" y="21" font-family="Georgia, 'Times New Roman', serif" font-size="17.5" font-weight="600" fill="#FFFFFF">Eko</text>
+  <text x="76" y="21" font-family="Georgia, 'Times New Roman', serif" font-size="17.5" font-weight="400" fill="#C2CDD5">Infrastructure</text>
+</svg>
+        <p class="footer-tag">Research and intelligence for African settlement infrastructure.</p>
+        <p class="footer-sub">A knowledge and policy platform operated by EKORails LTD. Editorially reviewed, sourced and dated.</p>
+      </div>
+      <div class="footer-cols"><div class="footer-col"><h2 class="footer-h">Knowledge</h2><ul><li><a href="/settlement-explained">Settlement explained</a></li><li><a href="/corridor-intelligence">Corridor intelligence</a></li><li><a href="/policy-and-regulation">Policy &amp; regulation</a></li><li><a href="/technology">Technology</a></li></ul></div><div class="footer-col"><h2 class="footer-h">Reference</h2><ul><li><a href="/glossary">Glossary</a></li><li><a href="/data-and-sources">Data &amp; sources</a></li><li><a href="/about#editorial">Editorial standards</a></li><li><a href="/search">Search</a></li></ul></div><div class="footer-col"><h2 class="footer-h">EKORails</h2><ul><li><a href="/ekorails">About EKORails</a></li><li><a href="https://ekorails.com" rel="noopener">EKORails.com</a></li><li><a href="https://ekorails.com/platform" rel="noopener">Platform</a></li><li><a href="https://ekorails.com/pilot-and-regulatory-pathway" rel="noopener">Regulatory pathway</a></li></ul></div><div class="footer-col"><h2 class="footer-h">Contact</h2><ul><li><a href="/contact">Research &amp; media</a></li><li><a href="mailto:media@ekoinfrastructure.com">media@ekoinfrastructure.com</a></li><li><a href="/about#corrections">Corrections</a></li><li><a href="https://ekorails.com/regulatory-disclaimer" rel="noopener">Regulatory disclaimer</a></li></ul></div></div>
+    </div>
+    <div class="footer-status" role="note">
+      <p><strong>Regulatory status.</strong> Eko Infrastructure is operated by EKORails LTD, a company developing settlement infrastructure. It is a commercially operated knowledge platform, not an independent academic or standards body, and its research should be read with that interest in mind. EKORails LTD has applied to participate in the Central Bank of Nigeria Regulatory Sandbox; participation and all proposed pilot activities remain subject to regulatory review and approval. EKORails LTD is not licensed, authorised, approved, endorsed or supervised by the Central Bank of Nigeria or any other financial services regulator.</p>
+    </div>
+    <div class="footer-legal">
+      <p class="disclaimer">EKORails LTD is developing financial infrastructure for institutional and enterprise use. Information on this website is provided for general and partnership purposes and does not constitute financial, investment, legal or payment-services advice. Products, pilot activities and services described may be subject to regulatory review, licensing, partner approval and geographic restrictions.</p>
+      <p class="colophon">&copy; 2026 EKORails LTD. Eko Infrastructure is a platform of EKORails LTD. Company number [CONFIRM WITH EKORAILS].</p>
+    </div>
+  </div>
+</footer>
+<script src="/assets/js/site.js" defer></script>
+
+</body>
+</html>
