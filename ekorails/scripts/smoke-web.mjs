@@ -16,6 +16,10 @@
  *   - nothing rendered as "undefined", "[object Object]" or "NaN",
  *   - the page raised no uncaught error and logged nothing to the browser console.
  *
+ * The paths come from the role's OWN rendered navigation, plus a few extras per role that
+ * the menu does not offer directly. A hand-written list is a list somebody forgets to add
+ * to — which is how the Documents screen stayed broken for back-office roles.
+ *
  * That last assertion is stricter than it looks and is the one that earns its keep: it
  * fails on a request the console fires and is refused. A client that asks for things it
  * knows it may not have fills a user's console with 403s, and a real authorisation failure
@@ -407,7 +411,19 @@ try {
       continue;
     }
 
-    for (const path of role.paths) await checkPage(page, role, path, errors);
+    // Every path the role's own navigation offers, read from the rendered sidebar rather
+    // than from a list here. A hand-written list is a list somebody forgets to add to: the
+    // Documents screen was broken for back-office roles for exactly that reason, because no
+    // role's list happened to include it. Deriving the paths means a menu item that exists
+    // is a menu item that gets opened.
+    const navigable = await page.$$eval(
+      '.nav-item[data-path]', (nodes) => nodes.map((node) => node.dataset.path),
+    );
+
+    const paths = [...new Set([...navigable, ...role.paths])];
+    console.log(`   ${navigable.length} navigation items, ${paths.length} paths to open`);
+
+    for (const path of paths) await checkPage(page, role, path, errors);
     await context.close();
   }
 

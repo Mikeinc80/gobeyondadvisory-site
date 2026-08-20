@@ -43,7 +43,7 @@ convenience, not a deployment topology — see `infra/terraform/README.md`.
 ## Verifying it
 
 ```bash
-npm test                              # 174 tests against a real PostgreSQL
+npm test                              # 181 tests against a real PostgreSQL
 node scripts/lint-claims.mjs          # language this entity may not use
 node scripts/check-web.mjs            # the client's links, which no bundler checks here
 node scripts/check-env.mjs            # .env.example matches what the code reads
@@ -108,7 +108,7 @@ None of the nine is met. `docs/25-pilot-readiness-report.md` states the position
 | A founder | `docs/24-founder-learning-guide.md`, then the Learning Center in the application |
 | A supervisor or auditor | `docs/23-regulator-demonstration-guide.md` |
 | Doing technical due diligence | `docs/02-system-architecture.md`, then `docs/12-threat-model.md` |
-| A security reviewer | `docs/12-threat-model.md` — the eight gaps are listed together in §4 |
+| A security reviewer | `docs/12-threat-model.md` — the eight gaps are listed together in §4 — then `docs/26-red-team-review.md` |
 | Deciding whether to pilot | `docs/25-pilot-readiness-report.md` |
 | Writing code here | `docs/04-data-model.md` and `docs/07-transaction-states.md` |
 
@@ -135,6 +135,7 @@ mechanism.
 | | | `20`–`23` | Manuals: business, compliance, operations, regulator |
 | | | `24` | Founder learning guide |
 | | | `25` | Pilot readiness report |
+| | | `26` | Red-team review |
 
 ## Licence
 

@@ -119,7 +119,10 @@ const NAVIGATION = [
       { path: '/dashboard', label: 'Dashboard', any: ['txn.read'] },
       { path: '/transactions', label: 'Transactions', any: ['txn.read', 'txn.read.any'] },
       { path: '/beneficiaries', label: 'Beneficiaries', any: ['beneficiary.read'] },
-      { path: '/documents', label: 'Documents', any: ['document.read', 'document.read.any'] },
+      // Deliberately gated on the OWN-documents permission only. A back-office role holds
+      // document.read.any and reaches a customer's documents through the case that
+      // justifies looking at them — not by browsing every customer's filing cabinet.
+      { path: '/documents', label: 'Documents', any: ['document.read'] },
       { path: '/onboarding', label: 'Onboarding', any: ['org.kyb.submit'] },
       { path: '/support', label: 'Support cases', any: ['case.support.raise', 'case.support.manage'] },
     ],

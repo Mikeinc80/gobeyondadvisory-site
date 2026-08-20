@@ -809,6 +809,34 @@ async function reviewBeneficiaryDialog(ctx, beneficiary) {
 // ---------------------------------------------------------------------------
 
 export async function documentList(ctx) {
+  // A back-office caller must name the organisation whose documents they want, and this
+  // screen deliberately does not offer a way to. Reading a customer's documents is
+  // justified by the case that required it; browsing them is not the same act, and giving
+  // it a screen would make it look like it were.
+  if (ctx.me?.scope !== 'org') {
+    return h('div', {},
+      h('div', { class: 'page-head' },
+        h('div', {},
+          h('h1', { class: 'page-title', text: 'Documents' }),
+          h('p', { class: 'page-sub', text: 'Reached through a case' }),
+        ),
+      ),
+      notice('info', 'Customer documents are opened from the case that needs them',
+        h('p', {
+          text:
+            'Your roles can read documents across organisations, which is why there is no list of ' +
+            'everybody\'s here. Open the compliance case or the transaction, and the documents it ' +
+            'relies on are on it — so the access has a reason attached, and the reason is recorded.',
+        }),
+        h('p', {},
+          h('button', { class: 'btn', onclick: () => ctx.navigate('/compliance/cases') }, 'Compliance queue'),
+          ' ',
+          h('button', { class: 'btn', onclick: () => ctx.navigate('/transactions') }, 'Transactions'),
+        ),
+      ),
+    );
+  }
+
   const rows = await get('/api/documents');
   const me = await get('/api/me');
 

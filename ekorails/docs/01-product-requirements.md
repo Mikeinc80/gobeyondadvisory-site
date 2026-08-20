@@ -180,8 +180,9 @@ An honest set, in the order they have to be true:
 4. A compliance decision made today can be reconstructed a year from now from the record alone.
    **Met** — self-contained evaluations with ruleset and input hashes.
 5. Every screen a role can reach renders correctly for that role, with no request the role is not
-   entitled to make. **Met** — 76 page loads across nine roles in a real browser, plus a write
-   journey.
+   entitled to make. **Met** — 126 page loads across nine roles in a real browser, covering
+   every item each role's navigation offers, plus a write journey through initiate, submit
+   and authorise.
 6. No claim is made anywhere that EKORails is not entitled to make. **Met, within this repository.**
    The lint cannot police material outside it.
 7. The regulatory facts are confirmed. **Not met, and not within this build's power to meet.**
