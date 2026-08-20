@@ -647,11 +647,47 @@ async function promptStepUp(reason) {
 // Boot
 // ---------------------------------------------------------------------------
 
+/**
+ * Fills in the banner's detail line from what the server reports.
+ *
+ * The headline — SANDBOX ENVIRONMENT. NO LIVE FUNDS. — is static, and stays static, because
+ * verifyBannerIntegrity() compares it against the server's own statement and blocks the page
+ * if the two disagree. A headline the client composed would be a headline the client could
+ * get wrong.
+ *
+ * The detail line is where the environment-specific facts go, and one of them matters
+ * independently of the funds question: in DEMO and SANDBOX every business, person, document
+ * and account identifier is invented. Saying so only on the sign-in screen would put it
+ * everywhere the data is not, and nowhere it is.
+ */
+function describeEnvironment(environment) {
+  const detail = document.getElementById('environment-detail');
+  if (!detail || !environment) return;
+
+  const parts = [];
+  if (environment.settlement_is_simulated) {
+    parts.push('Every partner, rate and settlement below is simulated. Balances are not real.');
+  }
+  if (['DEMO', 'SANDBOX'].includes(environment.mode)) {
+    parts.push('Fictional demonstration data.');
+  }
+  if (environment.live_funds_enabled) {
+    parts.push('LIVE FUNDS ARE ENABLED IN THIS ENVIRONMENT.');
+  }
+
+  // Never leave it empty: an environment with nothing to say about itself is one where the
+  // reader should be told that explicitly rather than shown a blank.
+  detail.textContent = parts.length > 0
+    ? parts.join(' ')
+    : `Environment: ${environment.mode}.`;
+}
+
 async function bootstrap(message) {
   const root = document.getElementById('root');
 
   try {
     session.environment = await get('/api/system/environment');
+    describeEnvironment(session.environment);
   } catch {
     session.environment = null;
   }

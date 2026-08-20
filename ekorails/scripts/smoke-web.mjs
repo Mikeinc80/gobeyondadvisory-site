@@ -225,6 +225,11 @@ async function checkPage(page, role, path, errors) {
   if (!banner || !banner.includes('SANDBOX ENVIRONMENT. NO LIVE FUNDS.')) {
     note(role.label, path, `the environment banner is missing or altered: ${JSON.stringify(banner)}`);
   }
+  // The brief requires demonstration data to be labelled as such. On the screens that show
+  // it, not only on the one before you sign in.
+  if (banner && !banner.includes('Fictional demonstration data')) {
+    note(role.label, path, 'the banner does not say the data is fictional');
+  }
 
   const main = (await page.textContent('#main-content').catch(() => '')) ?? '';
   if (main.trim().length < 60) {

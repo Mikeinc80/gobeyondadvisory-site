@@ -19,7 +19,12 @@
 <div id="environment-banner" class="banner" role="status" aria-live="polite">
   <span class="banner-dot" aria-hidden="true"></span>
   <strong>SANDBOX ENVIRONMENT. NO LIVE FUNDS.</strong>
-  <span class="banner-detail">Every partner, rate and settlement below is simulated. Balances are not real.</span>
+  <!--
+    The detail line is replaced by app.js with a sentence appropriate to the mode the server
+    reports. The text here is the conservative default, so a client that fails to start
+    still shows the more cautious of the two statements rather than the less.
+  -->
+  <span class="banner-detail" id="environment-detail">Every partner, rate and settlement below is simulated. Balances are not real. Fictional demonstration data.</span>
 </div>
 
 <div id="root">
