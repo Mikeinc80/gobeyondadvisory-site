@@ -170,6 +170,19 @@ CREATE POLICY audit_event_read ON audit_event FOR SELECT
 -- because of scope would create an incentive to skip auditing.
 CREATE POLICY audit_event_append ON audit_event FOR INSERT WITH CHECK (true);
 
+-- UPDATE and DELETE policies that admit rows DELIBERATELY.
+--
+-- Without them, row-level security would silently match zero rows and an attempted
+-- mutation would succeed with "0 rows affected" — blocked, but silently. Admitting the
+-- rows means the append-only trigger fires and raises APPEND_ONLY_VIOLATION loudly, which
+-- is both auditable and testable. This grants nothing: the application role holds no
+-- UPDATE or DELETE privilege on this table at all, and the trigger refuses the owner too.
+-- The WITH CHECK (false) on UPDATE is a third, independent refusal.
+CREATE POLICY audit_event_block_update ON audit_event FOR UPDATE
+  USING (true) WITH CHECK (false);
+CREATE POLICY audit_event_block_delete ON audit_event FOR DELETE
+  USING (true);
+
 -- ---------------------------------------------------------------------------
 -- Reference and platform tables
 --
@@ -189,5 +202,30 @@ CREATE POLICY audit_event_append ON audit_event FOR INSERT WITH CHECK (true);
 -- require a back-office role, and the API masks customer identifiers for the
 -- auditor/regulator masking profile.
 -- ---------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------
+-- Backup role
+--
+-- FORCE ROW LEVEL SECURITY applies to the table owner, which means pg_dump run as the
+-- owner FAILS with "query would be affected by row-level security policy". That is not a
+-- theoretical problem: it is exactly how an organisation discovers, during an incident,
+-- that its backups have been silently failing. Backups therefore run as a dedicated role
+-- with BYPASSRLS and read-only access, and the restoration test in the mandatory suite
+-- exercises this path rather than assuming it works.
+--
+-- BYPASSRLS is a genuine privilege escalation, so this role is read-only, has no login
+-- rights in a real deployment beyond the backup job's credential, and its use is a named
+-- item in the operational access review.
+-- The role itself is created by scripts/provision-roles.sh, which runs as a cluster
+-- superuser. Role creation is a cluster-level operation and deliberately does NOT live in
+-- a schema migration: the schema owner has no CREATEROLE privilege, and giving it one so
+-- that a migration could create roles would be a meaningful privilege escalation.
+GRANT USAGE ON SCHEMA public TO ekorails_backup;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO ekorails_backup;
+GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO ekorails_backup;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO ekorails_backup;
+
+-- (The role's own COMMENT is set by scripts/provision-roles.sh: COMMENT ON ROLE requires
+-- CREATEROLE, which the schema owner deliberately does not have.)
 
 COMMIT;

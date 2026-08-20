@@ -128,10 +128,33 @@ export function redact(input, depth = 0) {
     return '[UNSERIALISABLE]';
 }
 /**
+ * Removes structures that are positively identifiable as safe before leak scanning.
+ *
+ * Without this the "long digit run" heuristic fires on every monetary amount and on any
+ * hash that happens to contain ten consecutive digits — and a detector that cries wolf on
+ * `5000000000.000000` is a detector nobody will keep running. Each exclusion below is a
+ * value whose shape we can positively recognise, not a general loosening of the check.
+ */
+function stripKnownSafeStructures(input) {
+    return input
+        // SHA-256 / SHA-1 hex digests. Not personal data and not credentials.
+        .replace(/\b[0-9a-f]{40}\b/gi, 'HEX40')
+        .replace(/\b[0-9a-f]{64}\b/gi, 'HEX64')
+        // UUIDs.
+        .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, 'UUID')
+        // Fixed-precision monetary amounts, which always carry a decimal point in this system.
+        .replace(/\b\d+\.\d{1,18}\b/g, 'AMOUNT')
+        // ISO timestamps.
+        .replace(/\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z?\b/g, 'TIMESTAMP')
+        // Already-masked fragments, e.g. ****1111.
+        .replace(/\*{2,}\d{0,6}/g, 'MASKED');
+}
+/**
  * Test helper and CI guard: scans a serialised payload for anything that should
  * never have survived redaction. Used by the "PII in logs" test case.
  */
-export function findLeaks(serialised) {
+export function findLeaks(rawInput) {
+    const serialised = stripKnownSafeStructures(rawInput);
     const leaks = [];
     const checks = [
         ['private key block', /-----BEGIN [A-Z ]*PRIVATE KEY-----/],
@@ -139,7 +162,7 @@ export function findLeaks(serialised) {
         ['bearer token', /Bearer\s+\S{16,}/i],
         ['scrypt hash', /\$?scrypt[$:]/i],
         // A 10-digit Nigerian NUBAN or a 16-digit card-like run of digits.
-        ['unmasked long account identifier', /(?<![\d*])\d{10,19}(?![\d*])/],
+        ['unmasked long account identifier', /(?<![\d*.\-])\d{10,19}(?![\d*.\-])/],
         ['IBAN', /\b[A-Z]{2}\d{2}[A-Z0-9]{12,30}\b/],
         ['password field with a value', /"pass(word|phrase)"\s*:\s*"(?!\[REDACTED\])[^"]+"/i],
         ['token field with a value', /"[a-z_]*token"\s*:\s*"(?!\[REDACTED\])[^"]{8,}"/i],

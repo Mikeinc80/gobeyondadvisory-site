@@ -18,12 +18,19 @@ HOST="${EKORAILS_DB_HOST:-127.0.0.1}"
 PORT="${EKORAILS_DB_PORT:-5432}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+# Roles are a cluster-level concern and are provisioned separately.
+"$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/provision-roles.sh" >/dev/null
+
 echo "==> Rebuilding '$DB' (mode=$MODE)"
 
 su postgres -c "psql -q -v ON_ERROR_STOP=1 \
   -c \"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='$DB' AND pid<>pg_backend_pid();\" \
   -c \"DROP DATABASE IF EXISTS $DB;\" \
   -c \"CREATE DATABASE $DB OWNER $OWNER;\"" >/dev/null
+
+su postgres -c "psql -q -v ON_ERROR_STOP=1 -d $DB \
+  -c \"GRANT CONNECT ON DATABASE $DB TO ekorails_app;\" \
+  -c \"GRANT CONNECT ON DATABASE $DB TO ekorails_backup;\"" >/dev/null
 
 for f in "$ROOT"/db/migrations/*.sql; do
   name="$(basename "$f")"
