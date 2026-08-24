@@ -116,7 +116,14 @@ every placeholder.
 
 ## Previewing without a server
 
-`python3 tools/preview.py` bundles every built page of both sites into a single
-self-contained file at `preview/ekorails-preview.html`. Open it in a browser: a site switcher, a page
-rail and viewport-width buttons (full / 1280 / 834 / 390) let you walk both sites, including the
-cross-links between them, with no server running.
+Two options, both self-contained.
+
+**Review copies — no JavaScript, no iframes.** `python3 tools/preview-static.py` writes
+`preview/ekorails-review.html` and `preview/ekoinfrastructure-review.html`. Each is one long document
+with that site's pages stacked in order, behind labelled dividers, navigable by plain anchor links.
+Nothing can fail to run, so these work in preview panes, on phones and in locked-down browsers. Keep
+both files in the same folder and the cross-site links work too.
+
+**Interactive preview.** `python3 tools/preview.py` writes `preview/ekorails-preview.html`: both sites
+in one file with a site switcher, page rail and viewport-width buttons (full / 1280 / 834 / 390). It
+needs JavaScript and iframes, so prefer the review copies if anything looks blank.
