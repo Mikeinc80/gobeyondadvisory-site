@@ -259,11 +259,28 @@ export async function seedConfiguration(
       isPlaceholder: true, founderDecision: 'FD-009',
     },
     {
-      key: 'legal_entity_particulars', value: { registered_name: 'EKORails LTD' }, type: 'object',
+      key: 'legal_entity_particulars', value: {
+        registered_name: 'EKORAILS LIMITED',
+        trading_name: 'EKORails',
+        previous_name: 'ECO INFRASTRUCTURE LIMITED',
+        registration_number: 'RC 9490673',
+        jurisdiction: 'Federal Republic of Nigeria',
+        registry: 'Corporate Affairs Commission',
+        statute: 'Companies and Allied Matters Act 2020',
+        incorporated_on: '2026-04-15',
+        name_changed_on: '2026-08-16',
+        certificate_issued_on: '2026-08-23',
+        tax_identification_number: '2623794513058',
+        evidence: 'Certificate of Incorporation supplied by the founder on 2026-08-24.',
+        verification_status: 'documented_not_independently_verified',
+      }, type: 'object',
       description:
-        'Only the registered name is asserted. Jurisdiction of incorporation, company number and ' +
-        'registered office are NOT asserted because incorporation documents were not supplied.',
-      isPlaceholder: true, founderDecision: 'FD-001',
+        'Entity particulars taken from the Certificate of Incorporation. These are the only ' +
+        'corporate facts the product may state. They are DOCUMENTED, not independently verified: ' +
+        'nothing in this build has checked them against the Corporate Affairs Commission register, ' +
+        'and verification_status says so rather than letting a reader assume otherwise. The ' +
+        'registered office is still NOT asserted, because the certificate does not carry one.',
+      isPlaceholder: false, founderDecision: 'FD-001',
     },
     {
       key: 'pilot_corridor', value: {

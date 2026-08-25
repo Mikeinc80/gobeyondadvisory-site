@@ -60,7 +60,7 @@ async function main(): Promise<void> {
     const row = await one<{ id: string }>(
       db,
       `INSERT INTO organization (display_code, legal_name, kind, onboarding_status)
-       VALUES ('ORG-EKORAILS', 'EKORails LTD', 'internal', 'approved') RETURNING id`,
+       VALUES ('ORG-EKORAILS', 'EKORAILS LIMITED', 'internal', 'approved') RETURNING id`,
     );
     return row.id;
   });

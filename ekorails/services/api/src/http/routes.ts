@@ -88,7 +88,7 @@ export function buildRouter(): Router {
     summary: 'The complete list of what EKORails does and does not claim to be.',
     tags: ['system'],
     handler: async () => ({
-      entity: 'EKORails LTD',
+      entity: 'EKORAILS LIMITED (RC 9490673), trading as EKORails',
       what_this_software_is:
         'A compliance-first orchestration layer for business-to-business cross-border trade ' +
         'settlement. It coordinates approvals, screening, quotation, instruction and reconciliation.',

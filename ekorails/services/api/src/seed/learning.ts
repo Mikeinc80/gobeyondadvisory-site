@@ -1346,6 +1346,17 @@ export async function seedGlossary(db: Queryable): Promise<number> {
 export const FOUNDER_DECISIONS = [
   {
     ref: 'FD-001', title: 'What legal entity particulars may the product display?',
+    // Resolved. The Certificate of Incorporation was supplied on 2026-08-24, and the
+    // configuration now carries the registered name, registration number, jurisdiction,
+    // statute and dates. The particulars are DOCUMENTED, not independently verified against
+    // the Corporate Affairs Commission register, and the configuration records that
+    // distinction rather than letting a reader collapse the two.
+    status: 'approved',
+    approver: 'Founder',
+    reasonSelected:
+      'Display only what the certificate evidences: registered name, registration number, ' +
+      'jurisdiction, statute and dates. The registered office is still not asserted, because ' +
+      'the certificate does not carry one.',
     context:
       'Receipts, the regulator view and customer-facing documents normally carry the registered ' +
       'name, company number, jurisdiction of incorporation and registered office. No incorporation ' +
@@ -1567,12 +1578,19 @@ export async function seedDecisionLog(db: Queryable): Promise<number> {
     const result = await db.query(
       `INSERT INTO decision_log (
          decision_ref, title, status, context, options_considered, recommended_option,
-         main_risk, regulatory_impact, cost_impact, reversibility, blocks
-       ) VALUES ($1,$2,'awaiting_approval',$3,$4::jsonb,$5,$6,$7,$8,$9,$10)
+         main_risk, regulatory_impact, cost_impact, reversibility, blocks,
+         approver, approved_at, reason_selected, decision_date
+       ) VALUES (
+         $1,$2,$3,$4,$5::jsonb,$6,$7,$8,$9,$10,$11,
+         $12, CASE WHEN $3 = 'approved' THEN now() ELSE NULL END, $13,
+         CASE WHEN $3 = 'approved' THEN CURRENT_DATE ELSE NULL END
+       )
        ON CONFLICT (decision_ref) DO NOTHING`,
       [
-        d.ref, d.title, d.context, JSON.stringify(d.options), d.recommended,
+        d.ref, d.title, d.status ?? 'awaiting_approval', d.context,
+        JSON.stringify(d.options), d.recommended,
         d.risk, d.regulatory, d.cost, d.reversibility, d.blocks,
+        d.approver ?? null, d.reasonSelected ?? null,
       ],
     );
     count += result.rowCount ?? 0;
