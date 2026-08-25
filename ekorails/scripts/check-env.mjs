@@ -28,6 +28,7 @@ const EXEMPT = new Set([
   'NODE_ENV',
   'EKORAILS_SEED_PASSPHRASE',   // read only by the browser smoke test
   'EKORAILS_SMOKE_PORT',        // read only by the browser smoke test
+  'EKORAILS_CAPTURE_PORT',      // read only by the evidence capture script
   'PLAYWRIGHT_BROWSERS_PATH',   // set by the environment, not by this project
 ]);
 

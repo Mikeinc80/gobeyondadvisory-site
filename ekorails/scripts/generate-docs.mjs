@@ -46,7 +46,7 @@ const { FOUNDER_DECISIONS, RISK_REGISTER, BUILD_JOURNAL, MODULES } = await impor
 const written = [];
 const differing = [];
 
-function emit(filename, body) {
+function emit(filename, body, subdirectory) {
   const header =
     `<!--\n` +
     `  GENERATED FILE — do not edit.\n\n` +
@@ -56,15 +56,15 @@ function emit(filename, body) {
     `-->\n\n`;
 
   const content = header + body.trimEnd() + '\n';
-  const path = join(DOCS, filename);
+  const path = subdirectory ? join(DOCS, subdirectory, filename) : join(DOCS, filename);
 
   if (CHECK) {
     const existing = existsSync(path) ? readFileSync(path, 'utf8') : null;
-    if (existing !== content) differing.push(filename);
+    if (existing !== content) differing.push(subdirectory ? `${subdirectory}/${filename}` : filename);
     return;
   }
   writeFileSync(path, content, 'utf8');
-  written.push(filename);
+  written.push(subdirectory ? `${subdirectory}/${filename}` : filename);
 }
 
 const esc = (value) => String(value ?? '').replace(/\|/g, '\\|').replace(/\n+/g, ' ');
@@ -1333,6 +1333,103 @@ function generateFounderDecisions() {
 }
 
 // ---------------------------------------------------------------------------
+// S5 — Interface evidence annex
+// ---------------------------------------------------------------------------
+
+/**
+ * Built from the capture manifest, so the annex cannot describe a screenshot that is not
+ * there or omit one that is.
+ *
+ * Skipped silently when no captures exist: `scripts/capture-evidence.mjs` needs a seeded
+ * database and a browser, and a build machine that has neither should not fail over it.
+ */
+function generateEvidenceAnnex() {
+  const manifestPath = join(DOCS, 'submission/evidence/manifest.json');
+  if (!existsSync(manifestPath)) return;
+
+  const captures = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  const byRole = new Map();
+  for (const capture of captures) {
+    if (!byRole.has(capture.role)) byRole.set(capture.role, []);
+    byRole.get(capture.role).push(capture);
+  }
+
+  const lines = [];
+  lines.push('# Annex — The interface');
+  lines.push('');
+  lines.push('**EKORAILS LIMITED** · RC 9490673');
+  lines.push('');
+  lines.push(`${captures.length} screens, captured from the running system.`);
+  lines.push('');
+  lines.push('## What these images are');
+  lines.push('');
+  lines.push('Every image below is a screenshot of the **working application**, signed in as the role');
+  lines.push('named, reading the seeded database. None is a mockup, a wireframe or a design study.');
+  lines.push('');
+  lines.push('The environment banner is visible in every frame, and the capture script refuses to');
+  lines.push('save an image in which it is absent. It reads:');
+  lines.push('');
+  lines.push('> **SANDBOX ENVIRONMENT. NO LIVE FUNDS.** Every partner, rate and settlement below is');
+  lines.push('> simulated. Balances are not real. Fictional demonstration data.');
+  lines.push('');
+  lines.push('Every business, person, document and account identifier shown is fictional. No real');
+  lines.push('identity document or bank detail appears anywhere in this system.');
+  lines.push('');
+  lines.push('## What each image is offered as evidence of');
+  lines.push('');
+  lines.push('A screenshot captioned "dashboard" proves nothing. Each caption below states what the');
+  lines.push('image is evidence OF, so that a reader can check the claim against the picture rather');
+  lines.push('than take the caption on trust.');
+  lines.push('');
+  lines.push('If you would rather not rely on our screenshots at all, `S6-evaluator-instructions.md`');
+  lines.push('sets out how to run the whole system yourself in about five minutes and check any of');
+  lines.push('these claims directly.');
+  lines.push('');
+  lines.push('## Index');
+  lines.push('');
+  lines.push('| # | Screen | Role | Path |');
+  lines.push('|---|---|---|---|');
+  captures.forEach((capture, index) => {
+    lines.push(
+      `| ${index + 1} | ${esc(capture.title)} | ${esc(capture.role)} | \`${esc(capture.path)}\` |`,
+    );
+  });
+  lines.push('');
+
+  for (const [role, group] of byRole) {
+    lines.push(`## Signed in as: ${role}`);
+    lines.push('');
+    for (const capture of group) {
+      const index = captures.indexOf(capture) + 1;
+      lines.push(`### ${index}. ${capture.title}`);
+      lines.push('');
+      lines.push(`\`${capture.path}\``);
+      lines.push('');
+      lines.push(`**Evidence of:** ${capture.evidences}`);
+      lines.push('');
+      lines.push(`![${capture.title}](evidence/${capture.file})`);
+      lines.push('');
+    }
+  }
+
+  lines.push('## What these images do not show');
+  lines.push('');
+  lines.push('Stated here so the annex is not read as more than it is.');
+  lines.push('');
+  lines.push('- **No partner is real.** Every partner interaction shown is a simulator, labelled as');
+  lines.push('  one on the screen. No agreement with any institution has been executed.');
+  lines.push('- **No corridor is confirmed.** The corridor, its currencies and its limits are the');
+  lines.push('  facts this application seeks to establish, and they appear as explicit placeholders.');
+  lines.push('- **No money has moved.** Every balance is simulated, and the release gates that would');
+  lines.push('  permit live funds are all unmet.');
+  lines.push('- **This is not a deployment.** The system has run on a developer machine and in this');
+  lines.push('  repository\'s continuous integration. No region has been selected, and no claim of');
+  lines.push('  data residency in any jurisdiction is made.');
+
+  emit('S5-interface-evidence-annex.md', lines.join('\n'), 'submission');
+}
+
+// ---------------------------------------------------------------------------
 // B — Claims lint
 // ---------------------------------------------------------------------------
 
@@ -1431,6 +1528,7 @@ generateTraceability();
 generateRiskRegister();
 generatePilotReadiness();
 generateFounderDecisions();
+generateEvidenceAnnex();
 generateClaimsLint();
 
 if (CHECK) {
