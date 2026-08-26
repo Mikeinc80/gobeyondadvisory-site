@@ -1,21 +1,2 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://gobeyondadvisory.com/</loc>
-    <lastmod>2026-02-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://gobeyondadvisory.com/article-ai-infrastructure-gap.html</loc>
-    <lastmod>2026-02-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://gobeyondadvisory.com/article-pentagon-brief.html</loc>
-    <lastmod>2026-02-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-</urlset>
+<?xml version='1.0' encoding='utf-8'?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://gobeyondadvisory.com/article-ai-infrastructure-gap.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/article-pentagon-brief.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/briefs.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/founders.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article2-stop-building-ai-from-scratch.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article3-settlement-rails.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article3-spr-v2.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article4-sahel-v2.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article4-smart-capital.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article5-hormuz-sovereign-risk.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article6-aws-sovereign-ai.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article7-beyond-the-rocket.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article7-bomb-then-buy.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/gba-article8-ai-sees-light.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://gobeyondadvisory.com/</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url><url><loc>https://gobeyondadvisory.com/success.html</loc><lastmod>2026-08-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url></urlset>

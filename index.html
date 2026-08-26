@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content="GoBeyond Advisory — Strategic investment and infrastructure advisory across West Africa, GCC, Europe, and the USA. Capital deployed where it creates lasting infrastructure."/>
-<meta name="keywords" content="GoBeyond Advisory, infrastructure advisory, cross-border capital, West Africa investment, GCC advisory, ECO Infrastructure, Mike Ogbebor"/>
+<meta name="keywords" content="GoBeyond Advisory, infrastructure advisory, cross-border capital, West Africa investment, GCC advisory, EKORails, EKO Infrastructure, JE TEX Energy, energy services Nigeria, healthcare infrastructure, Mike Ogbebor"/>
 <meta property="og:title" content="GoBeyond Advisory | Strategic Investment & Infrastructure Advisory"/>
 <meta property="og:description" content="Capital deployed where it creates lasting infrastructure. Advisory across West Africa, GCC, Europe, and the USA."/>
 <meta property="og:type" content="website"/>
@@ -292,7 +292,7 @@ nav{
 
 /* ── PILLARS ── */
 .pillars-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);
+  display:grid;grid-template-columns:repeat(2,1fr);
   gap:1px;background:var(--border);border:1px solid var(--border);
   margin-top:48px;
 }
@@ -696,41 +696,77 @@ footer{
   .markers{grid-template-columns:1fr 1fr;}
   .footer-top{grid-template-columns:1fr;}
 }
+
+/* Audit improvements: accessibility, responsive navigation, and motion preferences */
+.skip-link{position:absolute;left:-9999px;top:8px;z-index:9999;padding:10px 16px;background:#fff;color:#111;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;}
+.skip-link:focus{left:12px;}
+:focus-visible{outline:3px solid var(--gold-lt,#D4AF6A);outline-offset:3px;}
+.menu-toggle{display:none;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;color:inherit;background:transparent;border:1px solid currentColor;padding:9px 12px;text-transform:uppercase;cursor:pointer;}
+.legal-section{border-bottom:1px solid var(--border);background:var(--panel,#F5F2ED);}
+.legal-inner{max-width:1400px;margin:0 auto;padding:44px 60px;}
+.legal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:24px;}
+.legal-card{background:var(--white,#fff);padding:24px;}
+.legal-card h3{font-size:13px;margin-bottom:8px;}
+.legal-card p{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--muted);line-height:1.55;}
+.status-note{margin-top:18px;padding:14px 16px;border-left:2px solid var(--gold);background:rgba(154,122,50,.07);font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.6;color:var(--muted);}
+@media(max-width:1024px){.menu-toggle{display:inline-flex;align-items:center;justify-content:center}.nav-links.open{display:flex;position:absolute;top:68px;left:0;right:0;padding:16px 24px;background:var(--bg,#FAFAF8);border-bottom:1px solid var(--border);flex-direction:column;align-items:flex-start;gap:14px}.legal-inner{padding-left:24px;padding-right:24px}.legal-grid{grid-template-columns:1fr;}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ticker-track,.hero-eyebrow,.hero h1,.hero-body,.hero-location,.hero-btns,.hero-scroll,.active-dot{animation:none!important}.btn-ink,.btn-outline,.btn-gold,.eco-btn,.eco-ghost{transition:none!important}}
+
+.ecosystem-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:28px}.ecosystem-card{display:flex;flex-direction:column;gap:9px;padding:26px;background:var(--white);text-decoration:none;color:var(--ink)}.ecosystem-card span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--gold)}.ecosystem-card strong{font-size:18px}.ecosystem-card small{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--muted);line-height:1.5}@media(max-width:640px){.ecosystem-grid{grid-template-columns:1fr}}
 </style>
+
+<link rel="canonical" href="https://gobeyondadvisory.com/"/>
+<meta property="og:image" content="https://gobeyondadvisory.com/og-image.svg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="gobeyondadvisory.com"/>
+<meta name="twitter:description" content="GoBeyond Advisory — Strategic investment and infrastructure advisory across West Africa, GCC, Europe, and the USA. Capital deployed where it creates lasting infrastructure."/>
+<meta name="twitter:image" content="https://gobeyondadvisory.com/og-image.svg"/>
+<script type="application/ld+json">{
+  "@context":"https://schema.org",
+  "@type":"Organization",
+  "name":"GoBeyond Advisory",
+  "url":"https://gobeyondadvisory.com/",
+  "description":"Strategic investment and infrastructure advisory across West Africa, the GCC, Europe, and the United States.",
+  "email":"info@gobeyondadvisory.com",
+  "sameAs":["https://www.linkedin.com/company/gobeyond-advisory","https://x.com/gobeyondadvisory","https://www.youtube.com/@gobeyondadvisory"]
+}</script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
 <!-- NAV -->
 <nav>
   <a href="/" class="nav-logo">GOBEYOND <span>ADVISORY</span></a>
-  <div class="nav-links">
+  <div id="site-navigation" class="nav-links">
     <a href="#initiatives">Initiatives</a>
     <a href="#advisory">Advisory</a>
     <a href="#engage-section">Engage</a>
     <a href="#markets">Markets</a>
     <a href="#insights">Insights</a>
-    <a href="/founders">Leadership</a>
+    <a href="founders.html">Leadership</a>
   </div>
   <div class="nav-right">
-    <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" class="nav-linkedin" title="LinkedIn">
+    <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" class="nav-linkedin" title="LinkedIn" aria-label="LinkedIn">
       <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
     </a>
-    <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="X / Twitter">
+    <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="X / Twitter" aria-label="X / Twitter">
       <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
     </a>
-    <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="YouTube">
+    <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="YouTube" aria-label="YouTube">
       <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
     </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Menu</button>
     <a href="#contact" class="nav-cta">Engage Advisory</a>
   </div>
 </nav>
 
+<main id="main-content">
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg-num">GBA</div>
   <div class="hero-eyebrow">Strategic Investment & Infrastructure Advisory</div>
   <h1>Capital deployed where<br/>it creates <em>lasting<br/>infrastructure.</em></h1>
-  <p class="hero-body">GoBeyond Advisory advises, structures, and deploys capital into high-impact infrastructure and real-asset opportunities across growth markets. We close.</p>
+  <p class="hero-body">GoBeyond Advisory helps institutions, governments, and enterprise partners structure infrastructure, cross-border capital, and market-entry mandates across West Africa, the GCC, Europe, and the United States.</p>
   <p class="hero-location">Houston · West Africa · GCC · Europe</p>
   <div class="hero-btns">
     <a href="#initiatives" class="btn-ink">View Active Initiatives</a>
@@ -741,31 +777,37 @@ footer{
 <!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker-track">
-    <span class="ticker-item">ECO Infrastructure <span>Active</span></span>
+    <span class="ticker-item">EKORails <span>Active</span></span>
     <span class="ticker-item">Cape Coast New City <span>Active</span></span>
+    <span class="ticker-item">Centenary City Abuja <span>Structuring</span></span>
+    <span class="ticker-item">JE TEX Energy <span>Operating</span></span>
     <span class="ticker-item">West Africa <span>Operational</span></span>
     <span class="ticker-item">GCC Corridor <span>Phase 1</span></span>
     <span class="ticker-item">Newline Investors <span>Capital Arm</span></span>
-    <span class="ticker-item">CBN Sandbox <span>In Progress</span></span>
-    <span class="ticker-item">Infrastructure Advisory <span>Core</span></span>
+    <span class="ticker-item">Healthcare Infrastructure <span>Active</span></span>
+    <span class="ticker-item">EkoRails profile <span>Public technology layer</span></span>
+    <span class="ticker-item">Energy Infrastructure <span>Core</span></span>
     <span class="ticker-item">Cross-Border Capital <span>Active</span></span>
-    <span class="ticker-item">ECO Infrastructure <span>Active</span></span>
+    <span class="ticker-item">EKORails <span>Active</span></span>
     <span class="ticker-item">Cape Coast New City <span>Active</span></span>
+    <span class="ticker-item">Centenary City Abuja <span>Structuring</span></span>
+    <span class="ticker-item">JE TEX Energy <span>Operating</span></span>
     <span class="ticker-item">West Africa <span>Operational</span></span>
     <span class="ticker-item">GCC Corridor <span>Phase 1</span></span>
     <span class="ticker-item">Newline Investors <span>Capital Arm</span></span>
-    <span class="ticker-item">CBN Sandbox <span>In Progress</span></span>
-    <span class="ticker-item">Infrastructure Advisory <span>Core</span></span>
+    <span class="ticker-item">Healthcare Infrastructure <span>Active</span></span>
+    <span class="ticker-item">EkoRails profile <span>Public technology layer</span></span>
+    <span class="ticker-item">Energy Infrastructure <span>Core</span></span>
     <span class="ticker-item">Cross-Border Capital <span>Active</span></span>
   </div>
 </div>
 
 <!-- MARKERS -->
 <div class="markers">
-  <div class="marker"><span class="marker-num">3</span><span class="marker-label">Advisory<br/>Pillars</span></div>
+  <div class="marker"><span class="marker-num">4</span><span class="marker-label">Advisory<br/>Pillars</span></div>
   <div class="marker"><span class="marker-num">5</span><span class="marker-label">Active<br/>Markets</span></div>
-  <div class="marker"><span class="marker-num">2</span><span class="marker-label">Flagship<br/>Initiatives</span></div>
-  <div class="marker"><span class="marker-num"><span>$2B</span>+</span><span class="marker-label">Project<br/>Pipeline</span></div>
+  <div class="marker"><span class="marker-num">6</span><span class="marker-label">Initiatives<br/>in view</span></div>
+  <div class="marker"><span class="marker-num"><span>$2B</span>+</span><span class="marker-label">Pipeline estimate*<br/>not committed capital</span></div>
 </div>
 
 <!-- ECO BANNER -->
@@ -773,12 +815,12 @@ footer{
   <div class="eco-inner">
     <div>
       <div class="eco-eyebrow">Flagship Initiative · Now Active</div>
-      <h2 class="eco-title">ECO Infrastructure —<br/><em>The Settlement Rail for the African Global Economy</em></h2>
-      <p class="eco-desc">GoBeyond Advisory's flagship digital infrastructure initiative. A commodity and fiat-backed stablecoin settlement layer serving West Africa, GCC, Europe, and the USA — replacing the foreign-owned infrastructure extracting billions annually from African corridors.</p>
-      <p class="eco-meta">Digital Settlement · FX Rails · CBN Sandbox · West Africa ↔ GCC ↔ Europe ↔ USA</p>
+      <h2 class="eco-title">EKORails —<br/><em>The Settlement Rail for the African Global Economy</em></h2>
+      <p class="eco-desc">EkoRails is GoBeyond Advisory's connected ecosystem initiative focused on technology infrastructure for clearer connectivity, evidence trails and reconciliation across fragmented financial ecosystems. It is presented as a technology layer working alongside appropriately licensed participants.</p>
+      <p class="eco-meta">Technology infrastructure · connectivity · reconciliation · Nigeria intended initial market</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <a href="https://eco-rails.com" class="eco-btn">Visit ECO Infrastructure →</a>
-        <a href="https://eco-settlement.com" class="eco-ghost">Settlement Explainer</a>
+        <a href="https://ekorails.com" class="eco-btn">Visit EkoRails →</a>
+        <a href="https://ekoinfrastructure.com" class="eco-ghost">Technical Documentation</a>
       </div>
     </div>
     <div class="eco-right">
@@ -786,7 +828,7 @@ footer{
         <span class="eco-stat-num">$200B+</span>
         <span class="eco-stat-label">Total addressable<br/>market</span>
       </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.3);text-transform:uppercase;text-align:right;line-height:1.7;">Founding partner window<br/>open now · Closes Q2 2026</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.3);text-transform:uppercase;text-align:right;line-height:1.7;">Current public profile<br/>technology infrastructure layer</div>
     </div>
   </div>
 </div>
@@ -817,6 +859,12 @@ footer{
         <div class="pillar-title">Public–Private & Institutional Structuring</div>
         <div class="pillar-body">Bridging government mandates and private capital. PPP frameworks, government modernization proposals, and institutional partnership agreements at scale.</div>
       </div>
+      <div class="pillar-card">
+        <span class="pillar-icon">◉</span>
+        <div class="pillar-num">Pillar 04</div>
+        <div class="pillar-title">Energy Infrastructure</div>
+        <div class="pillar-body">Upstream and midstream energy services advisory across the Nigerian and West African energy corridor. Delivered through JE TEX Energy Limited, a Nigerian energy services company founded in 2001 and re-incorporated in 2023.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -832,10 +880,10 @@ footer{
       <div class="initiative-row featured">
         <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Flagship</div><div class="init-type">Digital Infrastructure</div></div>
         <div class="init-content">
-          <div class="init-name">ECO Infrastructure</div>
-          <div class="init-desc">Stablecoin settlement rail for the African global economy. Phase 1: West Africa ↔ GCC. Expanding to Europe and USA. CBN sandbox registration in progress. Founding partner window open now.</div>
+          <div class="init-name">EKORails</div>
+          <div class="init-desc">Technology infrastructure designed for connectivity, interoperability and reconciliation across fragmented financial ecosystems. Regulated financial activities remain with appropriately licensed participants.</div>
         </div>
-        <div class="init-link-cell"><a href="https://eco-rails.com" class="init-link">eco-rails.com →</a></div>
+        <div class="init-link-cell"><a href="https://ekorails.com" class="init-link">ekorails.com →</a></div>
       </div>
       <div class="initiative-row">
         <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Active</div><div class="init-type">Real Estate · Infrastructure</div></div>
@@ -846,6 +894,22 @@ footer{
         <div class="init-link-cell"><a href="#contact" class="init-link">Request Brief →</a></div>
       </div>
       <div class="initiative-row">
+        <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Structuring</div><div class="init-type">Real Estate · Urban Development</div></div>
+        <div class="init-content">
+          <div class="init-name">Centenary City Abuja</div>
+          <div class="init-desc">Advisory and capital structuring position in a large-scale mixed-use urban development in Nigeria&rsquo;s Federal Capital Territory. Residential, commercial, hospitality, and healthcare components under structuring.</div>
+        </div>
+        <div class="init-link-cell"><a href="#contact" class="init-link">Request Brief →</a></div>
+      </div>
+      <div class="initiative-row">
+        <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Operating</div><div class="init-type">Energy · Services</div></div>
+        <div class="init-content">
+          <div class="init-name">JE TEX Energy Limited</div>
+          <div class="init-desc">Nigerian energy services company (RC 7027707), founded 2001 and re-incorporated 2023. Provides GoBeyond&rsquo;s operating capability across the Nigerian energy corridor, spanning subsea and pipeline services, procurement, and technical support.</div>
+        </div>
+        <div class="init-link-cell"><a href="#contact" class="init-link">Inquire →</a></div>
+      </div>
+      <div class="initiative-row">
         <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Capital Arm</div><div class="init-type">Investment · Deal Structuring</div></div>
         <div class="init-content">
           <div class="init-name">Newline Investors Inc.</div>
@@ -854,13 +918,14 @@ footer{
         <div class="init-link-cell"><a href="#contact" class="init-link">Inquire →</a></div>
       </div>
       <div class="initiative-row" style="border-bottom:none;">
-        <div class="init-meta"><div class="init-tag">Active</div><div class="init-type">Healthcare · Infrastructure</div></div>
+        <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Active</div><div class="init-type">Healthcare · Infrastructure</div></div>
         <div class="init-content">
-          <div class="init-name">West Africa Healthcare Infrastructure</div>
-          <div class="init-desc">Medical equipment, facility advisory, and training infrastructure across Côte d'Ivoire and West African healthcare corridors. Structured under GoBeyond Advisory and Newline Investors.</div>
+          <div class="init-name">Healthcare Infrastructure &amp; Timeless Health</div>
+          <div class="init-desc">Medical equipment, facility advisory, and training infrastructure across Côte d'Ivoire and West African healthcare corridors. Timeless Health, a digital health platform in development, forms the technology layer, with a physical flagship positioned within the Centenary City Abuja development. Structured under GoBeyond Advisory and Newline Investors.</div>
         </div>
         <div class="init-link-cell"><a href="#contact" class="init-link">Inquire →</a></div>
       </div>
+
     </div>
   </div>
 </div>
@@ -890,8 +955,8 @@ footer{
 
 <!-- SOCIAL PROOF -->
 <div class="proof-banner full-wrap">
-  <p class="proof-text">"In active institutional engagement with Tier 1 West African banking relationships, GCC-corridor financial partners, development finance-adjacent institutions, and sovereign-adjacent programs across three regions."</p>
-  <span class="proof-attr">— GoBeyond Advisory · April 2026 · Active Pipeline</span>
+  <p class="proof-text">"In active institutional engagement with West African banking relationships, GCC-corridor financial partners, and development finance-adjacent institutions across three regions."</p>
+  <span class="proof-attr">— GoBeyond Advisory · August 2026 · Active Engagement</span>
 </div>
 
 <!-- HOW TO ENGAGE -->
@@ -918,9 +983,11 @@ footer{
         <div class="engage-title">Initiative Partnership</div>
         <div class="engage-body">Partner directly into a GoBeyond flagship initiative as a founding capital partner, institutional co-developer, or strategic ally at the founding layer.</div>
         <div class="engage-list">
-          <span class="engage-li">ECO Infrastructure founding partner</span>
+          <span class="engage-li">EKORails founding partner</span>
           <span class="engage-li">Cape Coast New City co-developer</span>
+          <span class="engage-li">Centenary City Abuja partnership</span>
           <span class="engage-li">Newline Investors capital partner</span>
+          <span class="engage-li">Energy services &amp; JE TEX Energy</span>
           <span class="engage-li">Healthcare infrastructure advisory</span>
         </div>
       </div>
@@ -947,7 +1014,7 @@ footer{
     <h2 class="section-title">Where we <em>operate.</em></h2>
     <div class="markets-grid">
       <div class="market-card"><div class="market-region">HQ · USA</div><div class="market-city">Houston, Texas</div><span class="market-badge badge-hq">Headquarters</span><div class="market-body">Primary operations base. Cross-border deal structuring, institutional outreach, and African diaspora corridor entry for the US market.</div></div>
-      <div class="market-card"><div class="market-region">West Africa · Primary</div><div class="market-city">Nigeria — Abuja & Lagos</div><span class="market-badge badge-active">Active</span><div class="market-body">Primary West African market. CBN sandbox navigation, ECO Phase 1 anchor, institutional banking relationships active.</div></div>
+      <div class="market-card"><div class="market-region">West Africa · Primary</div><div class="market-city">Nigeria — Abuja & Lagos</div><span class="market-badge badge-active">Active</span><div class="market-body">Primary West African market. CBN sandbox navigation, EKORails Phase 1 anchor, institutional banking relationships active. JE TEX Energy operating base and Centenary City structuring.</div></div>
       <div class="market-card"><div class="market-region">West Africa · Active</div><div class="market-city">Ghana — Cape Coast & Accra</div><span class="market-badge badge-active">Active</span><div class="market-body">Cape Coast New City development. ECO GHS corridor. Cross-border settlement architecture active.</div></div>
       <div class="market-card"><div class="market-region">West Africa · Active</div><div class="market-city">Côte d'Ivoire</div><span class="market-badge badge-active">Active</span><div class="market-body">XOF corridor for ECO Phase 1. Healthcare infrastructure advisory active under Newline Investors.</div></div>
       <div class="market-card"><div class="market-region">GCC · Priority</div><div class="market-city">Dubai & UAE</div><span class="market-badge badge-active">Active</span><div class="market-body">Primary GCC market. ECO Phase 1 receive corridor. Capital structuring and institutional partnerships.</div></div>
@@ -973,18 +1040,22 @@ footer{
       <h3>Subscribe to<br/><em>GoBeyond Intelligence.</em></h3>
       <p>Receive original infrastructure intelligence briefs, corridor research, and geopolitical risk analysis — delivered directly to your inbox. No noise. Institutional-grade insight only.</p>
     </div>
-    <form name="newsletter" netlify action="/success" method="POST">
+    <form name="newsletter" method="POST" action="/success" data-netlify="true" data-netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="newsletter"/>
+      <p style="display:none;"><label>Do not fill this out: <input name="bot-field"/></label></p>
       <div class="nl-row">
-        <div class="nl-field"><label>Full Name</label><input type="text" placeholder="Your name"/></div>
-        <div class="nl-field"><label>Organization</label><input type="text" placeholder="Institution or firm"/></div>
+        <div class="nl-field"><label for="newsletter-name">Full Name</label><input id="newsletter-name" type="text" name="name" autocomplete="name" required placeholder="Your name"/></div>
+        <div class="nl-field"><label for="newsletter-organization">Organization</label><input id="newsletter-organization" type="text" name="organization" autocomplete="organization" placeholder="Institution or firm"/></div>
       </div>
-      <div class="nl-field"><label>Email Address</label><input type="email" placeholder="your@organization.com"/></div>
+      <div class="nl-field"><label for="newsletter-email">Email Address</label><input id="newsletter-email" type="email" name="email" autocomplete="email" required placeholder="your@organization.com"/></div>
       <div class="nl-field">
-        <label>Interest Area</label>
-        <select>
+        <label for="newsletter-interest">Interest Area</label>
+        <select id="newsletter-interest" name="interest-area">
           <option value="">Select area of focus</option>
           <option>Infrastructure Advisory</option>
-          <option>ECO Infrastructure / Settlement Rails</option>
+          <option>EKORails / Settlement Rails</option>
+          <option>Energy Infrastructure</option>
+          <option>Healthcare Infrastructure</option>
           <option>Cross-Border Capital Strategy</option>
           <option>West Africa Markets</option>
           <option>GCC & Middle East</option>
@@ -1020,7 +1091,7 @@ footer{
       <p>Built at the intersection of cloud infrastructure, cross-border capital, and sovereign markets — by people who have operated there, not just studied it. Houston, West Africa, and Dubai are not target markets. They are operating contexts.</p>
     </div>
     <div class="ls-right">
-      <a href="/founders" class="eco-btn">Meet the Leadership →</a>
+      <a href="founders.html" class="eco-btn">Meet the Leadership →</a>
       <a href="#contact" class="eco-ghost">Engage Advisory</a>
     </div>
   </div>
@@ -1037,23 +1108,28 @@ footer{
       <div class="contact-items">
         <div><div class="ci-label">General Inquiries</div><div class="ci-val"><a href="mailto:info@gobeyondadvisory.com">info@gobeyondadvisory.com</a></div></div>
         <div><div class="ci-label">Partnerships</div><div class="ci-val"><a href="mailto:partners@gobeyondadvisory.com">partners@gobeyondadvisory.com</a></div></div>
-        <div><div class="ci-label">ECO Infrastructure</div><div class="ci-val"><a href="https://eco-rails.com">eco-rails.com →</a></div></div>
+        <div><div class="ci-label">EKORails</div><div class="ci-val"><a href="https://ekorails.com">ekorails.com →</a></div></div>
         <div><div class="ci-label">LinkedIn</div><div class="ci-val"><a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener">linkedin.com/company/gobeyond-advisory →</a></div></div>
         <div><div class="ci-label">Location</div><div class="ci-val" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.5px;color:var(--muted);">Houston, TX · Lagos · Accra · Abidjan · Dubai</div></div>
-        <div><div class="ci-label">Leadership</div><div class="ci-val"><a href="/founders">gobeyondadvisory.com/founders →</a></div></div>
+        <div><div class="ci-label">Leadership</div><div class="ci-val"><a href="founders.html">gobeyondadvisory.com/founders →</a></div></div>
       </div>
-      <form name="contact" netlify action="/success" method="POST">
+      <form name="contact" method="POST" action="/success" data-netlify="true" data-netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact"/>
+        <p style="display:none;"><label>Do not fill this out: <input name="bot-field"/></label></p>
         <div class="form-row">
-          <div class="form-field"><label>Full Name</label><input type="text" placeholder="Your name"/></div>
-          <div class="form-field"><label>Organization</label><input type="text" placeholder="Institution or company"/></div>
+          <div class="form-field"><label for="contact-name">Full Name</label><input id="contact-name" type="text" name="name" autocomplete="name" required placeholder="Your name"/></div>
+          <div class="form-field"><label for="contact-organization">Organization</label><input id="contact-organization" type="text" name="organization" autocomplete="organization" placeholder="Institution or company"/></div>
         </div>
-        <div class="form-field"><label>Email Address</label><input type="email" placeholder="your@organization.com"/></div>
+        <div class="form-field"><label for="contact-email">Email Address</label><input id="contact-email" type="email" name="email" autocomplete="email" required placeholder="your@organization.com"/></div>
         <div class="form-field">
-          <label>Nature of Inquiry</label>
-          <select>
+          <label for="contact-inquiry">Nature of Inquiry</label>
+          <select id="contact-inquiry" name="inquiry-type">
             <option value="">Select inquiry type</option>
-            <option>ECO Infrastructure Partnership</option>
+            <option>EkoRails / Technology Infrastructure</option>
             <option>Cape Coast New City</option>
+            <option>Centenary City Abuja</option>
+            <option>Energy Services / JE TEX Energy</option>
+            <option>Healthcare Infrastructure / Timeless Health</option>
             <option>Newline Investors / Capital Partnership</option>
             <option>Infrastructure Advisory Mandate</option>
             <option>Institutional / Government Engagement</option>
@@ -1061,12 +1137,18 @@ footer{
             <option>General Inquiry</option>
           </select>
         </div>
-        <div class="form-field"><label>Message</label><textarea placeholder="Brief overview of your inquiry, project, or organization..."></textarea></div>
+        <div class="form-field"><label for="contact-message">Message</label><textarea id="contact-message" name="message" required placeholder="Brief overview of your inquiry, project, or organization..."></textarea></div>
         <button type="submit" class="form-submit">Submit Inquiry</button>
       </form>
     </div>
   </div>
 </div>
+
+</main>
+
+
+<section id="ecosystem-bridge" class="full-wrap section-white"><div class="full-inner"><span class="eyebrow">Connected ecosystem</span><div class="gold-line"></div><h2 class="section-title">GoBeyond is the advisory hub<br/><em>behind a bounded ecosystem.</em></h2><p class="section-body">GoBeyond Advisory remains the parent advisory platform. EkoRails and EKO Infrastructure are presented as distinct ecosystem entities with separate propositions, public boundaries and verification requirements.</p><div class="ecosystem-grid"><a href="https://ekorails.com" class="ecosystem-card"><span>EKO / FINANCIAL TECHNOLOGY INFRASTRUCTURE</span><strong>EkoRails →</strong><small>Connectivity, interoperability and reconciliation infrastructure for African financial ecosystems.</small></a><a href="https://ekoinfrastructure.com" class="ecosystem-card"><span>EKO / INFRASTRUCTURE ENGINEERING</span><strong>EKO Infrastructure →</strong><small>Physical and technical systems thinking across energy, data centres, compute, cloud, platforms and digital services.</small></a></div><div class="status-note">Ecosystem note: the sites do not by themselves assert ownership, licensing, production deployment, client relationships, regulatory approval, project capacity or operating footprint. Those facts should be published only when formally verified and approved.</div></div></section>
+<section id="legal" class="legal-section"><div class="legal-inner"><span class="eyebrow">Legal & disclosures</span><div class="gold-line"></div><h2 class="section-title">Clarity before<br/><em>engagement.</em></h2><div class="status-note"><strong>Status note:</strong> Initiative labels, pipeline figures, market estimates, and regulatory references are management descriptions as of August 2026 unless otherwise identified. They are not a representation of committed capital, licensing approval, or guaranteed outcomes.</div><div class="legal-grid"><article id="privacy" class="legal-card"><h3>Privacy Policy</h3><p>Contact and newsletter information is used to respond to inquiries and deliver requested intelligence. A full privacy notice, retention schedule, and data-subject contact process should be reviewed and published by counsel before launch.</p></article><article id="terms" class="legal-card"><h3>Terms of Use</h3><p>Website content is informational and may change without notice. Accessing the site does not create an advisory, fiduciary, financing, partnership, or client relationship.</p></article><article id="disclosures" class="legal-card"><h3>Important disclosures</h3><p>Nothing on this site is financial advice, an offer of securities, a solicitation, or a guarantee of regulatory approval, settlement speed, returns, or availability. Seek qualified legal, regulatory, tax, and financial advice.</p></article></div></div></section>
 
 <!-- FOOTER -->
 <footer>
@@ -1075,16 +1157,16 @@ footer{
       <div class="footer-brand">GOBEYOND ADVISORY</div>
       <div class="footer-brand-desc">Strategic Investment & Infrastructure Advisory<br/>Houston · West Africa · GCC · Europe</div>
       <div class="footer-social">
-        <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" title="LinkedIn">
+        <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
         </a>
-        <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" title="X / Twitter">
+        <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" title="X / Twitter" aria-label="X / Twitter">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         </a>
-        <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" title="YouTube">
+        <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
         </a>
-        <a href="mailto:partners@gobeyondadvisory.com" title="Email">✉</a>
+        <a href="mailto:partners@gobeyondadvisory.com" title="Email" aria-label="Email">✉</a>
       </div>
     </div>
     <div>
@@ -1099,9 +1181,9 @@ footer{
     <div>
       <div class="footer-col-title">Ecosystem</div>
       <div class="footer-col-links">
-        <a href="https://eco-rails.com">ECO Infrastructure</a>
-        <a href="https://eco-settlement.com">Settlement Explainer</a>
-        <a href="/founders">Leadership</a>
+        <a href="https://ekorails.com">EKORails</a>
+        <a href="https://ekoinfrastructure.com">EKO Infrastructure</a>
+        <a href="founders.html">Leadership</a>
         <a href="#insights">Intelligence Briefs</a>
       </div>
     </div>
@@ -1119,15 +1201,18 @@ footer{
   <div class="footer-bottom">
     <div>
       <div class="footer-copy">© 2026 GoBeyond Advisory · All Rights Reserved</div>
-      <div class="footer-disclaimer">This website contains information about investment and infrastructure advisory services provided by GoBeyond Advisory. Nothing on this website constitutes financial advice, a solicitation to invest, or an offer of securities. All investment decisions should be made with appropriate professional advice.</div>
+      <div class="footer-disclaimer">This website contains information about investment and infrastructure advisory services provided by GoBeyond Advisory. Nothing on this website constitutes financial advice, a solicitation to invest, or an offer of securities. All investment decisions should be made with appropriate professional advice.<br/><br/>GoBeyond Advisory operates in Nigeria as Premium Bridge Capital Limited (RC 7869996), Abuja, Federal Capital Territory. EKORails and JE TEX Energy Limited (RC 7027707) are affiliated entities. Newline Investors Inc. is the United States capital arm.</div>
     </div>
     <div class="footer-legal-links">
-      <a href="#contact" title="Privacy Policy - Coming Soon">Privacy Policy</a>
-      <a href="#contact" title="Terms of Use - Coming Soon">Terms of Use</a>
-      <a href="#contact" title="Legal - Coming Soon">Legal</a>
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#terms">Terms of Use</a>
+      <a href="#disclosures">Disclosures</a>
     </div>
   </div>
 </footer>
 <script src="/article-loader.js"></script>
+<script>
+(function(){var b=document.querySelector('.menu-toggle'),n=document.getElementById('site-navigation');if(!b||!n)return;b.addEventListener('click',function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!o));n.classList.toggle('open',!o);});n.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.setAttribute('aria-expanded','false');n.classList.remove('open');});});})();
+</script>
 </body>
 </html>
