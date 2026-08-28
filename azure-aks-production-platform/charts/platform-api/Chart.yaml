@@ -1,0 +1,18 @@
+apiVersion: v2
+name: platform-api
+description: Reference workload deployed by the azure-aks-production-platform pipeline.
+type: application
+
+# version is the chart's own version; appVersion tracks the application release.
+# The CD workflow overrides the image tag per deployment rather than bumping
+# appVersion for every commit.
+version: 1.0.0
+appVersion: "1.0.0"
+
+keywords:
+  - aks
+  - platform
+  - reference
+
+maintainers:
+  - name: platform-engineering

@@ -1,0 +1,24 @@
+{{- if .Values.serviceMonitor.enabled }}
+# Prometheus Operator CRD. Only rendered when the operator is installed; Azure
+# managed Prometheus discovers targets through its own scrape configuration
+# instead (see docs/observability.md).
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "platform-api.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "platform-api.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "platform-api.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: {{ .Values.service.portName }}
+      path: {{ .Values.serviceMonitor.path }}
+      interval: {{ .Values.serviceMonitor.interval }}
+      scheme: http
+{{- end }}

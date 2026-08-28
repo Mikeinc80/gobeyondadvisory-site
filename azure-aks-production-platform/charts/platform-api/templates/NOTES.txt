@@ -1,0 +1,22 @@
+{{ .Chart.Name }} {{ .Chart.AppVersion }} deployed to namespace {{ .Release.Namespace }}.
+
+Image:      {{ include "platform-api.image" . }}
+Replicas:   {{ if .Values.autoscaling.enabled }}{{ .Values.autoscaling.minReplicas }}-{{ .Values.autoscaling.maxReplicas }} (HPA){{ else }}{{ .Values.replicaCount }} (fixed){{ end }}
+
+Check the rollout:
+
+  kubectl rollout status deployment/{{ include "platform-api.fullname" . }} -n {{ .Release.Namespace }}
+
+Reach the service without ingress:
+
+  kubectl port-forward svc/{{ include "platform-api.fullname" . }} 8080:{{ .Values.service.port }} -n {{ .Release.Namespace }}
+  curl localhost:8080/ && curl localhost:8080/health
+
+{{- if .Values.ingress.enabled }}
+
+Ingress: http{{ if .Values.ingress.tls.enabled }}s{{ end }}://{{ .Values.ingress.host }}{{ .Values.ingress.path }}
+{{- end }}
+
+Roll back if this release misbehaves:
+
+  helm rollback {{ .Release.Name }} -n {{ .Release.Namespace }}

@@ -1,0 +1,213 @@
+# Defaults are the safe, production-shaped baseline. Environment overlays in
+# values-<env>.yaml relax or tighten from here; nothing in this file assumes a
+# particular environment.
+
+replicaCount: 2
+
+image:
+  # Set by the CD workflow to the environment's ACR login server.
+  repository: REPLACE_ME.azurecr.io/platform-api
+  # Deployments pass an immutable tag (the short git SHA). "latest" is never
+  # used: it makes rollbacks ambiguous and defeats image caching.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# Managed identity pulls from ACR, so no imagePullSecrets are needed anywhere.
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  name: platform-api
+  # Client ID of the environment's workload identity, from the Terraform output
+  # workload_identity_client_ids. Empty disables the workload-identity label so
+  # the chart still installs on a cluster without the webhook.
+  workloadIdentityClientId: ""
+  # No API access is needed by this workload, so no token is projected for it.
+  automountServiceAccountToken: false
+
+podAnnotations: {}
+podLabels: {}
+
+# Cluster-wide defaults; the container drops everything it does not need.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+  # Named so the ServiceMonitor and NetworkPolicy can reference the port by name
+  # rather than repeating the number.
+  portName: http
+
+ingress:
+  enabled: true
+  className: nginx
+  host: platform-api.example.com
+  path: /
+  pathType: Prefix
+  annotations:
+    # Terminate at the ingress and refuse plaintext.
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # A slow client must not be able to hold a worker open indefinitely.
+    nginx.ingress.kubernetes.io/proxy-body-size: "1m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
+  tls:
+    enabled: true
+    # Populated by cert-manager, or by a secret synced from Key Vault.
+    secretName: platform-api-tls
+
+resources:
+  # requests drive scheduling and the HPA's utilisation maths; limits bound the
+  # blast radius of a runaway pod.
+  #
+  # CPU: the limit is 5x the request. CPU is compressible, so a generous limit
+  # lets a pod absorb a burst (startup, a slow downstream) instead of being
+  # throttled into latency, while the request keeps the HPA's utilisation signal
+  # tied to steady-state usage.
+  #
+  # Memory: request equals limit. Memory is not compressible - exceeding the
+  # limit is an OOMKill, not a slowdown - so overcommitting it trades an outage
+  # for a little scheduling density.
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  # CPU only, deliberately. Adding replicas does not reduce a pod's memory
+  # footprint, so a memory-triggered scale-up spends money without fixing
+  # anything - a rising working set is a leak signal, handled by the
+  # ContainerMemoryNearLimit alert rather than by the autoscaler. Set
+  # targetMemoryUtilizationPercentage only for a workload whose memory genuinely
+  # tracks concurrency.
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: null
+  behavior:
+    scaleUp:
+      # React quickly to load, but not so quickly that a scrape blip doubles
+      # the fleet.
+      stabilizationWindowSeconds: 60
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+    scaleDown:
+      # Scale down slowly: the cost of an extra pod for five minutes is far
+      # lower than the cost of flapping under a spiky workload.
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 50
+          periodSeconds: 60
+
+podDisruptionBudget:
+  enabled: true
+  # minAvailable rather than maxUnavailable so the budget stays correct as the
+  # HPA changes the replica count.
+  minAvailable: 1
+
+probes:
+  liveness:
+    path: /health
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
+  readiness:
+    path: /ready
+    initialDelaySeconds: 2
+    periodSeconds: 5
+    timeoutSeconds: 2
+    # Two consecutive failures take the pod out of rotation; the pod is not
+    # restarted for this, which is the difference from liveness.
+    failureThreshold: 2
+  startup:
+    # Gives a slow start up to 30s before liveness begins, without weakening the
+    # liveness threshold for the rest of the pod's life.
+    enabled: true
+    path: /health
+    periodSeconds: 3
+    failureThreshold: 10
+
+# Values here become a ConfigMap and are mounted as environment variables.
+config:
+  environment: dev
+  region: uksouth
+  logLevel: INFO
+  metricsEnabled: "true"
+  # Must stay below terminationGracePeriodSeconds so the drain finishes before
+  # the kubelet sends SIGKILL.
+  drainSeconds: "5"
+
+terminationGracePeriodSeconds: 30
+
+# Azure Key Vault via the Secrets Store CSI driver. The pod authenticates with
+# its workload identity; no secret material is stored in Kubernetes at rest
+# unless syncAsKubernetesSecret is enabled.
+keyVault:
+  enabled: false
+  name: ""
+  tenantId: ""
+  # userAssignedIdentityID is not set: workload identity is used instead, which
+  # binds access to the service account rather than to the node.
+  secrets:
+    - name: api-signing-key
+      # Environment variable the application reads (config.py).
+      envVar: API_SIGNING_KEY
+  # Creating a Kubernetes Secret makes the value available as an env var, at the
+  # cost of it living in etcd. Disable it and read the mounted file instead if
+  # your threat model does not allow that.
+  syncAsKubernetesSecret: true
+
+networkPolicy:
+  enabled: true
+  # Namespace the ingress controller runs in; only it may reach the pods.
+  ingressNamespace: ingress-nginx
+  # Namespace of the Prometheus scraper allowed to hit /metrics.
+  metricsNamespace: kube-system
+
+serviceMonitor:
+  # Requires the Prometheus operator CRDs (kube-prometheus-stack). Azure managed
+  # Prometheus uses PodMonitor/ConfigMap-based scrape config instead - see
+  # docs/observability.md.
+  enabled: false
+  interval: 30s
+  path: /metrics
+
+nodeSelector:
+  # Keep application pods off the system pool, which is tainted for add-ons.
+  kubernetes.azure.com/mode: user
+
+tolerations: []
+
+# Spread replicas across zones so losing one zone cannot take the whole service.
+# The label selector is filled in by the template from the chart's own selector
+# labels, so it is not configurable here.
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: ScheduleAnyway

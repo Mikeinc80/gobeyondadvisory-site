@@ -1,0 +1,62 @@
+{{- if .Values.networkPolicy.enabled }}
+# Default-deny for these pods, with three explicit exceptions. Enforced by
+# Cilium (the cluster's network data plane).
+#
+# Kubelet liveness/readiness probes are not listed because they originate from
+# the node, not from a pod: Cilium allows host-to-local-pod traffic regardless of
+# policy, which is what keeps probes working under a default-deny policy.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "platform-api.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "platform-api.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "platform-api.selectorLabels" . | nindent 6 }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # 1. The ingress controller, on the application port only.
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.ingressNamespace }}
+      ports:
+        - port: {{ .Values.service.targetPort }}
+          protocol: TCP
+    # 2. The metrics scraper.
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.metricsNamespace }}
+      ports:
+        - port: {{ .Values.service.targetPort }}
+          protocol: TCP
+  egress:
+    # 3. DNS. Without this the pod cannot resolve anything, including Key Vault.
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # HTTPS to Azure services (Key Vault via the CSI driver, Azure Monitor).
+    # Narrow this to the private-endpoint addresses once they are in place.
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              # Deny the instance metadata service: it is the classic path from
+              # a compromised pod to node-level credentials.
+              - 169.254.169.254/32
+      ports:
+        - port: 443
+          protocol: TCP
+{{- end }}

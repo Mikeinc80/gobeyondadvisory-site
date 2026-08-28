@@ -1,0 +1,39 @@
+# Dev overlay: minimum viable footprint, fastest feedback.
+
+replicaCount: 1
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+# One replica cannot satisfy a PDB during a drain, and a blocked node drain in
+# dev is a nuisance with no upside.
+podDisruptionBudget:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
+
+config:
+  environment: dev
+  logLevel: DEBUG
+
+ingress:
+  enabled: true
+  host: platform-api.dev.example.com
+  tls:
+    enabled: false
+    secretName: ""
+
+keyVault:
+  enabled: false
+
+# A single-zone dev cluster has nothing to spread across.
+topologySpreadConstraints: []

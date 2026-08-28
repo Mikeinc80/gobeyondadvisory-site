@@ -1,0 +1,83 @@
+# Namespace-scoped roles bound to Entra ID groups.
+#
+# With Azure RBAC for Kubernetes enabled, group object IDs are used directly as
+# subject names - there is no in-cluster user database to keep in sync. Replace
+# the placeholder GUIDs with your own group object IDs before applying:
+#
+#   az ad group show --group "platform-developers" --query id -o tsv
+#
+# The split below is the least-privilege model this platform assumes:
+#   * developers  - read-only in production, read/write in dev
+#   * operators   - may restart and scale workloads, but not edit RBAC or secrets
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developer
+  namespace: production
+rules:
+  # Read-only, and deliberately excluding secrets: a developer who can read
+  # secrets in production has, in effect, production credentials.
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "services", "configmaps", "events", "endpoints"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets", "statefulsets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: operator
+  namespace: production
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "services", "configmaps", "events", "endpoints"]
+    verbs: ["get", "list", "watch"]
+  # Deleting a pod is how an operator restarts one; patch covers scaling and
+  # rollout restarts.
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets", "statefulsets"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+  - apiGroups: ["apps"]
+    resources: ["deployments/scale"]
+    verbs: ["update", "patch"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: developers-read-production
+  namespace: production
+subjects:
+  - kind: Group
+    # Replace with the platform-developers group object ID.
+    name: "00000000-0000-0000-0000-000000000000"
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: developer
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: operators-manage-production
+  namespace: production
+subjects:
+  - kind: Group
+    # Replace with the platform-operators group object ID.
+    name: "00000000-0000-0000-0000-000000000001"
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: operator
+  apiGroup: rbac.authorization.k8s.io

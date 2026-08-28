@@ -1,0 +1,41 @@
+# Namespaces, applied once per cluster before the first Helm release.
+#
+# Pod Security Admission is set per namespace rather than cluster-wide so the
+# level can differ by environment: dev warns, staging and production enforce.
+# The `restricted` profile is what blocks privileged containers, host mounts and
+# running as root - the controls that matter most in a shared cluster.
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+  labels:
+    environment: dev
+    app.kubernetes.io/part-of: platform
+    pod-security.kubernetes.io/enforce: baseline
+    # Warn on restricted violations so developers see the production bar before
+    # their change reaches an environment that enforces it.
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: staging
+  labels:
+    environment: staging
+    app.kubernetes.io/part-of: platform
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+  labels:
+    environment: production
+    app.kubernetes.io/part-of: platform
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted

@@ -1,0 +1,49 @@
+# Production overlay: availability first.
+
+replicaCount: 3
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 65
+
+podDisruptionBudget:
+  enabled: true
+  # With minReplicas 3, this lets a drain evict one pod at a time and keeps a
+  # quorum serving throughout a node-pool upgrade.
+  minAvailable: 2
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 256Mi
+
+config:
+  environment: production
+  logLevel: INFO
+  # Longer drain: production sits behind more layers of endpoint propagation.
+  drainSeconds: "10"
+
+terminationGracePeriodSeconds: 60
+
+ingress:
+  enabled: true
+  host: platform-api.example.com
+  tls:
+    enabled: true
+    secretName: platform-api-tls
+
+keyVault:
+  enabled: true
+  syncAsKubernetesSecret: true
+
+# Hard requirement in production: a pod that cannot be placed in a distinct zone
+# stays Pending rather than silently collapsing the fleet into one zone.
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule

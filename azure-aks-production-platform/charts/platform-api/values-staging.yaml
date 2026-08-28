@@ -1,0 +1,38 @@
+# Staging overlay: production's shape, smaller.
+
+replicaCount: 2
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 128Mi
+
+config:
+  environment: staging
+  logLevel: INFO
+
+ingress:
+  enabled: true
+  host: platform-api.staging.example.com
+  tls:
+    enabled: true
+    secretName: platform-api-tls
+
+keyVault:
+  enabled: true
+  # name, tenantId and serviceAccount.workloadIdentityClientId come from the
+  # Terraform outputs and are passed by the CD workflow with --set.
+  syncAsKubernetesSecret: true
