@@ -1,0 +1,27 @@
+# Copy to terraform.tfvars and fill in values for your own tenant.
+# terraform.tfvars is git-ignored: it holds directory object IDs, which are not
+# secrets but are tenant-specific and should not be published.
+
+location       = "uksouth"
+location_short = "uks"
+
+kubernetes_version = "1.31"
+
+owner          = "platform-engineering"
+repository_url = "https://github.com/<your-github-user>/azure-aks-production-platform"
+
+# Entra ID group granted cluster-admin. Find it with:
+#   az ad group show --group "aks-platform-admins" --query id -o tsv
+admin_group_object_ids = ["00000000-0000-0000-0000-000000000000"]
+
+# Object ID (not application/client ID) of the CI user-assigned identity that
+# GitHub Actions federates into. Granted AcrPush only.
+#   az identity show -g <rg> -n <identity> --query principalId -o tsv
+ci_principal_ids = ["00000000-0000-0000-0000-000000000000"]
+
+# Humans who may write secrets into Key Vault. Pipelines are deliberately absent.
+secret_officer_principal_ids = ["00000000-0000-0000-0000-000000000000"]
+
+alert_email_receivers = {
+  platform-oncall = "platform-oncall@example.com"
+}

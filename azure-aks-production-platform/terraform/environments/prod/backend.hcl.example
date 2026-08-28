@@ -1,0 +1,12 @@
+# Copy to backend.hcl (git-ignored) and run:
+#   terraform init -backend-config=backend.hcl
+#
+# Created by scripts/bootstrap-remote-state.sh. No access key appears here:
+# use_azuread_auth in versions.tf makes Terraform authenticate to the storage
+# account with the caller's Entra ID identity, which needs the
+# "Storage Blob Data Contributor" role on the container.
+
+resource_group_name  = "rg-tfstate-platform"
+storage_account_name = "sttfstateplatform<unique>"
+container_name       = "tfstate"
+key                  = "prod/platform.tfstate"
