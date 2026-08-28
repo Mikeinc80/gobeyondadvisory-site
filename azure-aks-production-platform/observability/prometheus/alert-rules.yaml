@@ -1,0 +1,164 @@
+# Prometheus alerting rules for the platform.
+#
+# These complement the Azure Monitor rules in terraform/modules/alerts: Azure
+# owns node/infrastructure signals, Prometheus owns the application SLIs, which
+# are only visible in the app's own /metrics endpoint.
+#
+# Install with kube-prometheus-stack:
+#   kubectl apply -f alert-rules.yaml
+# Azure managed Prometheus consumes the same PromQL through a Prometheus rule
+# group - see docs/observability.md.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: platform-api-rules
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/part-of: platform
+    # Picked up by the operator's ruleSelector.
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: platform-api.slis
+      interval: 30s
+      rules:
+        # Recording rules: computing the ratio once keeps the alerts below cheap
+        # and makes the same number available to dashboards.
+        - record: platform_api:request_rate5m
+          expr: sum(rate(http_requests_total[5m])) by (namespace, service)
+
+        - record: platform_api:error_ratio5m
+          expr: |
+            sum(rate(http_requests_total{status=~"5.."}[5m])) by (namespace, service)
+              /
+            clamp_min(sum(rate(http_requests_total[5m])) by (namespace, service), 1e-9)
+
+        - record: platform_api:latency_p95_5m
+          expr: |
+            histogram_quantile(
+              0.95,
+              sum(rate(http_request_duration_seconds_bucket[5m])) by (le, namespace, service)
+            )
+
+    - name: platform-api.alerts
+      rules:
+        - alert: PlatformApiHighErrorRate
+          # 5% of requests failing for 10 minutes. Long enough not to fire on a
+          # single bad deploy that self-heals, short enough to matter.
+          expr: platform_api:error_ratio5m > 0.05
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "platform-api error ratio above 5% in {{ $labels.namespace }}"
+            description: >-
+              {{ $value | humanizePercentage }} of requests are returning 5xx.
+              Check recent rollouts and the pod logs before rolling back.
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#failed-deployment"
+
+        - alert: PlatformApiHighLatency
+          expr: platform_api:latency_p95_5m > 0.25
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "platform-api p95 latency above 250ms in {{ $labels.namespace }}"
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#high-cpu"
+
+        - alert: PlatformApiNoReadyReplicas
+          # app_ready is exported by the application itself, so this fires even
+          # when the Deployment object still claims everything is fine.
+          expr: sum(app_ready) by (namespace) == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "No ready platform-api replicas in {{ $labels.namespace }}"
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#unhealthy-pods"
+
+    - name: platform.workloads
+      rules:
+        - alert: PodCrashLooping
+          # More than one restart in 15 minutes, sustained. kube-state-metrics
+          # provides this series.
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace=~"dev|staging|production"}[15m]) > 1
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "{{ $labels.namespace }}/{{ $labels.pod }} is restarting repeatedly"
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#unhealthy-pods"
+
+        - alert: DeploymentReplicasUnavailable
+          expr: |
+            kube_deployment_status_replicas_unavailable{namespace=~"dev|staging|production"} > 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.deployment }} has unavailable replicas in {{ $labels.namespace }}"
+            description: >-
+              A rolling update dips here briefly; 15 minutes means the rollout is
+              stuck, not in progress.
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#failed-deployment"
+
+        - alert: ContainerCpuThrottling
+          # Throttling is invisible in CPU-usage graphs but shows up directly as
+          # user-facing latency, which is why it gets its own alert.
+          expr: |
+            rate(container_cpu_cfs_throttled_periods_total{namespace=~"staging|production", container!=""}[10m])
+              /
+            clamp_min(rate(container_cpu_cfs_periods_total{namespace=~"staging|production", container!=""}[10m]), 1e-9)
+              > 0.25
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.namespace }}/{{ $labels.pod }} throttled for over 25% of CPU periods"
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#high-cpu"
+
+        - alert: ContainerMemoryNearLimit
+          expr: |
+            container_memory_working_set_bytes{namespace=~"staging|production", container!=""}
+              /
+            clamp_min(container_spec_memory_limit_bytes{namespace=~"staging|production", container!=""}, 1)
+              > 0.9
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.namespace }}/{{ $labels.pod }} above 90% of its memory limit"
+            description: "The next allocation is likely to be an OOMKill."
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#high-memory"
+
+    - name: platform.nodes
+      rules:
+        - alert: NodeCpuSaturation
+          expr: |
+            100 * (1 - avg by (node) (rate(node_cpu_seconds_total{mode="idle"}[5m]))) > 85
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Node {{ $labels.node }} above 85% CPU"
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#node-pressure"
+
+        - alert: NodeMemoryPressure
+          expr: |
+            100 * (1 - node_memory_MemAvailable_bytes / clamp_min(node_memory_MemTotal_bytes, 1)) > 85
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Node {{ $labels.node }} above 85% memory"
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#node-pressure"
+
+        - alert: NodeNotReady
+          expr: kube_node_status_condition{condition="Ready", status="true"} == 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Node {{ $labels.node }} has been NotReady for 10 minutes"
+            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#node-pressure"
