@@ -1,0 +1,69 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+# Real values: object IDs and backend coordinates are tenant-specific.
+# The .example files are what belongs in git.
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+backend.hcl
+!backend.hcl.example
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+# Lock files are excluded here and should be committed after your first
+# `terraform init` against the public registry. They are absent because the
+# environment this repository was authored in had no route to
+# registry.terraform.io, and a lock file generated from a local provider mirror
+# carries only one platform's hash - committing that would break `init` for
+# everyone else. Run `terraform init`, then:
+#   git add -f terraform/environments/*/.terraform.lock.hcl
+# Module directories genuinely do not need one; only root modules do.
+**/.terraform.lock.hcl
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Kubernetes / Helm
+charts/**/charts/
+*.tgz
+kubeconfig
+kubeconfig.*
+rendered/
+
+# Secrets - belt and braces alongside Gitleaks
+*.pem
+*.key
+*.pfx
+*.p12
+.env
+.env.*
+!.env.example
+
+# Scanner output
+*.sarif
+checkov.sarif
+trivy-*.sarif
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
