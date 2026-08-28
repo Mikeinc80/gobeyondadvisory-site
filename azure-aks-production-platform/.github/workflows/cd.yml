@@ -1,0 +1,183 @@
+name: CD
+
+# Build once, promote the same digest through dev -> staging -> production.
+#
+# The image is built exactly once, in the first job. Every later environment
+# deploys that same tag, so what reaches production is bit-for-bit what was
+# tested in staging - rebuilding per environment would break that guarantee.
+#
+# Production is gated by a GitHub Environment with required reviewers, so the
+# job pauses for a human approval before it runs. That approval is the manual
+# gate; there is no separate "deploy" button to forget.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'charts/**'
+      - '.github/workflows/cd.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy
+        required: true
+        default: dev
+        type: choice
+        options: [dev, staging, prod]
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  # One deployment pipeline at a time; a newer commit waits rather than racing
+  # an in-flight rollout. Not cancel-in-progress: cancelling mid-Helm-upgrade
+  # leaves a release in a pending state.
+  group: cd-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-push:
+    name: Build and push to ACR
+    runs-on: ubuntu-latest
+    environment: dev
+    outputs:
+      image_tag: ${{ steps.meta.outputs.image_tag }}
+      image_digest: ${{ steps.push.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute image tag
+        id: meta
+        # Short SHA: immutable, and traceable back to a commit at a glance.
+        run: echo "image_tag=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      # az acr login mints a short-lived token from the federated identity;
+      # no registry username or password exists to store.
+      - name: ACR login
+        run: az acr login --name ${{ vars.ACR_NAME_DEV }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: app
+          push: true
+          tags: ${{ vars.ACR_LOGIN_SERVER_DEV }}/platform-api:${{ steps.meta.outputs.image_tag }}
+          build-args: |
+            APP_REVISION=${{ steps.meta.outputs.image_tag }}
+          provenance: true
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Blocks the promotion chain if the image that was just published has a
+      # fixable critical vulnerability.
+      - name: Scan pushed image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ vars.ACR_LOGIN_SERVER_DEV }}/platform-api:${{ steps.meta.outputs.image_tag }}
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+  deploy-dev:
+    name: Deploy to dev
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name == 'push' || inputs.environment == 'dev'
+    environment:
+      name: dev
+      url: https://platform-api.dev.example.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/helm-deploy
+        with:
+          environment: dev
+          namespace: dev
+          image_tag: ${{ needs.build-and-push.outputs.image_tag }}
+          acr_login_server: ${{ vars.ACR_LOGIN_SERVER_DEV }}
+          cluster_name: ${{ vars.AKS_CLUSTER_DEV }}
+          resource_group: ${{ vars.AKS_RESOURCE_GROUP_DEV }}
+          key_vault_name: ${{ vars.KEY_VAULT_DEV }}
+          workload_identity_client_id: ${{ vars.WORKLOAD_IDENTITY_CLIENT_ID_DEV }}
+          azure_client_id: ${{ vars.AZURE_CLIENT_ID }}
+          azure_tenant_id: ${{ vars.AZURE_TENANT_ID }}
+          azure_subscription_id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+  deploy-staging:
+    name: Deploy to staging
+    runs-on: ubuntu-latest
+    needs: [build-and-push, deploy-dev]
+    # always() is required because deploy-dev is skipped on a workflow_dispatch
+    # that targets staging directly; without it, a skipped dependency would skip
+    # this job too. The result checks keep a *failed* dev deploy blocking.
+    if: >-
+      always()
+      && needs.build-and-push.result == 'success'
+      && (
+        (github.event_name == 'push' && needs.deploy-dev.result == 'success')
+        || (github.event_name == 'workflow_dispatch' && inputs.environment == 'staging')
+      )
+    environment:
+      name: staging
+      url: https://platform-api.staging.example.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/helm-deploy
+        with:
+          environment: staging
+          namespace: staging
+          image_tag: ${{ needs.build-and-push.outputs.image_tag }}
+          acr_login_server: ${{ vars.ACR_LOGIN_SERVER_STAGING }}
+          cluster_name: ${{ vars.AKS_CLUSTER_STAGING }}
+          resource_group: ${{ vars.AKS_RESOURCE_GROUP_STAGING }}
+          key_vault_name: ${{ vars.KEY_VAULT_STAGING }}
+          workload_identity_client_id: ${{ vars.WORKLOAD_IDENTITY_CLIENT_ID_STAGING }}
+          azure_client_id: ${{ vars.AZURE_CLIENT_ID }}
+          azure_tenant_id: ${{ vars.AZURE_TENANT_ID }}
+          azure_subscription_id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+  deploy-production:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    needs: [build-and-push, deploy-staging]
+    if: >-
+      always()
+      && needs.build-and-push.result == 'success'
+      && (
+        (github.event_name == 'push' && needs.deploy-staging.result == 'success')
+        || (github.event_name == 'workflow_dispatch' && inputs.environment == 'prod')
+      )
+    # This environment must have "Required reviewers" configured in the
+    # repository settings; that setting is what turns this job into a manual
+    # approval gate. See docs/operations-runbook.md.
+    environment:
+      name: production
+      url: https://platform-api.example.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/helm-deploy
+        with:
+          environment: prod
+          namespace: production
+          image_tag: ${{ needs.build-and-push.outputs.image_tag }}
+          acr_login_server: ${{ vars.ACR_LOGIN_SERVER_PROD }}
+          cluster_name: ${{ vars.AKS_CLUSTER_PROD }}
+          resource_group: ${{ vars.AKS_RESOURCE_GROUP_PROD }}
+          key_vault_name: ${{ vars.KEY_VAULT_PROD }}
+          workload_identity_client_id: ${{ vars.WORKLOAD_IDENTITY_CLIENT_ID_PROD }}
+          azure_client_id: ${{ vars.AZURE_CLIENT_ID }}
+          azure_tenant_id: ${{ vars.AZURE_TENANT_ID }}
+          azure_subscription_id: ${{ vars.AZURE_SUBSCRIPTION_ID }}

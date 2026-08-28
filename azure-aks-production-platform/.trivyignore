@@ -1,0 +1,56 @@
+# Trivy findings accepted with justification.
+#
+# As with .checkov.yaml, each entry is a decision rather than an unfixed bug.
+
+# AVD-DS-0026 - no HEALTHCHECK in the Dockerfile.
+# Kubernetes owns liveness and readiness through the probes in the Helm chart.
+# A second, differently-configured check inside the image would drift from those
+# probes and make it ambiguous which check failed.
+AVD-DS-0026
+
+# AVD-KSV-0033 / AVD-KSV-0035 - "image must come from GCR / ECR".
+# This platform runs on Azure and pulls from Azure Container Registry. The
+# equivalent control is enforced elsewhere: the kubelet identity holds AcrPull on
+# exactly one registry, and Azure Policy restricts allowed image sources.
+AVD-KSV-0033
+AVD-KSV-0035
+
+# AVD-KSV-01010 - "ConfigMap stores sensitive content".
+# Triggered by the key name LOG_LEVEL, whose value is a log level. Real secrets
+# come from Key Vault through the CSI driver and never appear in a ConfigMap.
+AVD-KSV-01010
+
+# AVD-KSV-0039 / AVD-KSV-0040 - "namespace has no LimitRange / ResourceQuota".
+# Both exist, in k8s/bootstrap/limit-ranges.yaml and resource-quotas.yaml. Trivy
+# evaluates each document in isolation and cannot see the sibling file that
+# satisfies the control for the same namespace.
+AVD-KSV-0039
+AVD-KSV-0040
+
+# AVD-KSV-0048 - "Role grants write verbs on workload resources".
+# That is exactly what the `operator` Role in k8s/bootstrap/rbac.yaml is for:
+# restarting and scaling workloads during an incident. It deliberately excludes
+# secrets, RBAC objects and any cluster-scoped resource, and the read-only
+# `developer` Role is what most people get.
+AVD-KSV-0048
+
+# AVD-AZU-0041 - "AKS API server has no authorized IP ranges".
+# The module default is empty, which is the dev posture. Staging and production
+# both set api_server_authorized_ip_ranges (see their tfvars examples), and the
+# variable exists precisely so the restriction is explicit per environment.
+AVD-AZU-0041
+
+# AVD-AZU-0047 - "security group rule allows ingress from any IP".
+# The ingress subnet fronts a public HTTPS service, so 0.0.0.0/0 on 443 is the
+# intended posture. It is governed by allowed_ingress_source_prefixes, which
+# environments narrow to Front Door or corporate ranges when the service is not
+# meant to be Internet-facing. No other subnet accepts traffic from the Internet.
+AVD-AZU-0047
+
+# AVD-AZU-0016 - "Key Vault has no purge protection" in dev and staging.
+# Purge protection cannot be turned off once enabled, and it holds the vault
+# name for the whole soft-delete window - which makes a destroy/recreate cycle
+# impossible in an environment meant to be torn down. Production enables it
+# (terraform/modules/platform/main.tf sets it from var.environment), and Trivy
+# correctly reports the production environment as passing this check.
+AVD-AZU-0016

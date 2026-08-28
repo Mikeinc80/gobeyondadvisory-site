@@ -1,0 +1,136 @@
+name: Helm deploy to AKS
+description: >-
+  Deploys the platform-api chart to one environment. Factored into a composite
+  action so the three environment jobs cannot drift apart - a change to the
+  rollout procedure lands in one place.
+
+inputs:
+  environment:
+    description: Values overlay to use (dev, staging or prod).
+    required: true
+  namespace:
+    description: Kubernetes namespace to deploy into.
+    required: true
+  image_tag:
+    description: Immutable image tag built by the build job.
+    required: true
+  acr_login_server:
+    description: ACR login server for this environment.
+    required: true
+  cluster_name:
+    description: AKS cluster name.
+    required: true
+  resource_group:
+    description: Resource group holding the cluster.
+    required: true
+  key_vault_name:
+    description: Key Vault the SecretProviderClass reads from.
+    required: false
+    default: ''
+  workload_identity_client_id:
+    description: Client ID of the namespace's workload identity.
+    required: false
+    default: ''
+  azure_client_id:
+    description: Client ID of the CI federated identity.
+    required: true
+  azure_tenant_id:
+    description: Entra ID tenant.
+    required: true
+  azure_subscription_id:
+    description: Target subscription.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Azure login (OIDC)
+      uses: azure/login@v2
+      with:
+        client-id: ${{ inputs.azure_client_id }}
+        tenant-id: ${{ inputs.azure_tenant_id }}
+        subscription-id: ${{ inputs.azure_subscription_id }}
+
+    - uses: azure/setup-helm@v4
+      with:
+        version: v3.16.3
+
+    # --admin is deliberately absent: the cluster has local accounts disabled,
+    # so credentials are issued to the federated identity and every API call is
+    # attributable to it.
+    - name: Get cluster credentials
+      shell: bash
+      run: |
+        az aks get-credentials \
+          --resource-group "${{ inputs.resource_group }}" \
+          --name "${{ inputs.cluster_name }}" \
+          --overwrite-existing
+        # kubelogin converts the kubeconfig to use the workload's federated
+        # token instead of an interactive device-code prompt.
+        az aks install-cli --only-show-errors
+        kubelogin convert-kubeconfig -l workloadidentity
+
+    - name: Deploy
+      shell: bash
+      env:
+        RELEASE: platform-api
+      run: |
+        set -euo pipefail
+
+        # --atomic: a failed rollout is rolled back automatically rather than
+        #   leaving half the replicas on the new version.
+        # --wait with a timeout: the job fails if the pods never become ready,
+        #   which is what makes a bad deploy visible in CI instead of at 3am.
+        # No --create-namespace: namespaces come from k8s/bootstrap with their
+        # Pod Security Admission labels, and silently creating an unlabelled one
+        # would drop that enforcement.
+        helm upgrade --install "${RELEASE}" charts/platform-api \
+          --namespace "${{ inputs.namespace }}" \
+          -f "charts/platform-api/values-${{ inputs.environment }}.yaml" \
+          --set image.repository="${{ inputs.acr_login_server }}/platform-api" \
+          --set image.tag="${{ inputs.image_tag }}" \
+          --set serviceAccount.workloadIdentityClientId="${{ inputs.workload_identity_client_id }}" \
+          --set keyVault.name="${{ inputs.key_vault_name }}" \
+          --set keyVault.tenantId="${{ inputs.azure_tenant_id }}" \
+          --atomic \
+          --wait \
+          --timeout 5m
+
+    - name: Verify rollout
+      shell: bash
+      run: |
+        set -euo pipefail
+        kubectl rollout status deployment/platform-api \
+          -n "${{ inputs.namespace }}" --timeout=120s
+
+        # Confirms the running pods actually serve the revision that was just
+        # deployed, rather than an older ReplicaSet that happens to be healthy.
+        #
+        # Port-forward rather than an in-cluster curl pod: the namespace has a
+        # default-deny NetworkPolicy, so a throwaway pod would have no egress.
+        # Port-forwarding goes through the API server and kubelet instead.
+        kubectl port-forward -n "${{ inputs.namespace }}" \
+          svc/platform-api 18080:80 >/dev/null 2>&1 &
+        pf_pid=$!
+        trap 'kill "${pf_pid}" 2>/dev/null || true' EXIT
+
+        for _ in $(seq 1 20); do
+          curl -fsS http://127.0.0.1:18080/health >/dev/null 2>&1 && break
+          sleep 1
+        done
+
+        curl -fsS http://127.0.0.1:18080/ \
+          | grep -q '"revision":"${{ inputs.image_tag }}"'
+
+    - name: Summarise
+      shell: bash
+      run: |
+        {
+          echo "### Deployed to ${{ inputs.environment }}"
+          echo
+          echo "| Field | Value |"
+          echo "| --- | --- |"
+          echo "| Namespace | \`${{ inputs.namespace }}\` |"
+          echo "| Image tag | \`${{ inputs.image_tag }}\` |"
+          echo "| Cluster | \`${{ inputs.cluster_name }}\` |"
+        } >> "$GITHUB_STEP_SUMMARY"

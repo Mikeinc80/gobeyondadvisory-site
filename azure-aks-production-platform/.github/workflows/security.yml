@@ -1,0 +1,158 @@
+name: Security
+
+# Four independent scanners, each covering a layer the others cannot see:
+#   Checkov  - Terraform misconfiguration (the cloud control plane)
+#   Trivy    - container image CVEs and IaC/Kubernetes misconfiguration
+#   pip-audit- application dependency CVEs
+#   Gitleaks - secrets accidentally committed to the repository
+#
+# They run on a schedule as well as on push: a dependency that is clean today
+# can have a published CVE tomorrow without a single line of code changing.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Mondays 06:00 UTC - findings land at the start of the week, not on a Friday.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Uploading SARIF puts findings in the Security tab with code annotations.
+  security-events: write
+
+jobs:
+  terraform-scan:
+    name: Checkov (Terraform)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          # Uses .checkov.yaml at the repository root, where every accepted
+          # finding is listed with its justification.
+          config_file: .checkov.yaml
+          quiet: true
+          output_format: cli,sarif
+          output_file_path: console,checkov.sarif
+          # Findings are surfaced in the Security tab rather than failing the
+          # build outright: several Checkov policies (public ingress in dev, for
+          # instance) are deliberate trade-offs documented in docs/security.md.
+          # Tighten this to soft_fail:false once the baseline is clean.
+          soft_fail: true
+
+      - name: Upload Checkov SARIF
+        if: always() && hashFiles('checkov.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov.sarif
+          category: checkov
+
+  iac-scan:
+    name: Trivy (IaC and Kubernetes)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Covers what Checkov does not: Dockerfile rules and the rendered
+      # Kubernetes manifests.
+      - name: Trivy config scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: config
+          scan-ref: .
+          format: sarif
+          output: trivy-config.sarif
+          severity: CRITICAL,HIGH,MEDIUM
+          # Accepted findings, each justified in the file itself.
+          trivyignores: .trivyignore
+
+      - name: Upload Trivy SARIF
+        if: always() && hashFiles('trivy-config.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-config.sarif
+          category: trivy-config
+
+  image-scan:
+    name: Trivy (container image)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: app
+          push: false
+          load: true
+          tags: platform-api:scan
+          cache-from: type=gha
+
+      - name: Trivy image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: platform-api:scan
+          format: sarif
+          output: trivy-image.sarif
+          severity: CRITICAL,HIGH
+          # Unfixed CVEs in the base image cannot be actioned by this repository;
+          # the fix is a base-image bump, which the scheduled run will pick up
+          # once upstream publishes one.
+          ignore-unfixed: true
+
+      - name: Upload image SARIF
+        if: always() && hashFiles('trivy-image.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-image.sarif
+          category: trivy-image
+
+      # Same scan, failing the build. Split from the SARIF step so that findings
+      # are always recorded even when the gate trips.
+      - name: Fail on fixable critical findings
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: platform-api:scan
+          format: table
+          exit-code: '1'
+          severity: CRITICAL
+          ignore-unfixed: true
+
+  dependency-scan:
+    name: pip-audit (dependencies)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: pip-audit
+        run: |
+          pip install pip-audit==2.7.3
+          # Audits the pinned runtime requirements, which is what actually ships
+          # in the image - not the dev tooling.
+          pip-audit --requirement app/requirements.txt --strict --progress-spinner=off
+
+  secret-scan:
+    name: Gitleaks (secrets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: a secret that was committed and later removed is still
+          # a secret, and only a full clone can see it.
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

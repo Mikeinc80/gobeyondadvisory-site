@@ -1,0 +1,158 @@
+name: Terraform CI
+
+# Format, validate and plan on every change to the infrastructure code.
+# Plans need Azure credentials, so they run only when the repository has an
+# Azure identity configured - a fork without one still gets fmt and validate.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-ci.yml'
+  pull_request:
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Required for the OIDC token exchanged for an Azure access token.
+  id-token: write
+  pull-requests: write
+
+env:
+  TF_VERSION: '1.9.8'
+  # Terraform's colour codes are noise in the Actions log.
+  TF_IN_AUTOMATION: 'true'
+
+jobs:
+  fmt-validate:
+    name: Format and validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      - name: terraform fmt
+        # -check fails rather than rewriting: formatting is the author's job,
+        # and a CI commit would invalidate the reviewed diff.
+        run: terraform fmt -check -recursive -diff terraform/
+
+      - name: terraform validate (modules and environments)
+        # -backend=false validates configuration without contacting the backend,
+        # so no credentials are needed for this step.
+        run: |
+          set -euo pipefail
+          for dir in terraform/modules/*/ terraform/environments/*/; do
+            echo "==> ${dir}"
+            terraform -chdir="${dir}" init -backend=false -input=false -no-color
+            terraform -chdir="${dir}" validate -no-color
+          done
+
+  plan:
+    name: Plan (${{ matrix.environment }})
+    runs-on: ubuntu-latest
+    needs: fmt-validate
+    # Skipped automatically on forks and on repositories that have not been
+    # wired to an Azure subscription yet.
+    if: vars.AZURE_CLIENT_ID != ''
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - environment: dev
+            directory: terraform/environments/dev
+          - environment: staging
+            directory: terraform/environments/staging
+          - environment: prod
+            directory: terraform/environments/prod
+    environment: ${{ matrix.environment }}-plan
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      # Federated credentials: GitHub's OIDC token is exchanged for an Azure
+      # token. No client secret is stored in the repository.
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: terraform init
+        working-directory: ${{ matrix.directory }}
+        env:
+          ARM_USE_OIDC: 'true'
+          ARM_USE_AZUREAD: 'true'
+          ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        run: |
+          terraform init -input=false -no-color \
+            -backend-config="resource_group_name=${{ vars.TFSTATE_RESOURCE_GROUP }}" \
+            -backend-config="storage_account_name=${{ vars.TFSTATE_STORAGE_ACCOUNT }}" \
+            -backend-config="container_name=${{ vars.TFSTATE_CONTAINER }}" \
+            -backend-config="key=${{ matrix.environment }}/platform.tfstate"
+
+      - name: terraform plan
+        id: plan
+        working-directory: ${{ matrix.directory }}
+        env:
+          ARM_USE_OIDC: 'true'
+          ARM_USE_AZUREAD: 'true'
+          ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          TF_VAR_owner: ${{ vars.PLATFORM_OWNER }}
+          TF_VAR_repository_url: ${{ github.server_url }}/${{ github.repository }}
+        run: |
+          set -uo pipefail
+          # -detailed-exitcode: 0 no changes, 1 error, 2 changes present. Only 1
+          # is a failure - "there are changes" is the normal case on a PR.
+          terraform plan -input=false -no-color -lock-timeout=5m \
+            -detailed-exitcode -out=tfplan 2>&1 | tee plan.txt
+          code="${PIPESTATUS[0]}"
+          if [ "${code}" -eq 1 ]; then
+            echo "::error::terraform plan failed" >&2
+            exit 1
+          fi
+          echo "has_changes=$([ "${code}" -eq 2 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment plan summary on the pull request
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync('${{ matrix.directory }}/plan.txt', 'utf8');
+            // GitHub rejects comments over 65536 characters; keep the tail,
+            // which is where the change summary lives.
+            const body = plan.length > 60000
+              ? '...(truncated)...\n' + plan.slice(-60000)
+              : plan;
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### Terraform plan - \`${{ matrix.environment }}\`\n\n<details><summary>Show plan</summary>\n\n\`\`\`terraform\n${body}\n\`\`\`\n\n</details>`,
+            });
+
+      # The plan file can contain resource attributes; it is kept short-lived
+      # and is never published outside the repository.
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ matrix.environment }}
+          path: ${{ matrix.directory }}/tfplan
+          retention-days: 5

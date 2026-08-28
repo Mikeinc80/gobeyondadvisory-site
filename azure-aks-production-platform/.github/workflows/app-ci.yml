@@ -1,0 +1,162 @@
+name: Application CI
+
+# Lint, test and build the container image on every change to the application or
+# the chart. Nothing here needs cloud credentials, so it runs on forks too.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'charts/**'
+      - '.github/workflows/app-ci.yml'
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'charts/**'
+      - '.github/workflows/app-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint and test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: app/requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Ruff (lint)
+        run: ruff check .
+
+      - name: Ruff (format check)
+        run: ruff format --check .
+
+      - name: Pytest
+        run: pytest --cov=app --cov-report=term-missing --cov-fail-under=85
+
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      # Built but not pushed: publishing to ACR happens in cd.yml, which is the
+      # only workflow holding registry credentials. A PR from a fork must never
+      # be able to publish an image.
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: app
+          push: false
+          load: true
+          tags: platform-api:${{ github.sha }}
+          build-args: |
+            APP_REVISION=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Proves the image actually serves traffic, which a build alone does not.
+      - name: Smoke test the image
+        run: |
+          set -euo pipefail
+          docker run -d --name smoke -p 8000:8000 \
+            -e APP_ENVIRONMENT=ci -e DRAIN_SECONDS=0 \
+            platform-api:${{ github.sha }}
+
+          # Poll rather than sleep: fail fast if the container is already dead.
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8000/health >/dev/null 2>&1; then
+              echo "container is serving"
+              break
+            fi
+            if [ "$(docker inspect -f '{{.State.Running}}' smoke)" != "true" ]; then
+              echo "container exited during startup" >&2
+              docker logs smoke >&2
+              exit 1
+            fi
+            [ "$i" -eq 30 ] && { echo "timed out waiting for /health" >&2; docker logs smoke >&2; exit 1; }
+            sleep 1
+          done
+
+          curl -fsS http://localhost:8000/ | tee /dev/stderr | grep -q '"environment":"ci"'
+          curl -fsS http://localhost:8000/ready | grep -q '"ready":true'
+          curl -fsS http://localhost:8000/metrics | grep -q 'http_requests_total'
+
+          # The image must not run as root - the cluster's restricted Pod
+          # Security policy would reject it, and this catches that in CI.
+          test "$(docker exec smoke id -u)" = "10001"
+
+          docker rm -f smoke
+
+  helm:
+    name: Helm lint and render
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.16.3
+
+      - name: Helm lint (all environments)
+        run: |
+          set -euo pipefail
+          for env in dev staging prod; do
+            echo "==> ${env}"
+            helm lint charts/platform-api \
+              -f "charts/platform-api/values-${env}.yaml" \
+              --set image.tag=ci
+          done
+
+      - name: Render manifests
+        run: |
+          set -euo pipefail
+          mkdir -p rendered
+          for env in dev staging prod; do
+            helm template platform-api charts/platform-api \
+              -f "charts/platform-api/values-${env}.yaml" \
+              --set image.tag=ci \
+              --set image.repository=example.azurecr.io/platform-api \
+              --set serviceAccount.workloadIdentityClientId=00000000-0000-0000-0000-000000000000 \
+              --set keyVault.name=kv-example \
+              --set keyVault.tenantId=00000000-0000-0000-0000-000000000000 \
+              > "rendered/${env}.yaml"
+          done
+
+      # Schema-validates the rendered output against the target Kubernetes
+      # version, catching removed or renamed API versions before a deploy does.
+      - name: Validate rendered manifests
+        uses: docker://ghcr.io/yannh/kubeconform:v0.6.7
+        with:
+          args: >-
+            -strict
+            -summary
+            -ignore-missing-schemas
+            -kubernetes-version 1.31.0
+            rendered/dev.yaml rendered/staging.yaml rendered/prod.yaml
+
+      - name: Validate bootstrap manifests
+        uses: docker://ghcr.io/yannh/kubeconform:v0.6.7
+        with:
+          args: >-
+            -strict
+            -summary
+            -kubernetes-version 1.31.0
+            k8s/bootstrap

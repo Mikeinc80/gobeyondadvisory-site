@@ -1,0 +1,53 @@
+# Checkov baseline.
+#
+# Every entry in `skip-check` is a deliberate architectural decision, not an
+# unfixed finding. Each one names why the control is not applied and what would
+# have to change to apply it. Anything not listed here is expected to pass, and
+# the intent is to shrink this list over time rather than grow it.
+
+directory:
+  - terraform
+
+framework:
+  - terraform
+
+# Findings are reported in CI but do not fail the build while this baseline is
+# in place. Flip to false once the list below is empty.
+soft-fail: true
+
+skip-check:
+  # AKS is a public-API-server cluster so that GitHub-hosted runners can deploy
+  # to it. Making it private is supported (private_cluster_enabled) but requires
+  # self-hosted runners or a private agent pool. Compensating control: the API
+  # server is restricted to authorized IP ranges in staging and production, and
+  # local accounts are disabled so every call is an Entra ID identity.
+  - CKV_AZURE_115
+
+  # Node disks use platform-managed keys. Customer-managed keys are supported
+  # via disk_encryption_set_id; they are only required where key custody is a
+  # compliance obligation, and they add a Key Vault key to rotate and protect.
+  - CKV_AZURE_117
+
+  # The dev environment deliberately runs the Free control-plane tier: it has no
+  # API-server SLA, which is the correct trade for a non-production cluster.
+  # Staging and production both set sku_tier = "Standard".
+  - CKV_AZURE_170
+
+  # ACR public networking, zone redundancy, geo-replication and content trust
+  # are all Premium-only. Dev runs the Standard SKU on cost grounds; staging and
+  # production use Premium with private endpoints, zone redundancy and content
+  # trust enabled.
+  - CKV_AZURE_139
+  - CKV_AZURE_164
+  - CKV_AZURE_165
+  - CKV_AZURE_166
+  - CKV_AZURE_233
+  - CKV_AZURE_237
+
+  # Key Vault public access and purge protection are environment-driven: the
+  # production environment sets purge_protection_enabled = true and reaches the
+  # vault over a private endpoint. Checkov evaluates module defaults, which are
+  # the dev-appropriate values.
+  - CKV_AZURE_109
+  - CKV_AZURE_110
+  - CKV_AZURE_189
