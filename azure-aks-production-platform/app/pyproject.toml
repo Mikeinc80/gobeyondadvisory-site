@@ -1,0 +1,24 @@
+[project]
+name = "platform-api"
+version = "1.0.0"
+description = "Reference workload for the azure-aks-production-platform reference implementation."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+
+[tool.coverage.run]
+source = ["app"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# Correctness, imports, bugbear, comprehensions, pyupgrade, security (bandit).
+select = ["E", "F", "I", "B", "C4", "UP", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests legitimately assert on constants that look like secrets and use asserts.
+"tests/*" = ["S101", "S105", "S106"]
