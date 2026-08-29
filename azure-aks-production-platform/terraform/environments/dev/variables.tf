@@ -49,3 +49,51 @@ variable "alert_email_receivers" {
   type        = map(string)
   default     = {}
 }
+
+# --- Cost controls for short-lived validation runs ----------------------------
+#
+# Dev sizing is already minimal, but a throwaway validation cluster can be
+# smaller still. These exist so a validation run is a tfvars change rather than
+# an edit to the environment definition.
+
+variable "system_node_pool" {
+  description = "System node pool sizing. The default is the smallest pool that reliably runs the AKS add-ons."
+  type = object({
+    vm_size         = string
+    min_count       = number
+    max_count       = number
+    os_disk_size_gb = number
+  })
+  default = {
+    vm_size         = "Standard_D2ds_v5"
+    min_count       = 1
+    max_count       = 2
+    os_disk_size_gb = 64
+  }
+}
+
+variable "user_node_pool" {
+  description = "Application node pool sizing. Set max_count = 1 for a short validation run."
+  type = object({
+    vm_size         = string
+    min_count       = number
+    max_count       = number
+    os_disk_size_gb = number
+  })
+  default = {
+    vm_size         = "Standard_D2ds_v5"
+    min_count       = 1
+    max_count       = 3
+    os_disk_size_gb = 64
+  }
+}
+
+variable "enable_managed_prometheus" {
+  description = <<-DESC
+    Provision the Azure Monitor workspace and the Prometheus collection rule.
+    Set false to skip metric ingestion charges on a run that only needs to prove
+    the infrastructure and deployment path.
+  DESC
+  type        = bool
+  default     = true
+}

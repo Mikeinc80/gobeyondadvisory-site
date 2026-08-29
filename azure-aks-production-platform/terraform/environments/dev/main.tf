@@ -31,27 +31,20 @@ module "platform" {
 
   aks_sku_tier = "Free"
 
-  system_node_pool = {
-    vm_size         = "Standard_D2ds_v5"
-    min_count       = 1
-    max_count       = 2
-    os_disk_size_gb = 64
-  }
-
-  user_node_pool = {
-    vm_size         = "Standard_D2ds_v5"
-    min_count       = 1
-    max_count       = 3
-    os_disk_size_gb = 64
-  }
+  # Sizing is variable-driven here (and only here) so a short-lived validation
+  # cluster can be shrunk from tfvars. Staging and production pin their sizing in
+  # code, where it should not be casually overridable.
+  system_node_pool = var.system_node_pool
+  user_node_pool   = var.user_node_pool
 
   acr_sku                  = "Standard"
   enable_private_endpoints = false
 
   log_retention_in_days = 30
   # Hard cap: a misbehaving dev workload must not be able to run up a bill.
-  log_daily_quota_gb     = 1
-  enable_managed_grafana = false
+  log_daily_quota_gb        = 1
+  enable_managed_grafana    = false
+  enable_managed_prometheus = var.enable_managed_prometheus
 
   admin_group_object_ids       = var.admin_group_object_ids
   ci_principal_ids             = var.ci_principal_ids
