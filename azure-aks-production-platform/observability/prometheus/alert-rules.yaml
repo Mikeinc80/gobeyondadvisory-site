@@ -54,7 +54,7 @@ spec:
             description: >-
               {{ $value | humanizePercentage }} of requests are returning 5xx.
               Check recent rollouts and the pod logs before rolling back.
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#failed-deployment"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#failed-deployment"
 
         - alert: PlatformApiHighLatency
           expr: platform_api:latency_p95_5m > 0.25
@@ -63,7 +63,7 @@ spec:
             severity: warning
           annotations:
             summary: "platform-api p95 latency above 250ms in {{ $labels.namespace }}"
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#high-cpu"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#high-cpu"
 
         - alert: PlatformApiNoReadyReplicas
           # app_ready is exported by the application itself, so this fires even
@@ -74,7 +74,7 @@ spec:
             severity: critical
           annotations:
             summary: "No ready platform-api replicas in {{ $labels.namespace }}"
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#unhealthy-pods"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#unhealthy-pods"
 
     - name: platform.workloads
       rules:
@@ -88,7 +88,7 @@ spec:
             severity: critical
           annotations:
             summary: "{{ $labels.namespace }}/{{ $labels.pod }} is restarting repeatedly"
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#unhealthy-pods"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#unhealthy-pods"
 
         - alert: DeploymentReplicasUnavailable
           expr: |
@@ -101,7 +101,7 @@ spec:
             description: >-
               A rolling update dips here briefly; 15 minutes means the rollout is
               stuck, not in progress.
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#failed-deployment"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#failed-deployment"
 
         - alert: ContainerCpuThrottling
           # Throttling is invisible in CPU-usage graphs but shows up directly as
@@ -116,7 +116,7 @@ spec:
             severity: warning
           annotations:
             summary: "{{ $labels.namespace }}/{{ $labels.pod }} throttled for over 25% of CPU periods"
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#high-cpu"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#high-cpu"
 
         - alert: ContainerMemoryNearLimit
           expr: |
@@ -130,7 +130,7 @@ spec:
           annotations:
             summary: "{{ $labels.namespace }}/{{ $labels.pod }} above 90% of its memory limit"
             description: "The next allocation is likely to be an OOMKill."
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#high-memory"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#high-memory"
 
     - name: platform.nodes
       rules:
@@ -142,7 +142,7 @@ spec:
             severity: warning
           annotations:
             summary: "Node {{ $labels.node }} above 85% CPU"
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#node-pressure"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#node-pressure"
 
         - alert: NodeMemoryPressure
           expr: |
@@ -152,7 +152,7 @@ spec:
             severity: warning
           annotations:
             summary: "Node {{ $labels.node }} above 85% memory"
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#node-pressure"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#node-pressure"
 
         - alert: NodeNotReady
           expr: kube_node_status_condition{condition="Ready", status="true"} == 0
@@ -161,4 +161,4 @@ spec:
             severity: critical
           annotations:
             summary: "Node {{ $labels.node }} has been NotReady for 10 minutes"
-            runbook_url: "https://github.com/REPLACE_ORG/azure-aks-production-platform/blob/main/docs/operations-runbook.md#node-pressure"
+            runbook_url: "https://github.com/Mikeinc80/azure-aks-production-platform/blob/main/docs/operations-runbook.md#node-pressure"

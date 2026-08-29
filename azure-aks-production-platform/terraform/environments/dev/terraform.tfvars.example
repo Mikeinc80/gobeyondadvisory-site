@@ -8,7 +8,7 @@ location_short = "uks"
 kubernetes_version = "1.31"
 
 owner          = "platform-engineering"
-repository_url = "https://github.com/<your-github-user>/azure-aks-production-platform"
+repository_url = "https://github.com/Mikeinc80/azure-aks-production-platform"
 
 # Entra ID group granted cluster-admin. Find it with:
 #   az ad group show --group "aks-platform-admins" --query id -o tsv

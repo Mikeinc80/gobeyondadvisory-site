@@ -13,11 +13,13 @@ Two collection paths are supported, and the choice is an either/or:
 * **Self-hosted kube-prometheus-stack.** Set `serviceMonitor.enabled=true` in the Helm
   values and apply `alert-rules.yaml` as-is.
 
-Before applying `alert-rules.yaml`, replace `REPLACE_ORG` in the `runbook_url`
-annotations with your GitHub organisation so the links resolve:
+Each alert carries a `runbook_url` pointing at the matching section of
+[`docs/operations-runbook.md`](../../docs/operations-runbook.md) in this
+repository, so a page links straight to a procedure. If you fork the repository
+under a different owner, repoint them:
 
 ```bash
-sed -i 's|REPLACE_ORG|your-org|g' alert-rules.yaml
+sed -i 's|github.com/Mikeinc80/|github.com/<your-owner>/|g' alert-rules.yaml
 ```
 
 Validate changes locally with:
