@@ -1,8 +1,8 @@
 # azure-aks-production-platform
 
-[![Terraform CI](https://github.com/REPLACE_ORG/azure-aks-production-platform/actions/workflows/terraform-ci.yml/badge.svg)](https://github.com/REPLACE_ORG/azure-aks-production-platform/actions/workflows/terraform-ci.yml)
-[![Application CI](https://github.com/REPLACE_ORG/azure-aks-production-platform/actions/workflows/app-ci.yml/badge.svg)](https://github.com/REPLACE_ORG/azure-aks-production-platform/actions/workflows/app-ci.yml)
-[![Security](https://github.com/REPLACE_ORG/azure-aks-production-platform/actions/workflows/security.yml/badge.svg)](https://github.com/REPLACE_ORG/azure-aks-production-platform/actions/workflows/security.yml)
+[![Terraform CI](https://github.com/Mikeinc80/azure-aks-production-platform/actions/workflows/terraform-ci.yml/badge.svg)](https://github.com/Mikeinc80/azure-aks-production-platform/actions/workflows/terraform-ci.yml)
+[![Application CI](https://github.com/Mikeinc80/azure-aks-production-platform/actions/workflows/app-ci.yml/badge.svg)](https://github.com/Mikeinc80/azure-aks-production-platform/actions/workflows/app-ci.yml)
+[![Security](https://github.com/Mikeinc80/azure-aks-production-platform/actions/workflows/security.yml/badge.svg)](https://github.com/Mikeinc80/azure-aks-production-platform/actions/workflows/security.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > **Reference implementation.** This repository is a complete, deployable Azure
@@ -216,6 +216,12 @@ Everything the deployment needs from you is listed in
 [DEPLOYMENT_STATUS.md](DEPLOYMENT_STATUS.md#what-requires-an-azure-account).
 
 ## Deployment
+
+To validate the platform end to end for the first time, follow
+[docs/dev-validation.md](docs/dev-validation.md): it deploys only the dev
+environment (~$2–3 for a four-hour run), walks a checklist covering every
+component, captures evidence and tears everything down again. The summary below
+is the general procedure for any environment.
 
 ### 1. Remote state
 
@@ -469,6 +475,7 @@ The short version:
 
 | Document | Contents |
 | --- | --- |
+| [docs/dev-validation.md](docs/dev-validation.md) | Cost-minimised dev deployment, a 14-section validation checklist, evidence capture and teardown |
 | [docs/architecture.md](docs/architecture.md) | Component-by-component design and the alternatives rejected |
 | [docs/security.md](docs/security.md) | Threat model, identity model, accepted risks |
 | [docs/observability.md](docs/observability.md) | Signals, SLOs, alert catalogue, useful KQL and PromQL |

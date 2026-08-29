@@ -364,6 +364,9 @@ az provider register --namespace Microsoft.Compute
 
 ## Teardown
 
+For a full walkthrough of deploying, validating and destroying the dev
+environment, see [dev-validation.md](dev-validation.md).
+
 ```bash
 helm uninstall platform-api -n production
 helm uninstall ingress-nginx -n ingress-nginx      # releases the load balancer

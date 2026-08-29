@@ -8,7 +8,7 @@ validation of the code, not about a running system. There are no production
 metrics, uptime figures, cost savings or deployment history in this repository,
 because there is nothing to report.
 
-Last validated: **2026-08-28**, with `./scripts/validate.sh`.
+Last validated: **2026-08-29**, with `./scripts/validate.sh` (14 checks, all passing).
 
 ---
 
@@ -34,6 +34,7 @@ Every check below was executed and passed on this machine.
 | Config security | `trivy config` (with baseline) | Pass — 0 failures across Dockerfile (27 checks), Terraform (123), Kubernetes (355 + 99 rendered) |
 | YAML syntax | `yaml.safe_load_all` on every non-template YAML | Pass |
 | Shell syntax | `bash -n` | Pass |
+| Documentation links | Custom audit script | Pass — 47 relative links, 3 workflow badges, 10 `runbook_url` annotations and 3 composite-action paths all resolve to files and anchors that exist |
 
 Reproduce all of it:
 
@@ -75,6 +76,10 @@ Not just that endpoints return 200:
 Nothing in this list can be verified without a subscription. Approximate effort
 for a first end-to-end deployment: **60–90 minutes**.
 
+[docs/dev-validation.md](docs/dev-validation.md) is the step-by-step version of
+this section: it deploys only the dev environment, works through a checklist for
+every component, captures evidence and destroys everything afterwards.
+
 ### Identity and permissions
 
 | Requirement | Why | How to get it |
@@ -98,7 +103,7 @@ for env in dev staging production dev-plan staging-plan prod-plan; do
     --identity-name id-github-actions \
     --resource-group rg-platform-shared \
     --issuer "https://token.actions.githubusercontent.com" \
-    --subject "repo:<your-org>/azure-aks-production-platform:environment:${env}" \
+    --subject "repo:Mikeinc80/azure-aks-production-platform:environment:${env}" \
     --audiences "api://AzureADTokenExchange"
 done
 ```
@@ -127,14 +132,15 @@ it, production deploys automatically.
 
 | Placeholder | Files | Replace with |
 | --- | --- | --- |
-| `REPLACE_ORG` | `README.md`, `CHANGELOG.md`, `observability/prometheus/alert-rules.yaml` | Your GitHub org or username |
-| `REPLACE_ME.azurecr.io` | `charts/platform-api/values.yaml` | Your ACR login server (CD overrides it, but the default should be real) |
 | `example.com` hostnames | `charts/platform-api/values-*.yaml` | Your DNS names |
 | Placeholder GUIDs | `k8s/bootstrap/rbac.yaml`, `terraform/environments/*/terraform.tfvars.example` | Your Entra ID group object IDs |
 
+Repository references (badges, runbook links, the changelog release link) already
+point at `Mikeinc80/azure-aks-production-platform`. If the repository is ever
+moved or forked under a different owner, repoint them in one pass:
+
 ```bash
-# All of the first one at once:
-grep -rl REPLACE_ORG . | xargs sed -i 's/REPLACE_ORG/your-org/g'
+grep -rl 'github.com/Mikeinc80/' . | xargs sed -i 's|github.com/Mikeinc80/|github.com/<new-owner>/|g'
 ```
 
 ### Provider lock files
@@ -174,6 +180,35 @@ Predictions, not observed failures — each is a known rough edge of this stack:
 
 ---
 
+## Deployment evidence
+
+**Not yet collected.** The procedure is in
+[docs/dev-validation.md](docs/dev-validation.md); this table is where its results
+belong once it has been run against a real subscription. Every row is currently
+unverified, and none of them should be described as working until the
+corresponding evidence exists.
+
+| # | Checklist section | Status | Evidence |
+| --- | --- | --- | --- |
+| 1 | Terraform apply and convergence | Not run | — |
+| 2 | AKS cluster health | Not run | — |
+| 3 | ACR push and managed-identity pull | Not run | — |
+| 4 | Workload identity federation | Not run | — |
+| 5 | Key Vault via CSI driver | Not run | — |
+| 6 | Helm deployment and pod hardening | Not run | — |
+| 7 | Probes and drain behaviour | Not run | — |
+| 8 | HPA scale-out and scale-in | Not run | — |
+| 9 | NetworkPolicy enforcement | Not run | — |
+| 10 | Prometheus and Grafana | Not run | — |
+| 11 | Logs and alert rules | Not run | — |
+| 12 | Ingress routing | Not run | — |
+| 13 | Rollback (`--atomic` and explicit) | Not run | — |
+| 14 | GitHub Actions CI and CD | Not run | — |
+
+Record failures and workarounds here as well as successes. A validation log
+containing only successes is not credible, and the failures are usually the more
+interesting half of the conversation.
+
 ## Not deployed
 
 To be explicit, because portfolio projects often blur this line:
@@ -185,3 +220,5 @@ To be explicit, because portfolio projects often blur this line:
 - The cost figures in the README are list-price estimates, not observed spend.
 - The RTO/RPO figures in `docs/disaster-recovery.md` are design targets, not
   measured recovery times.
+- The cost figures in `docs/dev-validation.md` are list-price estimates for a
+  four-hour run, not observed billing.

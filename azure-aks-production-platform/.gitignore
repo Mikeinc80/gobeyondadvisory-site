@@ -67,3 +67,9 @@ trivy-*.sarif
 .idea/
 .DS_Store
 *.swp
+
+# Deployment evidence (see docs/dev-validation.md). Terraform outputs and
+# federated-credential listings carry subscription and tenant identifiers, so
+# the directory is excluded by default; commit individual redacted files if you
+# want the evidence in the repository.
+evidence/

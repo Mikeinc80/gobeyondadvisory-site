@@ -58,8 +58,10 @@ Initial reference implementation.
 - README, architecture, security, observability, operations runbook, disaster
   recovery and interview notes.
 - `DEPLOYMENT_STATUS.md` distinguishing locally validated components from those
-  requiring an Azure subscription.
+  requiring an Azure subscription, and `docs/dev-validation.md` with the
+  cost-minimised dev deployment, validation checklist, evidence capture and
+  teardown procedure.
 - Checkov and Trivy baselines with a written justification for every accepted
   finding.
 
-[1.0.0]: https://github.com/REPLACE_ORG/azure-aks-production-platform/releases/tag/v1.0.0
+[1.0.0]: https://github.com/Mikeinc80/azure-aks-production-platform/releases/tag/v1.0.0
