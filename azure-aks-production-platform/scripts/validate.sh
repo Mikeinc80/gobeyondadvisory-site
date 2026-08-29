@@ -44,7 +44,9 @@ helm_lint_all() {
   local env
   for env in dev staging prod; do
     helm lint charts/platform-api \
-      -f "charts/platform-api/values-${env}.yaml" --set image.tag=validate >/dev/null || return 1
+      -f "charts/platform-api/values-${env}.yaml" \
+      --set image.repository=example.azurecr.io/platform-api \
+      --set image.tag=validate >/dev/null || return 1
   done
 }
 

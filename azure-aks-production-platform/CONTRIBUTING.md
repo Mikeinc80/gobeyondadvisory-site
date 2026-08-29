@@ -22,9 +22,11 @@ cd ..
 
 # Helm: lint every overlay, then schema-validate the rendered output
 for env in dev staging prod; do
-  helm lint charts/platform-api -f "charts/platform-api/values-$env.yaml" --set image.tag=local
+  helm lint charts/platform-api -f "charts/platform-api/values-$env.yaml" \
+    --set image.repository=example.azurecr.io/platform-api --set image.tag=local
   helm template platform-api charts/platform-api \
-    -f "charts/platform-api/values-$env.yaml" --set image.tag=local \
+    -f "charts/platform-api/values-$env.yaml" \
+    --set image.repository=example.azurecr.io/platform-api --set image.tag=local \
     | kubeconform -strict -summary -ignore-missing-schemas -kubernetes-version 1.31.0
 done
 kubeconform -strict -summary -kubernetes-version 1.31.0 k8s/bootstrap

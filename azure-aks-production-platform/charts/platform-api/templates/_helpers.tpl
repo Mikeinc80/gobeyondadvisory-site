@@ -58,13 +58,20 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Fully qualified image reference. Fails the render rather than deploying an
-ambiguous "latest" tag, which would make rollbacks unreliable.
+Fully qualified image reference.
+
+Fails the render rather than shipping something ambiguous: an unset repository
+would otherwise produce ":<tag>", and an unset tag would resolve to "latest",
+which makes rollbacks unreliable. Both are supplied by the CD workflow.
 */}}
 {{- define "platform-api.image" -}}
+{{- $repository := .Values.image.repository | default "" -}}
 {{- $tag := .Values.image.tag | default "" -}}
+{{- if not $repository -}}
+{{- fail "image.repository must be set, e.g. --set image.repository=<acr-login-server>/platform-api" -}}
+{{- end -}}
 {{- if not $tag -}}
 {{- fail "image.tag must be set to an immutable tag (the CD workflow passes the short git SHA)" -}}
 {{- end -}}
-{{- printf "%s:%s" .Values.image.repository $tag -}}
+{{- printf "%s:%s" $repository $tag -}}
 {{- end }}

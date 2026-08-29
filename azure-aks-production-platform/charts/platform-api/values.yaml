@@ -5,10 +5,16 @@
 replicaCount: 2
 
 image:
-  # Set by the CD workflow to the environment's ACR login server.
-  repository: REPLACE_ME.azurecr.io/platform-api
-  # Deployments pass an immutable tag (the short git SHA). "latest" is never
-  # used: it makes rollbacks ambiguous and defeats image caching.
+  # Both halves are required and have no default: the registry name is only
+  # known after `terraform apply` (it carries a subscription-derived suffix), and
+  # a placeholder hostname here would be a deployable mistake. The CD workflow
+  # sets repository from the ACR_LOGIN_SERVER_* variable and tag from the commit.
+  #
+  #   --set image.repository=$(terraform output -raw acr_login_server)/platform-api
+  #   --set image.tag=$(git rev-parse --short=7 HEAD)
+  repository: ""
+  # Always an immutable tag (the short git SHA). "latest" is never used: it makes
+  # rollbacks ambiguous and defeats image caching.
   tag: ""
   pullPolicy: IfNotPresent
 
