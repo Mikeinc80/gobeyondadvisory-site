@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "extends": [
+    "html-validate:recommended"
+  ],
+  "rules": {
+    "void-style": "off",
+    "no-inline-style": "off",
+    "no-raw-characters": "off",
+    "long-title": "off",
+    "attribute-boolean-style": "off"
+  }
+}
