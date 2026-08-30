@@ -1,0 +1,19 @@
+# Dependencies (dev tooling only — the site itself has none)
+node_modules/
+package-lock.json
+
+# Netlify
+.netlify/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Logs and local scratch
+*.log
+npm-debug.log*
+.env
+.env.*

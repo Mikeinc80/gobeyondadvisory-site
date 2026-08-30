@@ -1,0 +1,75 @@
+# Netlify configuration for gobeyondadvisory.com
+#
+# The site is hand-authored static HTML with no build step: the repository root
+# is published as-is. Everything below is delivery configuration — security
+# headers, cache policy, and keeping non-site files out of the public root.
+
+[build]
+  publish = "."
+  command = ""
+
+# Development tooling lives in the repository, not on the public site.
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# ── Security headers ────────────────────────────────────────────────────────
+# Applied to every response. See README "Security considerations" for the
+# reasoning behind the CSP, in particular why 'unsafe-inline' is still present.
+[[headers]]
+  for = "/*"
+
+  [headers.values]
+    # Clickjacking: the site is never intended to be framed.
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cross-Origin-Opener-Policy = "same-origin"
+    # No page uses geolocation, camera, microphone, payment or USB.
+    Permissions-Policy = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+    # Five minutes, apex only. Deliberately short for the initial production
+    # deployment: a long max-age with includeSubDomains locks browsers out of any
+    # subdomain that is not HTTPS-only, and that lockout cannot be recalled once
+    # a visitor has cached it. Raise this in a separate hardening step, only after
+    # the deploy is confirmed healthy and every subdomain is verified HTTPS-only.
+    Strict-Transport-Security = "max-age=300"
+    Content-Security-Policy = """\
+      default-src 'self'; \
+      base-uri 'none'; \
+      object-src 'none'; \
+      frame-ancestors 'none'; \
+      form-action 'self'; \
+      script-src 'self' 'unsafe-inline'; \
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
+      font-src 'self' https://fonts.gstatic.com; \
+      img-src 'self' data:; \
+      connect-src 'self'; \
+      upgrade-insecure-requests"""
+
+# ── Cache policy ────────────────────────────────────────────────────────────
+# HTML and the article index are revalidated on every request so published
+# content and corrections go live immediately. Neither is fingerprinted.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/articles.json"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# article-loader.js is not fingerprinted either, so it cannot be cached
+# immutably without risking a stale loader against a newer articles.json.
+[[headers]]
+  for = "/article-loader.js"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
