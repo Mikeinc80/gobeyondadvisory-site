@@ -697,6 +697,10 @@ footer{
   .footer-top{grid-template-columns:1fr;}
 }
 </style>
+
+<link rel="canonical" href="https://gobeyondadvisory.com/"/>
+<meta property="og:site_name" content="GoBeyond Advisory"/>
+<meta name="twitter:card" content="summary_large_image"/>
 </head>
 <body>
 
@@ -712,13 +716,13 @@ footer{
     <a href="/founders">Leadership</a>
   </div>
   <div class="nav-right">
-    <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" class="nav-linkedin" title="LinkedIn">
+    <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" class="nav-linkedin" title="LinkedIn" aria-label="LinkedIn">
       <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
     </a>
-    <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="X / Twitter">
+    <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="X / Twitter" aria-label="X / Twitter">
       <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
     </a>
-    <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="YouTube">
+    <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" class="nav-linkedin" title="YouTube" aria-label="YouTube">
       <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
     </a>
     <a href="#contact" class="nav-cta">Engage Advisory</a>
@@ -964,8 +968,20 @@ footer{
     <h2 class="section-title">Thinking from the<br/><em>frontier of infrastructure.</em></h2>
     <p class="section-body" style="margin-bottom:0;">Original intelligence briefings on infrastructure, cross-border capital, geopolitical risk, and the emerging market landscape.</p>
     <div class="insights-grid">
-  <div id="gba-articles-grid"></div>
+  <div id="gba-articles-grid">
+    <!-- Static fallback: replaced by article-loader.js. Keeps this section useful
+         without JavaScript and if /articles.json cannot be fetched. -->
+    <a href="/briefs" class="insight-card" style="text-decoration:none;display:block;">
+      <div class="insight-tag">Intelligence Briefs</div>
+      <div class="insight-title">GoBeyond Advisory Intelligence Briefs</div>
+      <div class="insight-body">Institutional analysis on AI infrastructure, geopolitical capital, African strategy, and sovereign risk — written for allocators operating at the frontier.</div>
+      <div class="insight-cta" style="margin-top:16px;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#B8964A;">View all briefs →</div>
+    </a>
+  </div>
+    </div>
+  </div>
 </div>
+
 <!-- NEWSLETTER -->
 <div class="full-wrap newsletter-wrap">
   <div class="newsletter-inner">
@@ -973,15 +989,17 @@ footer{
       <h3>Subscribe to<br/><em>GoBeyond Intelligence.</em></h3>
       <p>Receive original infrastructure intelligence briefs, corridor research, and geopolitical risk analysis — delivered directly to your inbox. No noise. Institutional-grade insight only.</p>
     </div>
-    <form name="newsletter" netlify action="/success" method="POST">
+    <form name="newsletter" method="POST" action="/success" data-netlify="true" data-netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="newsletter"/>
+      <p class="hp-field" hidden><label>Leave this field empty<input type="text" name="bot-field" tabindex="-1" autocomplete="off"/></label></p>
       <div class="nl-row">
-        <div class="nl-field"><label>Full Name</label><input type="text" placeholder="Your name"/></div>
-        <div class="nl-field"><label>Organization</label><input type="text" placeholder="Institution or firm"/></div>
+        <div class="nl-field"><label for="nl-name">Full Name</label><input id="nl-name" name="name" type="text" autocomplete="name" required placeholder="Your name"/></div>
+        <div class="nl-field"><label for="nl-org">Organization</label><input id="nl-org" name="organization" type="text" autocomplete="organization" placeholder="Institution or firm"/></div>
       </div>
-      <div class="nl-field"><label>Email Address</label><input type="email" placeholder="your@organization.com"/></div>
+      <div class="nl-field"><label for="nl-email">Email Address</label><input id="nl-email" name="email" type="email" autocomplete="email" required placeholder="your@organization.com"/></div>
       <div class="nl-field">
-        <label>Interest Area</label>
-        <select>
+        <label for="nl-interest">Interest Area</label>
+        <select id="nl-interest" name="interest">
           <option value="">Select area of focus</option>
           <option>Infrastructure Advisory</option>
           <option>ECO Infrastructure / Settlement Rails</option>
@@ -1042,15 +1060,17 @@ footer{
         <div><div class="ci-label">Location</div><div class="ci-val" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.5px;color:var(--muted);">Houston, TX · Lagos · Accra · Abidjan · Dubai</div></div>
         <div><div class="ci-label">Leadership</div><div class="ci-val"><a href="/founders">gobeyondadvisory.com/founders →</a></div></div>
       </div>
-      <form name="contact" netlify action="/success" method="POST">
+      <form name="contact" method="POST" action="/success" data-netlify="true" data-netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact"/>
+        <p class="hp-field" hidden><label>Leave this field empty<input type="text" name="bot-field" tabindex="-1" autocomplete="off"/></label></p>
         <div class="form-row">
-          <div class="form-field"><label>Full Name</label><input type="text" placeholder="Your name"/></div>
-          <div class="form-field"><label>Organization</label><input type="text" placeholder="Institution or company"/></div>
+          <div class="form-field"><label for="ct-name">Full Name</label><input id="ct-name" name="name" type="text" autocomplete="name" required placeholder="Your name"/></div>
+          <div class="form-field"><label for="ct-org">Organization</label><input id="ct-org" name="organization" type="text" autocomplete="organization" placeholder="Institution or company"/></div>
         </div>
-        <div class="form-field"><label>Email Address</label><input type="email" placeholder="your@organization.com"/></div>
+        <div class="form-field"><label for="ct-email">Email Address</label><input id="ct-email" name="email" type="email" autocomplete="email" required placeholder="your@organization.com"/></div>
         <div class="form-field">
-          <label>Nature of Inquiry</label>
-          <select>
+          <label for="ct-inquiry">Nature of Inquiry</label>
+          <select id="ct-inquiry" name="inquiry_type">
             <option value="">Select inquiry type</option>
             <option>ECO Infrastructure Partnership</option>
             <option>Cape Coast New City</option>
@@ -1061,7 +1081,7 @@ footer{
             <option>General Inquiry</option>
           </select>
         </div>
-        <div class="form-field"><label>Message</label><textarea placeholder="Brief overview of your inquiry, project, or organization..."></textarea></div>
+        <div class="form-field"><label for="ct-message">Message</label><textarea id="ct-message" name="message" required placeholder="Brief overview of your inquiry, project, or organization..."></textarea></div>
         <button type="submit" class="form-submit">Submit Inquiry</button>
       </form>
     </div>
@@ -1075,16 +1095,16 @@ footer{
       <div class="footer-brand">GOBEYOND ADVISORY</div>
       <div class="footer-brand-desc">Strategic Investment & Infrastructure Advisory<br/>Houston · West Africa · GCC · Europe</div>
       <div class="footer-social">
-        <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" title="LinkedIn">
+        <a href="https://www.linkedin.com/company/gobeyond-advisory" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
         </a>
-        <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" title="X / Twitter">
+        <a href="https://x.com/gobeyondadvisory" target="_blank" rel="noopener" title="X / Twitter" aria-label="X / Twitter">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         </a>
-        <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" title="YouTube">
+        <a href="https://www.youtube.com/@gobeyondadvisory" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
         </a>
-        <a href="mailto:partners@gobeyondadvisory.com" title="Email">✉</a>
+        <a href="mailto:partners@gobeyondadvisory.com" title="Email" aria-label="Email">✉</a>
       </div>
     </div>
     <div>
