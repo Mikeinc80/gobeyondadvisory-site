@@ -35,8 +35,12 @@
     Cross-Origin-Opener-Policy = "same-origin"
     # No page uses geolocation, camera, microphone, payment or USB.
     Permissions-Policy = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
-    # Two years, preload-eligible. Only safe because the apex and www are HTTPS-only.
-    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    # Five minutes, apex only. Deliberately short for the initial production
+    # deployment: a long max-age with includeSubDomains locks browsers out of any
+    # subdomain that is not HTTPS-only, and that lockout cannot be recalled once
+    # a visitor has cached it. Raise this in a separate hardening step, only after
+    # the deploy is confirmed healthy and every subdomain is verified HTTPS-only.
+    Strict-Transport-Security = "max-age=300"
     Content-Security-Policy = """\
       default-src 'self'; \
       base-uri 'none'; \

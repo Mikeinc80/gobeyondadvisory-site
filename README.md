@@ -214,7 +214,7 @@ site for exactly that reason.
 ## Security considerations
 
 **Headers.** `netlify.toml` sets a CSP, `Strict-Transport-Security`
-(two years, `includeSubDomains`, `preload`), `X-Frame-Options: DENY`,
+(currently `max-age=300`, apex only — see below), `X-Frame-Options: DENY`,
 `X-Content-Type-Options: nosniff`, `Referrer-Policy:
 strict-origin-when-cross-origin`, `Cross-Origin-Opener-Policy: same-origin`, and
 a `Permissions-Policy` that denies every device capability the site does not use.
@@ -235,6 +235,17 @@ site renders no user-supplied content: there is no comment system, no search
 reflection, and no query parameter that reaches the DOM. `articles.json` is
 repository-controlled, and the loader HTML-escapes every value it interpolates
 regardless.
+
+**HSTS is deliberately short.** The header is `max-age=300` with no
+`includeSubDomains` and no `preload`, which is weaker than this site should
+finish at. It is staged that way on purpose: a long `max-age` with
+`includeSubDomains` makes every subdomain HTTPS-only in any browser that has
+seen the header, for the full duration, and there is no way to recall it from
+visitors who have already cached it. Raising it is a separate, deliberate step —
+confirm the production deploy is healthy and every subdomain serves valid HTTPS,
+then increase `max-age` first and add `includeSubDomains` only after that has
+been observed working. `preload` should be added last, and only with the
+understanding that removal from the preload list takes months.
 
 **Least privilege.** The CI workflow declares `permissions: contents: read` and
 no job requests more. No deployment credential exists in this repository — the
