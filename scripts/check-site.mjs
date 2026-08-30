@@ -11,7 +11,7 @@
  * Zero dependencies, so `node scripts/check-site.mjs` works on a clean clone.
  */
 import { readFileSync, existsSync } from 'node:fs';
-import { SITE_ORIGIN, listHtml, listPages, canonicalUrl, read, stripTags } from './_pages.mjs';
+import { SITE_ORIGIN, SITE_ORIGINS, listHtml, listPages, canonicalUrl, read, stripTags } from './_pages.mjs';
 
 const failures = [];
 const warnings = [];
@@ -74,10 +74,11 @@ for (const [f, s] of docs) {
 
     if (/^https?:/i.test(href)) {
       if (href.startsWith('http://')) fail(f, `insecure http:// link: ${href}`);
-      if (!href.startsWith(SITE_ORIGIN)) continue; // off-site: checked separately by lychee
+      if (!SITE_ORIGINS.some((o) => href.startsWith(o))) continue; // off-site: checked separately by lychee
     }
 
-    const local = href.startsWith(SITE_ORIGIN) ? href.slice(SITE_ORIGIN.length) || '/' : href;
+    const origin = SITE_ORIGINS.find((o) => href.startsWith(o));
+    const local = origin ? href.slice(origin.length) || '/' : href;
     if (/^https?:/i.test(local)) continue;
 
     const target = resolveTarget(local, f);

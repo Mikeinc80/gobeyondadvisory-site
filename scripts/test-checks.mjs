@@ -50,7 +50,7 @@ const CASES = [
   {
     name: 'wrong canonical URL is rejected',
     expect: 'canonical is',
-    mutate: (d) => edit(d, 'briefs.html', (s) => s.replace('https://gobeyondadvisory.com/briefs', 'https://example.com/briefs')),
+    mutate: (d) => edit(d, 'briefs.html', (s) => s.replace('https://www.gobeyondadvisory.com/briefs', 'https://example.com/briefs')),
   },
   {
     name: 'article page missing from articles.json is rejected',
@@ -87,7 +87,7 @@ const CASES = [
     expect: 'confirmation page must not be listed',
     mutate: (d) =>
       edit(d, 'sitemap.xml', (s) =>
-        s.replace('</urlset>', '  <url><loc>https://gobeyondadvisory.com/success</loc></url>\n</urlset>')
+        s.replace('</urlset>', '  <url><loc>https://www.gobeyondadvisory.com/success</loc></url>\n</urlset>')
       ),
   },
 ];

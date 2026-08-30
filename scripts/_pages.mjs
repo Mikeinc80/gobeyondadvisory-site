@@ -1,6 +1,10 @@
 import { readdirSync, readFileSync } from 'node:fs';
 
-export const SITE_ORIGIN = 'https://gobeyondadvisory.com';
+export const SITE_ORIGIN = 'https://www.gobeyondadvisory.com';
+
+/** Hostnames that serve this site. The apex 301s to the primary www domain,
+ *  but pages link to both, so both must resolve during link checking. */
+export const SITE_ORIGINS = [SITE_ORIGIN, 'https://gobeyondadvisory.com'];
 
 /** Files that live in the publish root but are not indexable pages. */
 export const NON_PAGE_HTML = new Set(['404.html']);
