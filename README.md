@@ -99,6 +99,7 @@ and redirects to `/success`.
 | `article-loader.js` | Renders the brief grid |
 | `netlify.toml` | Publish directory, redirects, security headers, cache policy |
 | `sitemap.xml` | **Generated.** Do not hand-edit — run `npm run sitemap` |
+| `academy/` | The **AI Cloud Infrastructure Program** PWA — a self-contained app, `noindex`, outside the site checks |
 | `scripts/` | Validation and generation tooling (404s on the public site) |
 | `.github/workflows/ci.yml` | CI |
 
@@ -412,6 +413,73 @@ what would change that:
 - **Staging domain.** Netlify Deploy Previews cover the review need. A permanent
   staging site would matter once there is a build step whose output can differ
   from local.
+
+---
+
+## /academy — the AI Cloud Infrastructure Program
+
+A progressive web app delivering a 24-week training programme: zero technical
+experience to employable entry-level Cloud, DevOps and AI Infrastructure
+Engineer. It ships as a section of this site but shares nothing with it.
+
+Live at `/academy/`. It is **not linked from the marketing site and is
+`noindex`** — an operator's training tool has no business in an advisory firm's
+navigation or in its search results.
+
+### Layout
+
+| Path | Purpose |
+| --- | --- |
+| `academy/index.html` | App shell. One page; every route is a hash |
+| `academy/app.css` | All styles. Tokens on `:root`, dark theme redefines tokens only |
+| `academy/app.js` | Router, state, views, quiz engine, spaced repetition |
+| `academy/curriculum.js` | **All content.** 24 weekly modules, Week 1 daily lessons, 84 skills, 6 projects, 8 gates |
+| `academy/sw.js` | Service worker. Precaches the shell so the whole programme works offline |
+| `academy/manifest.webmanifest` | Installability, icons, launch shortcuts |
+| `academy/icons/` | **Generated.** Run `npm run icons` — do not hand-edit |
+
+### Design decisions
+
+- **Its own directory, not the site root.** `scripts/check-site.mjs` and the
+  sitemap generator both read the publish root non-recursively, so a subdirectory
+  needs no change to either. It also gives the service worker a scope of
+  `/academy/`, which means it can never intercept a request for a brief.
+- **No backend, no accounts.** All progress lives in `localStorage` under one
+  versioned key. That is the honest trade: it works offline and stores nothing
+  about the learner anywhere else, but it is per-device and per-browser, which
+  is why Settings offers export and restore and says so plainly.
+- **Content is data, not markup.** `curriculum.js` is pure data so the
+  curriculum can be reviewed and corrected on its own. Reading links must point
+  at official primary documentation; anything that costs money carries a USD
+  figure; anything that can leak credentials carries a security note.
+- **Answers are withheld until submission.** The correct index is never written
+  into the DOM before an attempt is submitted — a programme rule enforced in
+  code rather than by good intentions. A wrong answer schedules itself for
+  spaced repetition at 1, 3, 7, 16 and 35 days.
+- **Icons are generated, not drawn.** `scripts/build-academy-icons.mjs` writes
+  the PNGs directly (zlib plus CRC32; PNG is a simple container) rather than
+  adding an image toolchain to a repository that has no dependencies.
+
+### Working on it
+
+```bash
+npm run serve         # http://localhost:3000/academy/
+npm run icons         # regenerate academy/icons/*.png
+npm run validate      # site checks (the academy is exempt) + HTML validation
+```
+
+The service worker precaches by name, so **after changing any file in
+`academy/`, bump `CACHE` in `academy/sw.js`**. Without that, returning visitors
+keep the old copy until they clear site data. This is the one footgun in the
+directory.
+
+### Cost and safety
+
+The app itself costs nothing to run and stores nothing remotely. The programme
+it teaches does involve paid cloud and GPU laboratories: every week carries a
+cost note in USD, every project carries teardown instructions, and the highest
+cost warnings are on NAT gateways, load balancers, EKS control planes and rented
+GPUs — in that order of how often they are forgotten.
 
 ---
 

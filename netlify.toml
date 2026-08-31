@@ -73,3 +73,21 @@
   for = "/article-loader.js"
   [headers.values]
     Cache-Control = "public, max-age=300, must-revalidate"
+
+# ── /academy — the training programme progressive web app ───────────────────
+# A self-contained PWA under its own path. None of its files are fingerprinted
+# and its service worker manages caching itself, so nothing here may be cached
+# immutably: a stale app.js against a newer curriculum.js would break offline
+# use with no way for a visitor to recover short of clearing site data.
+[[headers]]
+  for = "/academy/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# The service worker in particular must always be revalidated — it is the only
+# file that can replace all the others.
+[[headers]]
+  for = "/academy/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+    Service-Worker-Allowed = "/academy/"
