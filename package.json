@@ -16,6 +16,7 @@
     "validate": "npm run check && npm run sitemap:check && npm test",
     "serve": "npx --yes serve@14.2.4 --no-clipboard .",
     "dev": "npx --yes netlify-cli@17.38.1 dev",
-    "icons": "node scripts/build-academy-icons.mjs"
+    "icons": "node scripts/build-academy-icons.mjs",
+    "export:academy": "node scripts/export-academy.mjs"
   }
 }

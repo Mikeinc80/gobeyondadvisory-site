@@ -473,6 +473,30 @@ The service worker precaches by name, so **after changing any file in
 keep the old copy until they clear site data. This is the one footgun in the
 directory.
 
+### Exporting it as a standalone repository
+
+The programme is also a portfolio piece in its own right and deserves its own
+repository. `academy/` stays the single source of truth; the export writes a
+complete, deployable project from it rather than duplicating any content here.
+
+```bash
+npm run export:academy                 # writes ../ai-cloud-infrastructure-program
+npm run export:academy -- /some/path   # or somewhere else
+```
+
+The exported tree differs from `academy/` in exactly three ways, all forced by
+the change of context: the `noindex` meta tag is stripped (a portfolio repo
+should be findable), the manifest `id` becomes `/` rather than `/academy/`, and
+it gains its own `package.json`, `netlify.toml`, `LICENSE`, `.gitignore`, CI
+workflow, README and a `scripts/check.mjs` that validates curriculum integrity,
+the service worker's precache list, and the absence of committed secrets.
+
+Its CSP is stricter than this site's — `script-src 'self'` with no
+`'unsafe-inline'`, because the app has no inline script or style at all. That is
+verified: the app renders correctly under that policy with no violations.
+
+The script refuses to overwrite a directory it did not create.
+
 ### Cost and safety
 
 The app itself costs nothing to run and stores nothing remotely. The programme
