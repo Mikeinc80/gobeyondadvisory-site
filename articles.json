@@ -1,12 +1,13 @@
-[{
-    "id": "gba-article2-stop-building-ai-from-scratch",
-    "featured": true,
-    "category": "AI Infrastructure · Strategy",
-    "title": "Stop Building AI From Scratch: The $18B Lesson Most Founders Are Missing",
-    "excerpt": "The model race is settled. Anthropic just passed OpenAI at $30B ARR. The real value has moved to distribution, proprietary data, and integration. Here is what every founder needs to understand right now.",
-    "date": "April 2026",
-    "url": "/gba-article2-stop-building-ai-from-scratch",
-    "new": true
+[
+  {
+    "id": "gba-article7-beyond-the-rocket",
+    "featured": false,
+    "category": "Capital Strategy",
+    "title": "Beyond the Rocket: The $1,000 Ticket That Repriced an Industry",
+    "excerpt": "SpaceX has stopped being a rocket company. Weeks ahead of the most anticipated private listing in a generation, it has quietly reclassified the category it competes in.",
+    "date": "May 2026",
+    "published": "2026-05-01",
+    "url": "/gba-article7-beyond-the-rocket"
   },
   {
     "id": "gba-article2-stop-building-ai-from-scratch",
@@ -15,28 +16,58 @@
     "title": "Stop Building AI From Scratch: The $18B Lesson Most Founders Are Missing",
     "excerpt": "Most founders are wasting time building models instead of building distribution, data access, and infrastructure leverage. The real value has moved.",
     "date": "April 2026",
-    "url": "/gba-article2-stop-building-ai-from-scratch",
-    "new": true
+    "published": "2026-04-01",
+    "url": "/gba-article2-stop-building-ai-from-scratch"
+  },
+  {
+    "id": "gba-article7-bomb-then-buy",
+    "featured": false,
+    "category": "Geopolitical Capital Strategy",
+    "title": "Bomb, Then Buy: The Week America Hit Iran — and Funded It",
+    "excerpt": "How the same capital system that underwrites war also profits from reconstruction — and what every sovereign allocator operating across the Gulf corridor needs to understand.",
+    "date": "March 2026",
+    "published": "2026-03-21",
+    "url": "/gba-article7-bomb-then-buy"
+  },
+  {
+    "id": "gba-article8-ai-sees-light",
+    "featured": false,
+    "category": "AI Infrastructure Strategy",
+    "title": "Computers Just Learned to See Light: AI Doesn't Render Anymore",
+    "excerpt": "The shift from generative rendering to genuine visual intelligence — and what it means for sovereign AI infrastructure strategy and compute architecture.",
+    "date": "March 2026",
+    "published": "2026-03-21",
+    "url": "/gba-article8-ai-sees-light"
+  },
+  {
+    "id": "gba-article3-spr-v2",
+    "featured": false,
+    "category": "Energy & Geopolitics",
+    "title": "When Nations Open the Oil Vault",
+    "excerpt": "What the Strategic Petroleum Reserve release really signals — and why cross-border capital must pay attention now.",
+    "date": "March 2026",
+    "published": "2026-03-13",
+    "url": "/gba-article3-spr-v2"
+  },
+  {
+    "id": "gba-article4-sahel-v2",
+    "featured": false,
+    "category": "Africa Strategy",
+    "title": "The Sahel Peace Accord: A Turning Point for Africa's Next Economic Chapter",
+    "excerpt": "What the Alliance of Sahel States means for infrastructure, investment, and the continent's emerging sovereign identity.",
+    "date": "March 2026",
+    "published": "2026-03-13",
+    "url": "/gba-article4-sahel-v2"
   },
   {
     "id": "gba-article3-settlement-rails",
-    "featured": true,
+    "featured": false,
     "category": "Infrastructure Strategy",
     "title": "The Next Global Infrastructure Race Is Not Roads or Oil. It Is Digital Settlement Rails.",
     "excerpt": "The founding thesis behind ECO Infrastructure — and why the nations and institutions that control settlement rails will hold economic leverage for the next fifty years.",
     "date": "March 2026",
-    "url": "/gba-article3-settlement-rails",
-    "new": false
-  },
-  {
-    "id": "gba-article4-smart-capital",
-    "featured": false,
-    "category": "Capital Strategy",
-    "title": "Why Smart Capital Is Moving Toward Infrastructure, Not Just Startups",
-    "excerpt": "The distinction between venture speculation and infrastructure-backed capital deployment — and why the shift is permanent.",
-    "date": "March 2026",
-    "url": "/gba-article4-smart-capital",
-    "new": false
+    "published": "2026-03-10",
+    "url": "/gba-article3-settlement-rails"
   },
   {
     "id": "gba-article6-aws-sovereign-ai",
@@ -45,8 +76,8 @@
     "title": "When Drones Hit Data Centers: What the AWS Strike Means for Sovereign AI Infrastructure",
     "excerpt": "The first kinetic attack on major cloud infrastructure. What it means for sovereign architecture and cross-border AI strategy.",
     "date": "March 2026",
-    "url": "/gba-article6-aws-sovereign-ai",
-    "new": false
+    "published": "2026-03-08",
+    "url": "/gba-article6-aws-sovereign-ai"
   },
   {
     "id": "gba-article5-hormuz-sovereign-risk",
@@ -55,8 +86,18 @@
     "title": "The Strait of Hormuz, the Senate, and the New Rules of Sovereign Risk",
     "excerpt": "Rewriting the rules of cross-border capital and sovereign risk modeling for West Africa and GCC infrastructure investors.",
     "date": "March 2026",
-    "url": "/gba-article5-hormuz-sovereign-risk",
-    "new": false
+    "published": "2026-03-05",
+    "url": "/gba-article5-hormuz-sovereign-risk"
+  },
+  {
+    "id": "gba-article4-smart-capital",
+    "featured": false,
+    "category": "Capital Strategy",
+    "title": "Why Smart Capital Is Moving Toward Infrastructure, Not Just Startups",
+    "excerpt": "The distinction between venture speculation and infrastructure-backed capital deployment — and why the shift is permanent.",
+    "date": "March 2026",
+    "published": "2026-03-02",
+    "url": "/gba-article4-smart-capital"
   },
   {
     "id": "article-ai-infrastructure-gap",
@@ -65,8 +106,8 @@
     "title": "The AI Infrastructure Gap: Why West Africa and the GCC Are the Most Undervalued Compute Markets",
     "excerpt": "Everyone is building AI. Almost no one is building it where the demand is growing fastest.",
     "date": "February 2026",
-    "url": "/article-ai-infrastructure-gap",
-    "new": false
+    "published": "2026-02-20",
+    "url": "/article-ai-infrastructure-gap"
   },
   {
     "id": "article-pentagon-brief",
@@ -75,7 +116,7 @@
     "title": "When AI Meets the Pentagon: What the Anthropic Standoff Means for Global Infrastructure",
     "excerpt": "A signal every sovereign AI investor and cross-border builder should read carefully.",
     "date": "February 2026",
-    "url": "/article-pentagon-brief",
-    "new": false
+    "published": "2026-02-12",
+    "url": "/article-pentagon-brief"
   }
 ]
