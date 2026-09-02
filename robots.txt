@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.gobeyondadvisory.com/sitemap.xml
+Sitemap: https://gobeyondadvisory.com/sitemap.xml
 
