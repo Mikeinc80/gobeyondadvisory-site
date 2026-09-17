@@ -15,7 +15,8 @@ const CASES = [
   {
     name: 'form control without a name attribute is rejected',
     expect: 'control has no name attribute',
-    mutate: (d) => edit(d, 'index.html', (s) => s.replace(' name="email" type="email"', ' type="email"')),
+    mutate: (d) => edit(d, 'index.html', (s) =>
+      s.replace(/<input\b(?=[^>]*\btype="email")[^>]*>/, (input) => input.replace(/\sname="email"/, ''))),
   },
   {
     name: 'missing hidden form-name input is rejected',
