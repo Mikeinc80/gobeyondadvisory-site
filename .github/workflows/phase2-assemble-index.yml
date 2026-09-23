@@ -1,0 +1,29 @@
+name: Phase2 assemble index
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "phase2-restore/**"
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble index.html
+        run: |
+          set -euo pipefail
+          cat phase2-restore/chunk-00.txt phase2-restore/chunk-01.txt phase2-restore/chunk-02.txt phase2-restore/chunk-03.txt phase2-restore/chunk-04.txt > index.html
+          test -s index.html
+          ! grep -q "linkedin.com/company/gobeyond-advisory" index.html
+          ! grep -q "x.com/gobeyondadvisory" index.html
+          ! grep -q "youtube.com/@gobeyondadvisory" index.html
+          grep -q "mailto:info@gobeyondadvisory.com" index.html
+          grep -q "mailto:partners@gobeyondadvisory.com" index.html
+          rm -rf phase2-restore
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Phase 2 CRITICAL: assemble full index.html (dead socials unlinked; mailtos kept)" || exit 0
+          git push
