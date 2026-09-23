@@ -11,10 +11,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Assemble index.html
+      - name: Assemble index.html from gzip+base64
         run: |
           set -euo pipefail
-          cat phase2-restore/chunk-00.txt phase2-restore/chunk-01.txt phase2-restore/chunk-02.txt phase2-restore/chunk-03.txt phase2-restore/chunk-04.txt > index.html
+          if [ -f phase2-restore/index.html.gz.b64 ]; then
+            base64 -d phase2-restore/index.html.gz.b64 | gzip -d > index.html
+          else
+            cat phase2-restore/chunk-00.txt phase2-restore/chunk-01.txt phase2-restore/chunk-02.txt phase2-restore/chunk-03.txt phase2-restore/chunk-04.txt > index.html
+          fi
           test -s index.html
           ! grep -q "linkedin.com/company/gobeyond-advisory" index.html
           ! grep -q "x.com/gobeyondadvisory" index.html
@@ -25,5 +29,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Phase 2 CRITICAL: assemble full index.html (dead socials unlinked; mailtos kept)" || exit 0
+          git commit -m "Phase 2 CRITICAL: restore full index.html (dead socials unlinked; mailtos kept)" || exit 0
           git push
