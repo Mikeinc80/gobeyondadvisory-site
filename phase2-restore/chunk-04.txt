@@ -1,0 +1,57 @@
+rastructure →</strong><small>Physical and technical systems thinking across energy, data centres, compute, cloud, platforms and digital services.</small></a></div><div class="status-note">Ecosystem note: the sites do not by themselves assert ownership, licensing, production deployment, client relationships, regulatory approval, project capacity or operating footprint. Those facts should be published only when formally verified and approved.</div></div></section>
+<section id="legal" class="legal-section"><div class="legal-inner"><span class="eyebrow">Legal & disclosures</span><div class="gold-line"></div><h2 class="section-title">Clarity before<br/><em>engagement.</em></h2><div class="status-note"><strong>Status note:</strong> Initiative labels, pipeline figures, market estimates, and regulatory references are management descriptions as of August 2026 unless otherwise identified. They are not a representation of committed capital, licensing approval, or guaranteed outcomes.</div><div class="legal-grid"><article id="privacy" class="legal-card"><h3>Privacy Policy</h3><p>Contact and newsletter information is used to respond to inquiries and deliver requested intelligence. A full privacy notice, retention schedule, and data-subject contact process should be reviewed and published by counsel before launch.</p></article><article id="terms" class="legal-card"><h3>Terms of Use</h3><p>Website content is informational and may change without notice. Accessing the site does not create an advisory, fiduciary, financing, partnership, or client relationship.</p></article><article id="disclosures" class="legal-card"><h3>Important disclosures</h3><p>Nothing on this site is financial advice, an offer of securities, a solicitation, or a guarantee of regulatory approval, settlement speed, returns, or availability. Seek qualified legal, regulatory, tax, and financial advice.</p></article></div></div></section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">GOBEYOND ADVISORY</div>
+      <div class="footer-brand-desc">Strategic Investment & Infrastructure Advisory<br/>Houston · West Africa · GCC · Europe</div>
+      <div class="footer-social">
+        <a href="mailto:partners@gobeyondadvisory.com" title="Email" aria-label="Email">✉</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Advisory</div>
+      <div class="footer-col-links">
+        <a href="#advisory">Pillars</a>
+        <a href="#initiatives">Initiatives</a>
+        <a href="#engage-section">How to Engage</a>
+        <a href="#markets">Markets</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Ecosystem</div>
+      <div class="footer-col-links">
+        <a href="https://ekorails.com">EKORails</a>
+        <a href="https://ekoinfrastructure.com">EKO Infrastructure</a>
+        <a href="founders.html">Leadership</a>
+        <a href="#insights">Intelligence Briefs</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <div class="footer-col-links">
+        <a href="mailto:info@gobeyondadvisory.com">info@gobeyondadvisory.com</a>
+        <a href="mailto:partners@gobeyondadvisory.com">partners@gobeyondadvisory.com</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>
+      <div class="footer-copy">© 2026 GoBeyond Advisory · All Rights Reserved</div>
+      <div class="footer-disclaimer">This website contains information about investment and infrastructure advisory services provided by GoBeyond Advisory. Nothing on this website constitutes financial advice, a solicitation to invest, or an offer of securities. All investment decisions should be made with appropriate professional advice.<br/><br/>GoBeyond Advisory operates in Nigeria as Premium Bridge Capital Limited (RC 7869996), Abuja, Federal Capital Territory. EKORails and JE TEX Energy Limited (RC 7027707) are affiliated entities. Newline Investors Inc. is the United States capital arm.</div>
+    </div>
+    <div class="footer-legal-links">
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#terms">Terms of Use</a>
+      <a href="#disclosures">Disclosures</a>
+    </div>
+  </div>
+</footer>
+<script src="/article-loader.js"></script>
+<script>
+(function(){var b=document.querySelector('.menu-toggle'),n=document.getElementById('site-navigation');if(!b||!n)return;b.addEventListener('click',function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!o));n.classList.toggle('open',!o);});n.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.setAttribute('aria-expanded','false');n.classList.remove('open');});});})();
+</script>
+</body>
+</html>
