@@ -15,7 +15,7 @@ const CASES = [
   {
     name: 'form control without a name attribute is rejected',
     expect: 'control has no name attribute',
-    mutate: (d) => edit(d, 'index.html', (s) => s.replace(' name="email" type="email"', ' type="email"')),
+    mutate: (d) => edit(d, 'index.html', (s) => s.replace(' type="email" name="email"', ' type="email"')),
   },
   {
     name: 'missing hidden form-name input is rejected',
@@ -75,7 +75,7 @@ const CASES = [
   {
     name: 'target="_blank" without rel="noopener" is rejected',
     expect: 'without rel="noopener"',
-    mutate: (d) => edit(d, 'index.html', (s) => s.replace(' target="_blank" rel="noopener"', ' target="_blank"')),
+    mutate: (d) => edit(d, 'founders.html', (s) => s.replace(' target="_blank" rel="noopener"', ' target="_blank"')),
   },
   {
     name: 'committed AWS key is rejected',
