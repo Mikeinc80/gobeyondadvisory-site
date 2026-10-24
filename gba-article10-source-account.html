@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find the One Account That Is Draining the Others — GoBeyond Advisory</title>
+<meta name="description" content="When several parts of your life feel low at once, the lowest number is rarely the place to start. Here is how to trace the drain back to its source and make one change that moves the rest.">
+<meta name="author" content="MO">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--dk:#0C0A07;--dk2:#141209;--dk3:#1C1910;--gold:#B8964A;--gl:#D4AE6A;--gline:rgba(184,150,74,0.18);--w90:rgba(253,251,248,0.92);--w60:rgba(253,251,248,0.60);--w30:rgba(253,251,248,0.30);--cream:#F8F5F0;--ink:#2E2925;--inkm:#4A3F35;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:"Cormorant Garamond",Georgia,serif;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(12,10,7,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--gline);padding:0 56px;height:72px;display:flex;align-items:center;justify-content:space-between;}
+.nb{font-family:"Syne",sans-serif;font-size:1rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:none;display:flex;align-items:center;gap:10px;}
+.nd{width:8px;height:8px;background:var(--gold);transform:rotate(45deg);}
+.nl{display:flex;align-items:center;gap:36px;}
+.nl a{font-family:"JetBrains Mono",monospace;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--w60);text-decoration:none;}
+.nl a:hover{color:var(--gold);}
+.ncta{font-family:"JetBrains Mono",monospace;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--dk);background:var(--gold);padding:10px 20px;text-decoration:none;}
+.hero{padding-top:72px;position:relative;min-height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;}
+.ho{position:absolute;inset:0;background:rgba(12,10,7,0.55);}
+.hg{position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(to top,rgba(12,10,7,0.97) 0%,rgba(12,10,7,0.65) 60%,transparent 100%);}
+.hi{position:relative;z-index:2;padding:0 64px 72px;max-width:1000px;}
+.he{font-family:"JetBrains Mono",monospace;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:flex;align-items:center;gap:14px;}
+.hbadge{background:rgba(184,150,74,0.18);border:1px solid rgba(184,150,74,0.35);padding:4px 12px;}
+.ht{font-family:"Cormorant Garamond",serif;font-size:clamp(2.2rem,5vw,4.2rem);font-weight:300;line-height:1.08;color:var(--w90);margin-bottom:20px;letter-spacing:-0.01em;}
+.ht em{color:var(--gold);font-style:italic;}
+.hs{font-family:"Cormorant Garamond",serif;font-size:1.15rem;color:var(--w60);line-height:1.65;max-width:680px;margin-bottom:36px;}
+.hm{display:grid;grid-template-columns:auto 1px auto 1px auto;gap:0 24px;align-items:center;padding-top:28px;border-top:1px solid rgba(184,150,74,0.22);}
+.mb{display:flex;flex-direction:column;gap:5px;}.ml{font-family:"JetBrains Mono",monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--w30);}.mv{font-family:"Syne",sans-serif;font-size:0.82rem;font-weight:600;color:var(--w90);}
+.md{width:1px;height:32px;background:var(--gline);}
+.op{background:var(--dk2);padding:56px 0 0;}.oi{max-width:740px;margin:0 auto;padding:0 40px 56px;border-bottom:1px solid var(--gline);}
+.oq{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:400;font-style:italic;color:var(--w90);line-height:1.65;padding-left:24px;border-left:2px solid var(--gold);}
+.bd{max-width:740px;margin:0 auto;padding:60px 40px 80px;background:var(--cream);}
+p{font-size:1.12rem;line-height:1.88;margin-bottom:24px;color:var(--ink);}
+h2{font-family:"Cormorant Garamond",serif;font-size:1.75rem;font-weight:600;color:var(--dk);margin:52px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--gline);}
+.lbl{font-family:"JetBrains Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.fft{background:var(--dk);padding:36px 40px;margin-bottom:48px;}.fft p{font-size:1.08rem;color:var(--w60);line-height:1.82;margin:0;}
+.co{background:#fff;border-left:3px solid var(--gold);padding:28px 32px;margin:36px 0;}.co p{font-size:1.05rem;color:var(--dk);line-height:1.78;margin:0;font-style:italic;}
+.ins{background:rgba(184,150,74,0.07);border:1px solid rgba(184,150,74,0.22);padding:32px 36px;margin:40px 0;}.ins p{font-size:1.05rem;line-height:1.78;color:var(--ink);margin:0;}
+.lq{border-left:3px solid var(--gold);padding:28px 32px;margin:40px 0;background:rgba(184,150,74,0.04);}.lq p{font-size:1.12rem;font-style:italic;color:var(--inkm);line-height:1.72;margin:0 0 12px;}.lq span{font-family:"JetBrains Mono",monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);}
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:40px 0;background:var(--gline);}.sc{background:var(--cream);padding:28px 24px;text-align:center;}.sl{font-family:"JetBrains Mono",monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}.sn{font-family:"Cormorant Garamond",serif;font-size:2.6rem;font-weight:300;color:var(--dk);line-height:1;}.sd{font-size:0.9rem;color:var(--inkm);margin-top:6px;}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:40px 0;background:var(--gold);}.rc{background:var(--dk);padding:28px 24px;}.rf{font-family:"JetBrains Mono",monospace;font-size:0.65rem;font-weight:500;color:var(--gold);letter-spacing:0.12em;margin-bottom:10px;text-transform:uppercase;}.rc p{font-family:"Cormorant Garamond",serif;font-size:1rem;color:rgba(253,251,248,0.78);line-height:1.65;margin:0;}
+.cq{border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);padding:44px 24px;margin:60px 0;text-align:center;}.cq blockquote{font-family:"Cormorant Garamond",serif;font-size:1.85rem;font-weight:500;font-style:italic;color:var(--dk);line-height:1.45;max-width:640px;margin:0 auto 18px;}.cqa{font-family:"JetBrains Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
+.cta{background:#161410;padding:60px 40px;text-align:center;position:relative;}.cta::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.ce{font-family:"JetBrains Mono",monospace;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}.ct{font-family:"Cormorant Garamond",serif;font-size:1.9rem;font-weight:700;color:var(--w90);margin-bottom:26px;line-height:1.25;}.ct em{color:var(--gold);font-style:italic;}.cb{font-family:"Cormorant Garamond",serif;font-size:1.05rem;color:rgba(253,251,248,0.55);line-height:1.75;max-width:520px;margin:0 auto 32px;}
+.btn{display:inline-block;padding:13px 32px;background:var(--gold);color:var(--dk);font-family:"JetBrains Mono",monospace;font-size:0.65rem;letter-spacing:0.13em;text-transform:uppercase;text-decoration:none;transition:opacity 0.2s;margin:6px;}.btn:hover{opacity:0.82;}.bto{background:transparent;border:1px solid var(--gold);color:var(--gold);}
+footer{background:var(--dk);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--gline);}.fb{font-family:"Syne",sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;}.fdm{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);}.fi{font-family:"JetBrains Mono",monospace;font-size:0.58rem;letter-spacing:0.1em;color:var(--w30);}
+@media(max-width:768px){
+  nav{padding:0 20px;height:60px;}.nl a{display:none;}.ncta{font-size:0.58rem;padding:8px 14px;}
+  .hero{min-height:560px;}.hi{padding:20px 22px 44px;}
+  .he{font-size:0.58rem;margin-bottom:18px;flex-wrap:wrap;}.hbadge{font-size:0.52rem;}
+  .ht{font-size:clamp(1.8rem,7vw,2.6rem);line-height:1.1;margin-bottom:14px;}
+  .hs{font-size:0.95rem;margin-bottom:28px;}
+  .hm{grid-template-columns:1fr 1fr;gap:14px;padding-top:18px;}.md{display:none;}
+  .op{padding:40px 0 0;}.oi{padding:0 22px 36px;}
+  .oq{font-size:1.15rem;line-height:1.6;padding-left:18px;}
+  .bd{padding:40px 22px 60px;}
+  p{font-size:1.05rem;line-height:1.82;margin-bottom:20px;}
+  h2{font-size:1.45rem;margin:40px 0 14px;}
+  .fft{padding:28px 22px;margin-bottom:36px;}.fft p{font-size:1.05rem;}
+  .co{padding:22px 20px;}.co p{font-size:1rem;}
+  .ins{padding:26px 22px;}.ins p{font-size:1rem;}
+  .lq{padding:28px 22px;}.lq p{font-size:1.15rem;}
+  .cq{padding:32px 14px;margin:40px 0;}.cq blockquote{font-size:1.3rem;}
+  .sr{grid-template-columns:1fr;}.sn{font-size:2rem;}
+  .rg{grid-template-columns:1fr;}
+  .cta{padding:36px 22px;}.ct{font-size:1.6rem;}.cb{font-size:1rem;}
+  .btn{padding:13px 22px;font-size:0.58rem;display:block;margin:6px 0;text-align:center;}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:22px 20px;}
+}
+@media(max-width:380px){.ht{font-size:1.65rem;}p{font-size:1rem;}}
+
+.hero{min-height:88vh;background:var(--dk);}
+.hero.ph{background:radial-gradient(ellipse at 78% 62%,rgba(184,150,74,0.20) 0%,rgba(184,150,74,0) 55%),linear-gradient(160deg,#1C1910 0%,#0C0A07 65%);}
+.hp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:68% center;}
+.ho{background:linear-gradient(90deg,rgba(12,10,7,0.78) 0%,rgba(12,10,7,0.55) 55%,rgba(12,10,7,0.25) 100%);}
+.ht,.hs{text-shadow:0 2px 18px rgba(0,0,0,0.55);}
+.bd ul,.bd ol{margin:0 0 24px 1.4em;}.bd li{font-size:1.12rem;line-height:1.82;margin-bottom:10px;color:var(--ink);}
+.bd hr{border:0;border-top:1px solid var(--gline);margin:52px 0 28px;}
+.af p{font-size:1rem;color:var(--inkm);}
+.b1{background:var(--dk2);padding:56px 40px;text-align:center;border-top:1px solid var(--gline);}.b1[hidden]{display:none;}.b1 h3{font-family:"Cormorant Garamond",serif;font-size:1.7rem;font-weight:500;color:var(--w90);margin-bottom:22px;}
+@media(max-width:768px){.hero{min-height:620px;}.hp{object-position:72% center;}.ho{background:rgba(12,10,7,0.62);}.bd li{font-size:1.05rem;}}
+</style>
+
+<link rel="canonical" href="https://www.gobeyondadvisory.com/gba-article10-source-account"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="GoBeyond Advisory"/>
+<meta property="og:url" content="https://www.gobeyondadvisory.com/gba-article10-source-account"/>
+<meta property="og:title" content="Find the One Account That Is Draining the Others — GoBeyond Advisory"/>
+<meta property="og:description" content="When several parts of your life feel low at once, the lowest number is rarely the place to start. Here is how to trace the drain back to its source and make one change that moves the rest."/>
+<meta property="og:image" content="https://www.gobeyondadvisory.com/assets/articles/gba-article10-source-account-og.jpg"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="Close-up of a weathered iron valve wheel at the head of a rain-wet pipe manifold at dusk, its pipelines running out towards a wide, glowing city and industrial skyline."/>
+<meta property="article:published_time" content="2026-10-19"/>
+<meta property="article:author" content="MO"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://www.gobeyondadvisory.com/assets/articles/gba-article10-source-account-og.jpg"/>
+<script type="application/ld+json">{
+ "@context": "https://schema.org",
+ "@type": "Article",
+ "headline": "Find the One Account That Is Draining the Others",
+ "description": "When several parts of your life feel low at once, the lowest number is rarely the place to start. Here is how to trace the drain back to its source and make one change that moves the rest.",
+ "image": [
+  "https://www.gobeyondadvisory.com/assets/articles/gba-article10-source-account-og.jpg"
+ ],
+ "datePublished": "2026-10-19",
+ "author": {
+  "@type": "Person",
+  "name": "MO"
+ },
+ "publisher": {
+  "@type": "Organization",
+  "name": "GoBeyond Advisory",
+  "url": "https://gobeyondadvisory.com/"
+ },
+ "mainEntityOfPage": "https://www.gobeyondadvisory.com/gba-article10-source-account",
+ "articleSection": "Energy & Capacity"
+}</script>
+</head>
+<body>
+<nav>
+  <a href="https://gobeyondadvisory.com" class="nb"><span class="nd"></span>GoBeyond Advisory</a>
+  <div class="nl"><a href="https://gobeyondadvisory.com/#advisory">Focus Areas</a><a href="https://gobeyondadvisory.com/#markets">Markets</a><a href="https://gobeyondadvisory.com/#insights">Insights</a></div>
+  <a href="mailto:partners@gobeyondadvisory.com" class="ncta">Engage Advisory</a>
+</nav>
+<header class="hero">
+  <img class="hp" src="/assets/articles/gba-article10-source-account-1200.webp" srcset="/assets/articles/gba-article10-source-account-1200.webp 1200w, /assets/articles/gba-article10-source-account-1920.webp 1920w" sizes="100vw" width="1920" height="1080" alt="Close-up of a weathered iron valve wheel at the head of a rain-wet pipe manifold at dusk, its pipelines running out towards a wide, glowing city and industrial skyline." fetchpriority="high">
+  <div class="ho"></div>
+  <div class="hg"></div>
+  <div class="hi">
+    <div class="he">GoBeyond Advisory Intelligence Brief<span class="hbadge">Energy &amp; Capacity</span></div>
+    <h1 class="ht">Find the One Account That Is <em>Draining the Others</em></h1>
+    <p class="hs">When several parts of your life feel low at once, the lowest number is rarely the place to start. Here is how to trace the drain back to its source and make one change that moves the rest.</p>
+    <div class="hm">
+      <div class="mb"><div class="ml">By</div><div class="mv">MO</div></div>
+      <div class="md"></div>
+      <div class="mb"><div class="ml">Date</div><div class="mv">October 19, 2026</div></div>
+      <div class="md"></div>
+      <div class="mb"><div class="ml">Category</div><div class="mv">Energy &amp; Capacity</div></div>
+    </div>
+  </div>
+</header>
+<article class="bd">
+<p>Some seasons, everything feels low at once.</p>
+<p>Your concentration is thin. Your patience is shorter than usual. The ideas that used to come easily have stopped coming. Your calendar feels like a corridor with no doors. When you look at all of it together, the natural response is to make a list and start fixing things one at a time, beginning with whatever looks worst.</p>
+<p>It feels responsible. It is often the wrong place to start.</p>
+<p>Book 1 of the GoBeyond Series, <em>Energy</em>, describes your capacity as at least nine separate accounts: physical, mental, emotional, spiritual, relational, creative, security, standing and margin. This article is about something less obvious than the list itself. The accounts are connected, and the connections decide where your effort will actually pay off.</p>
+<h2>The accounts are not independent</h2>
+<p>The book puts it plainly: &ldquo;The nine accounts are not independent. They feed each other, and they drain each other.&rdquo;</p>
+<p>That has a practical consequence. &ldquo;A shortage in one will reliably produce a shortage in two or three others, and if you treat the downstream symptoms without finding the source you will work very hard and change nothing.&rdquo;</p>
+<p>Think of a network of pipes fed from one point upstream. If the pressure drops everywhere, you can patch every tap in the building and still have weak water. Or you can walk back along the line and find the one valve that is half closed. One of those approaches is a lot of effort. The other is leverage.</p>
+<h2>The lowest number is a clue, not the answer</h2>
+<p>To show how this works, the book walks through a constructed example. It is a composite pattern, not a real person&rsquo;s story, and the book says so: &ldquo;That example is constructed rather than reported.&rdquo;</p>
+<p>The example is a hospital department head who has been good at her job for years. Her honest ratings, out of ten, read: &ldquo;physical 6, mental 4, emotional 3, spiritual 5, relational 4, creative 2, security 7, standing 8, margin 3.&rdquo;</p>
+<p>&ldquo;The instinct is to attack the twos and threes.&rdquo; Creative is lowest, so book some thinking time. Emotional and margin are low, so take a break and clear the calendar.</p>
+<p>Then the book asks a different question of each low account: what is upstream of this?</p>
+<p>Creative is at 2 &ldquo;because there has been no unbroken block of unclaimed time in four months. That is a margin problem, not a creativity problem.&rdquo; Margin is low because a run of difficult staffing decisions has spread into every gap. But it is not the decisions themselves that take the time. It is the rumination afterwards, and rumination draws on the emotional account. Emotional is low because she has been absorbing everyone&rsquo;s difficulty for months with nothing going back in. And a mind running that background noise all day has less left for concentrated thought, which helps explain the low mental reading.</p>
+<p>The conclusion is the heart of the lesson: &ldquo;One account is doing most of the damage. It is not the lowest number.&rdquo;</p>
+<p>&ldquo;Booking her a creative retreat would produce a pleasant few days and no change.&rdquo; Dealing with the emotional load is a different story. The book suggests one honest conversation a week with someone who can hold it, a real end to the working day, and deliberate closure on decisions already made. Do that and emotional rises, margin returns, creative becomes possible again, and mental probably lifts as well. In the book&rsquo;s words: &ldquo;One intervention, four accounts.&rdquo;</p>
+<h2>How to run the trace on yourself</h2>
+<p>You do not need a complicated system. You need an honest reading and one good question.</p>
+<p><strong>1. Take an honest reading.</strong> Rate each of the nine accounts from one to ten. Three rules from the book keep the reading useful.</p>
+<ul>
+<li>&ldquo;Rate the last month, not today. Today is weather. The month is climate, and the month is what you are actually living in.&rdquo;</li>
+<li>&ldquo;Rate the reality, not the effort.&rdquo; A practice you believe in but have not done for six weeks is not filling anything.</li>
+<li>Rate against what your life is asking of you right now. The useful question is: &ldquo;is this enough for what I am carrying?&rdquo;</li>
+</ul>
+<p><strong>2. Pick your two or three lowest.</strong> These are where the symptoms show up. They are not yet the diagnosis.</p>
+<p><strong>3. Ask the upstream question.</strong> Of each low account, ask: is this the source, or is this downstream of something else? The book&rsquo;s instruction is simple: &ldquo;Follow it back until you reach an account whose depletion is not explained by another. That is where the work goes.&rdquo;</p>
+<p><strong>4. Choose one intervention.</strong> Only one. &ldquo;Do not build a nine-part improvement plan. It will not survive the month, and building it will itself consume mental and margin you do not have.&rdquo;</p>
+<p><strong>5. Give it time, then check what moved.</strong> &ldquo;Take the source account. Choose one intervention. Give it six weeks.&rdquo; After that, rate all nine again. If accounts you never touched have risen, the cascade was real. &ldquo;What did not tells you there is a second source, which is worth knowing.&rdquo;</p>
+<h2>Why this is worth the effort</h2>
+<p>When you feel stretched, doing more feels like the honest response. But effort spent downstream of the problem never reaches it.</p>
+<p>The upstream question changes that. It turns a long, discouraging list into a single decision. It also changes the story you tell yourself. If you were treating low creativity as proof that you have lost your edge, or low patience as a flaw in your character, the trace may show you something kinder and more accurate: one account has been running dry, and the others have been paying for it.</p>
+<h2>When the source runs deeper</h2>
+<p>Sometimes the trace leads somewhere that rest, scheduling and good habits cannot reach. The book describes a kind of depletion whose signature is flatness. The work continues and the competence remains, but the meaning has quietly gone.</p>
+<p>The author is open about a personal conviction that this account is filled through prayer, Scripture and attention to God. In one passage he reflects on the prophet Elijah, exhausted after his greatest victory, and on the words he was given: &ldquo;Arise and eat, for the journey is too great for you.&rdquo; The book reads that as &ldquo;a statement about capacity, not about character.&rdquo;</p>
+<p>Whatever you believe, the principle holds. If you trace your low readings back and find that the source is meaning rather than time or rest, take that seriously. It is not a verdict on your life. It is a reading on an account, and it deserves the same honest attention as the others.</p>
+<h2>One question for this week</h2>
+<p>Look at whatever feels lowest in your life right now and ask: what is upstream of this?</p>
+<p>Then follow the answer back, one step at a time, until it stops pointing somewhere else. Make one change there, and give it six weeks.</p>
+<div class="af">
+<hr>
+<p><em>This article draws on</em> Energy: Why You Are Tired, and What Actually Restores You, <em>Book 1 of the GoBeyond Series by MO.</em> Also out now <a href="https://www.amazon.com/dp/B0HNDM4P66">in paperback</a>.</p>
+</div>
+</article>
+<!-- BOOK1 CTA SLOT: hidden until book1_store_url is set in page.json -->
+<aside class="b1" id="book1-cta" hidden>
+  <div class="ce">&#9670; The GoBeyond Series</div>
+  <h3>Book 1 of the GoBeyond Series</h3>
+  <!-- BOOK1_STORE_URL -->
+  <a href="#book1-cta" class="btn">Get Book 1 &rarr;</a>
+</aside>
+<div class="cta">
+  <div class="ce">&#9670; GoBeyond Advisory</div>
+  <h3 class="ct">More <em>Intelligence Briefs</em></h3>
+  <a href="/briefs" class="btn">Read More Briefs &rarr;</a>
+  <a href="https://gobeyondadvisory.com" class="btn bto">Visit GoBeyond Advisory</a>
+</div>
+<footer>
+  <span class="fb"><span class="fdm"></span>GoBeyond Advisory</span>
+  <span class="fi">gobeyondadvisory.com &middot; Houston, Texas</span>
+</footer>
+</body>
+</html>
