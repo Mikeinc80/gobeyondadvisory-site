@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Switching Tasks Costs More Than the Switch — GoBeyond Advisory</title>
+<meta name="description" content="Each time you switch, part of your attention stays behind on the last task. That is why a fragmented day can leave you drained when no single piece of it was hard, and what to do about it.">
+<meta name="author" content="MO">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--dk:#0C0A07;--dk2:#141209;--dk3:#1C1910;--gold:#B8964A;--gl:#D4AE6A;--gline:rgba(184,150,74,0.18);--w90:rgba(253,251,248,0.92);--w60:rgba(253,251,248,0.60);--w30:rgba(253,251,248,0.30);--cream:#F8F5F0;--ink:#2E2925;--inkm:#4A3F35;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:"Cormorant Garamond",Georgia,serif;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(12,10,7,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--gline);padding:0 56px;height:72px;display:flex;align-items:center;justify-content:space-between;}
+.nb{font-family:"Syne",sans-serif;font-size:1rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:none;display:flex;align-items:center;gap:10px;}
+.nd{width:8px;height:8px;background:var(--gold);transform:rotate(45deg);}
+.nl{display:flex;align-items:center;gap:36px;}
+.nl a{font-family:"JetBrains Mono",monospace;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--w60);text-decoration:none;}
+.nl a:hover{color:var(--gold);}
+.ncta{font-family:"JetBrains Mono",monospace;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--dk);background:var(--gold);padding:10px 20px;text-decoration:none;}
+.hero{padding-top:72px;position:relative;min-height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;}
+.ho{position:absolute;inset:0;background:rgba(12,10,7,0.55);}
+.hg{position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(to top,rgba(12,10,7,0.97) 0%,rgba(12,10,7,0.65) 60%,transparent 100%);}
+.hi{position:relative;z-index:2;padding:0 64px 72px;max-width:1000px;}
+.he{font-family:"JetBrains Mono",monospace;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:flex;align-items:center;gap:14px;}
+.hbadge{background:rgba(184,150,74,0.18);border:1px solid rgba(184,150,74,0.35);padding:4px 12px;}
+.ht{font-family:"Cormorant Garamond",serif;font-size:clamp(2.2rem,5vw,4.2rem);font-weight:300;line-height:1.08;color:var(--w90);margin-bottom:20px;letter-spacing:-0.01em;}
+.ht em{color:var(--gold);font-style:italic;}
+.hs{font-family:"Cormorant Garamond",serif;font-size:1.15rem;color:var(--w60);line-height:1.65;max-width:680px;margin-bottom:36px;}
+.hm{display:grid;grid-template-columns:auto 1px auto 1px auto;gap:0 24px;align-items:center;padding-top:28px;border-top:1px solid rgba(184,150,74,0.22);}
+.mb{display:flex;flex-direction:column;gap:5px;}.ml{font-family:"JetBrains Mono",monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--w30);}.mv{font-family:"Syne",sans-serif;font-size:0.82rem;font-weight:600;color:var(--w90);}
+.md{width:1px;height:32px;background:var(--gline);}
+.op{background:var(--dk2);padding:56px 0 0;}.oi{max-width:740px;margin:0 auto;padding:0 40px 56px;border-bottom:1px solid var(--gline);}
+.oq{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:400;font-style:italic;color:var(--w90);line-height:1.65;padding-left:24px;border-left:2px solid var(--gold);}
+.bd{max-width:740px;margin:0 auto;padding:60px 40px 80px;background:var(--cream);}
+p{font-size:1.12rem;line-height:1.88;margin-bottom:24px;color:var(--ink);}
+h2{font-family:"Cormorant Garamond",serif;font-size:1.75rem;font-weight:600;color:var(--dk);margin:52px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--gline);}
+.lbl{font-family:"JetBrains Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.fft{background:var(--dk);padding:36px 40px;margin-bottom:48px;}.fft p{font-size:1.08rem;color:var(--w60);line-height:1.82;margin:0;}
+.co{background:#fff;border-left:3px solid var(--gold);padding:28px 32px;margin:36px 0;}.co p{font-size:1.05rem;color:var(--dk);line-height:1.78;margin:0;font-style:italic;}
+.ins{background:rgba(184,150,74,0.07);border:1px solid rgba(184,150,74,0.22);padding:32px 36px;margin:40px 0;}.ins p{font-size:1.05rem;line-height:1.78;color:var(--ink);margin:0;}
+.lq{border-left:3px solid var(--gold);padding:28px 32px;margin:40px 0;background:rgba(184,150,74,0.04);}.lq p{font-size:1.12rem;font-style:italic;color:var(--inkm);line-height:1.72;margin:0 0 12px;}.lq span{font-family:"JetBrains Mono",monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);}
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:40px 0;background:var(--gline);}.sc{background:var(--cream);padding:28px 24px;text-align:center;}.sl{font-family:"JetBrains Mono",monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}.sn{font-family:"Cormorant Garamond",serif;font-size:2.6rem;font-weight:300;color:var(--dk);line-height:1;}.sd{font-size:0.9rem;color:var(--inkm);margin-top:6px;}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:40px 0;background:var(--gold);}.rc{background:var(--dk);padding:28px 24px;}.rf{font-family:"JetBrains Mono",monospace;font-size:0.65rem;font-weight:500;color:var(--gold);letter-spacing:0.12em;margin-bottom:10px;text-transform:uppercase;}.rc p{font-family:"Cormorant Garamond",serif;font-size:1rem;color:rgba(253,251,248,0.78);line-height:1.65;margin:0;}
+.cq{border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);padding:44px 24px;margin:60px 0;text-align:center;}.cq blockquote{font-family:"Cormorant Garamond",serif;font-size:1.85rem;font-weight:500;font-style:italic;color:var(--dk);line-height:1.45;max-width:640px;margin:0 auto 18px;}.cqa{font-family:"JetBrains Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
+.cta{background:#161410;padding:60px 40px;text-align:center;position:relative;}.cta::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.ce{font-family:"JetBrains Mono",monospace;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}.ct{font-family:"Cormorant Garamond",serif;font-size:1.9rem;font-weight:700;color:var(--w90);margin-bottom:26px;line-height:1.25;}.ct em{color:var(--gold);font-style:italic;}.cb{font-family:"Cormorant Garamond",serif;font-size:1.05rem;color:rgba(253,251,248,0.55);line-height:1.75;max-width:520px;margin:0 auto 32px;}
+.btn{display:inline-block;padding:13px 32px;background:var(--gold);color:var(--dk);font-family:"JetBrains Mono",monospace;font-size:0.65rem;letter-spacing:0.13em;text-transform:uppercase;text-decoration:none;transition:opacity 0.2s;margin:6px;}.btn:hover{opacity:0.82;}.bto{background:transparent;border:1px solid var(--gold);color:var(--gold);}
+footer{background:var(--dk);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--gline);}.fb{font-family:"Syne",sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;}.fdm{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);}.fi{font-family:"JetBrains Mono",monospace;font-size:0.58rem;letter-spacing:0.1em;color:var(--w30);}
+@media(max-width:768px){
+  nav{padding:0 20px;height:60px;}.nl a{display:none;}.ncta{font-size:0.58rem;padding:8px 14px;}
+  .hero{min-height:560px;}.hi{padding:20px 22px 44px;}
+  .he{font-size:0.58rem;margin-bottom:18px;flex-wrap:wrap;}.hbadge{font-size:0.52rem;}
+  .ht{font-size:clamp(1.8rem,7vw,2.6rem);line-height:1.1;margin-bottom:14px;}
+  .hs{font-size:0.95rem;margin-bottom:28px;}
+  .hm{grid-template-columns:1fr 1fr;gap:14px;padding-top:18px;}.md{display:none;}
+  .op{padding:40px 0 0;}.oi{padding:0 22px 36px;}
+  .oq{font-size:1.15rem;line-height:1.6;padding-left:18px;}
+  .bd{padding:40px 22px 60px;}
+  p{font-size:1.05rem;line-height:1.82;margin-bottom:20px;}
+  h2{font-size:1.45rem;margin:40px 0 14px;}
+  .fft{padding:28px 22px;margin-bottom:36px;}.fft p{font-size:1.05rem;}
+  .co{padding:22px 20px;}.co p{font-size:1rem;}
+  .ins{padding:26px 22px;}.ins p{font-size:1rem;}
+  .lq{padding:28px 22px;}.lq p{font-size:1.15rem;}
+  .cq{padding:32px 14px;margin:40px 0;}.cq blockquote{font-size:1.3rem;}
+  .sr{grid-template-columns:1fr;}.sn{font-size:2rem;}
+  .rg{grid-template-columns:1fr;}
+  .cta{padding:36px 22px;}.ct{font-size:1.6rem;}.cb{font-size:1rem;}
+  .btn{padding:13px 22px;font-size:0.58rem;display:block;margin:6px 0;text-align:center;}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:22px 20px;}
+}
+@media(max-width:380px){.ht{font-size:1.65rem;}p{font-size:1rem;}}
+
+.hero{min-height:88vh;background:var(--dk);}
+.hero.ph{background:radial-gradient(ellipse at 78% 62%,rgba(184,150,74,0.20) 0%,rgba(184,150,74,0) 55%),linear-gradient(160deg,#1C1910 0%,#0C0A07 65%);}
+.hp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:68% center;}
+.ho{background:linear-gradient(90deg,rgba(12,10,7,0.78) 0%,rgba(12,10,7,0.55) 55%,rgba(12,10,7,0.25) 100%);}
+.ht,.hs{text-shadow:0 2px 18px rgba(0,0,0,0.55);}
+.bd ul,.bd ol{margin:0 0 24px 1.4em;}.bd li{font-size:1.12rem;line-height:1.82;margin-bottom:10px;color:var(--ink);}
+.bd hr{border:0;border-top:1px solid var(--gline);margin:52px 0 28px;}
+.af p{font-size:1rem;color:var(--inkm);}
+.b1{background:var(--dk2);padding:56px 40px;text-align:center;border-top:1px solid var(--gline);}.b1[hidden]{display:none;}.b1 h3{font-family:"Cormorant Garamond",serif;font-size:1.7rem;font-weight:500;color:var(--w90);margin-bottom:22px;}
+@media(max-width:768px){.hero{min-height:620px;}.hp{object-position:72% center;}.ho{background:rgba(12,10,7,0.62);}.bd li{font-size:1.05rem;}}
+.hc{margin:72px 0 0;background:var(--dk);}.hc img{display:block;width:100%;height:auto;aspect-ratio:16/9;}
+.hero.hx{min-height:0;padding-top:56px;justify-content:flex-start;}.hero.hx .ht,.hero.hx .hs{text-shadow:none;}
+@media(max-width:768px){.hc{margin-top:60px;}.hero.hx{min-height:0;padding-top:32px;}}
+</style>
+
+<link rel="canonical" href="https://www.gobeyondadvisory.com/gba-article13-attention-residue"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="GoBeyond Advisory"/>
+<meta property="og:url" content="https://www.gobeyondadvisory.com/gba-article13-attention-residue"/>
+<meta property="og:title" content="Why Switching Tasks Costs More Than the Switch — GoBeyond Advisory"/>
+<meta property="og:description" content="Each time you switch, part of your attention stays behind on the last task. That is why a fragmented day can leave you drained when no single piece of it was hard, and what to do about it."/>
+<meta property="og:image" content="https://www.gobeyondadvisory.com/assets/articles/gba-article13-attention-residue-og.jpg"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="An hourglass shattering on a lamp lit desk, its sand spilling as papers, phones and headphones scatter around it, with the title Why Switching Tasks Costs More Than the Switch."/>
+<meta property="article:published_time" content="2026-10-23"/>
+<meta property="article:author" content="MO"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://www.gobeyondadvisory.com/assets/articles/gba-article13-attention-residue-og.jpg"/>
+<script type="application/ld+json">{
+ "@context": "https://schema.org",
+ "@type": "Article",
+ "headline": "Why Switching Tasks Costs More Than the Switch",
+ "description": "Each time you switch, part of your attention stays behind on the last task. That is why a fragmented day can leave you drained when no single piece of it was hard, and what to do about it.",
+ "image": [
+  "https://www.gobeyondadvisory.com/assets/articles/gba-article13-attention-residue-og.jpg"
+ ],
+ "datePublished": "2026-10-23",
+ "author": {
+  "@type": "Person",
+  "name": "MO"
+ },
+ "publisher": {
+  "@type": "Organization",
+  "name": "GoBeyond Advisory",
+  "url": "https://gobeyondadvisory.com/"
+ },
+ "mainEntityOfPage": "https://www.gobeyondadvisory.com/gba-article13-attention-residue",
+ "articleSection": "Energy & Capacity"
+}</script>
+</head>
+<body>
+<nav>
+  <a href="https://gobeyondadvisory.com" class="nb"><span class="nd"></span>GoBeyond Advisory</a>
+  <div class="nl"><a href="https://gobeyondadvisory.com/#advisory">Focus Areas</a><a href="https://gobeyondadvisory.com/#markets">Markets</a><a href="https://gobeyondadvisory.com/#insights">Insights</a></div>
+  <a href="mailto:partners@gobeyondadvisory.com" class="ncta">Engage Advisory</a>
+</nav>
+<figure class="hc"><img src="/assets/articles/gba-article13-attention-residue-1200.webp" srcset="/assets/articles/gba-article13-attention-residue-1200.webp 1200w, /assets/articles/gba-article13-attention-residue-1920.webp 1920w" sizes="100vw" width="1920" height="1080" alt="An hourglass shattering on a lamp lit desk, its sand spilling as papers, phones and headphones scatter around it, with the title Why Switching Tasks Costs More Than the Switch." fetchpriority="high"></figure>
+<header class="hero hx">
+  <div class="hi">
+    <div class="he">GoBeyond Advisory Intelligence Brief<span class="hbadge">Energy &amp; Capacity</span></div>
+    <h1 class="ht">Why Switching Tasks Costs <em>More Than the Switch</em></h1>
+    <p class="hs">Each time you switch, part of your attention stays behind on the last task. That is why a fragmented day can leave you drained when no single piece of it was hard, and what to do about it.</p>
+    <div class="hm">
+      <div class="mb"><div class="ml">By</div><div class="mv">MO</div></div>
+      <div class="md"></div>
+      <div class="mb"><div class="ml">Date</div><div class="mv">October 23, 2026</div></div>
+      <div class="md"></div>
+      <div class="mb"><div class="ml">Category</div><div class="mv">Energy &amp; Capacity</div></div>
+    </div>
+  </div>
+</header>
+<article class="bd">
+<p>Some days you finish exhausted with nothing to show for it.</p>
+<p>No single meeting was demanding. No task was especially hard. You were busy from start to finish, and yet when the evening comes you cannot think clearly, and you are not sure where the day went.</p>
+<p>Chapter 7 of <em>Energy</em>, Book 1 of the GoBeyond Series, offers an explanation. It is not that you worked too long. It is that you switched too often, and switching costs more than it appears to.</p>
+<h2>Attention does not only run on time</h2>
+<p>The common model is that attention runs on time. An eight hour day contains eight hours of it, and busyness is what uses it up.</p>
+<p>The chapter calls that model &ldquo;incomplete in a way that matters.&rdquo; Duration is not the only thing that spends attention. Switching spends it too, and the cost is easy to miss because it never appears as a line item.</p>
+<p>Three hours on one demanding problem is not the same as three hours spread across nine different things. Anyone who has ended a fragmented day exhausted has felt that difference, even without the words for it.</p>
+<p>The practical consequence is simple. Protecting attention is mostly about protecting continuity, not about finding more hours. An unbroken hour is worth considerably more than two hours interrupted four times. One of the most valuable things you can do for your thinking is not to find more time, but to stop breaking up the time you already have.</p>
+<h2>The cost that stays behind</h2>
+<p>There is a second cost, and it is the one people miss.</p>
+<p>Switching does not only spend attention in the moment. It appears to leave something behind. Part of the mind stays on the previous task after you have moved to the next one, and it takes time to clear.</p>
+<p>Researchers have a name for this: attention residue. The term and the finding come from Sophie Leroy&rsquo;s 2009 paper in <em>Organizational Behavior and Human Decision Processes</em>, titled &ldquo;Why is it so hard to do my work? The challenge of attention residue when switching between work tasks.&rdquo; The residue was found to be worse when the task left behind was unfinished.</p>
+<p>That would explain why a day of short meetings can leave you unable to think, even though no individual meeting was demanding. You paid a transition cost twenty times, and it never appeared on any invoice.</p>
+<h2>Three ways to protect it</h2>
+<p>The chapter gives three practical moves, in order of impact.</p>
+<p><strong>Give your best hours to your hardest work.</strong> Most people have a window in the day when their thinking is sharpest. That window should go to the work that most requires thinking. Correspondence, administration and coordination can happen at any hour, and mostly should happen at your weakest one. The common pattern is the reverse: peak hours to the inbox, and the tired end of the day to the work that mattered. Correcting it may be the highest return scheduling change most people can make.</p>
+<p><strong>Batch what fragments.</strong> The things that break continuity are mostly small, individually reasonable and endless. Grouped into two or three set periods, they cost a fraction of what they cost when they arrive continuously. This is not about being less responsive. It is about choosing where the transitions are allowed to happen.</p>
+<p><strong>Decide fewer things.</strong> Here the chapter is careful. The popular version of this advice rests on &ldquo;decision fatigue,&rdquo; which it describes as &ldquo;a more contested piece of science than its popularity suggests,&rdquo; and declines to build on it. The source notes explain why: the mechanism underneath it, ego depletion, did not hold up under careful retesting. A large preregistered replication across many laboratories, reported in 2016 by Martin Hagger, Nikos Chatzisarantis and colleagues, found essentially no effect.</p>
+<p>The practical case does not need that mechanism. A decision you make once and stop revisiting is a decision you are no longer carrying. What you eat before noon, when you exercise, which requests you simply do not take: settle them once and they stop taking up space. Much of the apparently rigid behaviour of people who do demanding work comes from this. They are not being inflexible. They have noticed that reopening a settled question costs something and returns nothing.</p>
+<h2>Where composure comes in</h2>
+<p>The chapter pairs attention with a second capacity: composure, the ability to stay steady with people and difficulty without becoming reactive, brittle or absent.</p>
+<p>The two are different resources with different drains, but they fail together. When attention goes, work takes longer and comes out worse, which creates more difficulty, which spends composure. When composure goes, background rumination runs all the time, which consumes the attention you needed for the work. Each speeds up the loss of the other.</p>
+<p>Composure is also easy to run to zero without noticing, because the symptoms look like character rather than depletion. You do not think, &ldquo;I have no composure left.&rdquo; You think you have become impatient. Or you think nothing at all, and simply become someone slightly harder to be around.</p>
+<p>The chapter&rsquo;s advice is to break the loop wherever it is easiest to reach this week, which is usually composure, because processing is easier to start than restructuring a calendar. Three forms of processing help, and usually two are needed: naming the difficulty to someone who can hear it without needing to fix it, writing it down where no one will read it, and closing the day with a deliberate marker. A walk, a page, ten minutes of quiet: something that says the day is finished. Clear the rumination, and attention partly returns on its own.</p>
+<h2>Three questions for this week</h2>
+<p><strong>Reflect.</strong> How many separate things did you switch between yesterday? A rough number is fine.</p>
+<p><strong>Decide.</strong> Who is your person for naming what is weighing on you? If there is nobody, that is the finding.</p>
+<p><strong>Build.</strong> Put a closing marker on the end of your working day this week. Any marker. Just a real one.</p>
+<div class="af">
+<hr>
+<p><em>This article draws on</em> Energy: Why You Are Tired, and What Actually Restores You, <em>Book 1 of the GoBeyond Series by MO.</em></p>
+</div>
+</article>
+<!-- BOOK1 CTA SLOT: hidden until book1_store_url is set in page.json -->
+<aside class="b1" id="book1-cta" hidden>
+  <div class="ce">&#9670; The GoBeyond Series</div>
+  <h3>Book 1 of the GoBeyond Series</h3>
+  <!-- BOOK1_STORE_URL -->
+  <a href="#book1-cta" class="btn">Get Book 1 &rarr;</a>
+</aside>
+<div class="cta">
+  <div class="ce">&#9670; GoBeyond Advisory</div>
+  <h3 class="ct">More <em>Intelligence Briefs</em></h3>
+  <a href="/briefs" class="btn">Read More Briefs &rarr;</a>
+  <a href="https://gobeyondadvisory.com" class="btn bto">Visit GoBeyond Advisory</a>
+</div>
+<footer>
+  <span class="fb"><span class="fdm"></span>GoBeyond Advisory</span>
+  <span class="fi">gobeyondadvisory.com &middot; Houston, Texas</span>
+</footer>
+</body>
+</html>

@@ -72,8 +72,8 @@
 
     unique.sort(byPublishedDesc);
 
-    var featuredIndex = unique.findIndex(function (a) { return a.featured; });
-    var featured = featuredIndex === -1 ? null : unique.splice(featuredIndex, 1)[0];
+    // Featured = the newest published article (no hand-set flag needed).
+    var featured = unique.shift();
 
     injectStyles();
     container.innerHTML =

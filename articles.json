@@ -1,5 +1,25 @@
 [
   {
+    "id": "gba-article13-attention-residue",
+    "featured": true,
+    "category": "Energy & Capacity",
+    "title": "Why Switching Tasks Costs More Than the Switch",
+    "excerpt": "Each time you switch, part of your attention stays behind on the last task. That is why a fragmented day can leave you drained when no single piece of it was hard, and what to do about it.",
+    "date": "October 2026",
+    "published": "2026-10-23",
+    "url": "/gba-article13-attention-residue"
+  },
+  {
+    "id": "gba-article10-source-account",
+    "featured": false,
+    "category": "Energy & Capacity",
+    "title": "Find the One Account That Is Draining the Others",
+    "excerpt": "When several parts of your life feel low at once, the lowest number is rarely the place to start. Here is how to trace the drain back to its source and make one change that moves the rest.",
+    "date": "October 2026",
+    "published": "2026-10-19",
+    "url": "/gba-article10-source-account"
+  },
+  {
     "id": "gba-article7-beyond-the-rocket",
     "featured": false,
     "category": "Capital Strategy",
@@ -11,7 +31,7 @@
   },
   {
     "id": "gba-article2-stop-building-ai-from-scratch",
-    "featured": true,
+    "featured": false,
     "category": "AI Infrastructure · Strategy",
     "title": "Stop Building AI From Scratch: The $18B Lesson Most Founders Are Missing",
     "excerpt": "Most founders are wasting time building models instead of building distribution, data access, and infrastructure leverage. The real value has moved.",
