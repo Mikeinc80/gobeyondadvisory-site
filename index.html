@@ -713,6 +713,14 @@ footer{
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ticker-track,.hero-eyebrow,.hero h1,.hero-body,.hero-location,.hero-btns,.hero-scroll,.active-dot{animation:none!important}.btn-ink,.btn-outline,.btn-gold,.eco-btn,.eco-ghost{transition:none!important}}
 
 .ecosystem-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:28px}.ecosystem-card{display:flex;flex-direction:column;gap:9px;padding:26px;background:var(--white);text-decoration:none;color:var(--ink)}.ecosystem-card span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--gold)}.ecosystem-card strong{font-size:18px}.ecosystem-card small{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--muted);line-height:1.5}@media(max-width:640px){.ecosystem-grid{grid-template-columns:1fr}}
+
+/* ENERGY BOOK 1 BUY BUTTON (matches gobeyondseries.com Get It Now: gold #C9A84C, 11px mono, 0.14em, uppercase, 16px 36px) */
+.gbe-book{margin-top:28px;padding:26px 28px;background:var(--white);border:1px solid var(--border);border-left:2px solid var(--gold-lt);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+.gbe-note{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1.4;color:var(--dark);margin:0;}
+.gbe-buy{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--navy);background:var(--gold-lt);padding:16px 36px;text-decoration:none;transition:background 0.3s;white-space:nowrap;}
+.gbe-buy:hover{background:#F0C96A;}
+.gbe-buy:focus-visible{outline:2px solid var(--navy);outline-offset:3px;}
+@media(max-width:640px){.gbe-book{flex-direction:column;align-items:stretch;text-align:center;padding:24px 20px;gap:16px;}.gbe-buy{display:block;text-align:center;white-space:normal;}}
 </style>
 
 <link rel="canonical" href="https://www.gobeyondadvisory.com/"/>
@@ -1051,6 +1059,11 @@ footer{
       <div class="insight-cta" style="margin-top:16px;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#B8964A;">View all briefs →</div>
     </a>
   </div>
+    </div>
+    <!-- ENERGY BOOK 1 BUY BUTTON -->
+    <div class="gbe-book">
+      <p class="gbe-note">Book 1 of the GoBeyond Series. By M.O.</p>
+      <a class="gbe-buy" href="https://mikeinc8.gumroad.com/l/qheaxr" target="_blank" rel="noopener">Get GoBeyond Energy</a>
     </div>
   </div>
 </div>

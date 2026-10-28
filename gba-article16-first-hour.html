@@ -85,6 +85,10 @@ footer{background:var(--dk);padding:40px 56px;display:flex;justify-content:space
 .hc{margin:72px 0 0;background:var(--dk);}.hc img{display:block;width:100%;height:auto;aspect-ratio:16/9;}
 .hero.hx{min-height:0;padding-top:56px;justify-content:flex-start;}.hero.hx .ht,.hero.hx .hs{text-shadow:none;}
 @media(max-width:768px){.hc{margin-top:60px;}.hero.hx{min-height:0;padding-top:32px;}}
+.gbe-note{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:1.3rem;line-height:1.5;color:var(--w90);margin:0 0 22px;}
+.gbe-buy{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#0B1F4B;background:#C9A84C;padding:16px 36px;text-decoration:none;transition:background 0.3s;}
+.gbe-buy:hover{background:#F0C96A;}.gbe-buy:focus-visible{outline:2px solid #F0C96A;outline-offset:3px;}
+@media(max-width:768px){.gbe-note{font-size:1.15rem;}.gbe-buy{display:block;text-align:center;padding:16px 22px;}}
 </style>
 
 <link rel="canonical" href="https://www.gobeyondadvisory.com/gba-article16-first-hour"/>
@@ -187,12 +191,10 @@ footer{background:var(--dk);padding:40px 56px;display:flex;justify-content:space
 <p>M.O.</p>
 </div>
 </article>
-<!-- BOOK1 CTA SLOT: hidden until book1_store_url is set in page.json -->
-<aside class="b1" id="book1-cta" hidden>
-  <div class="ce">&#9670; The GoBeyond Series</div>
-  <h3>Book 1 of the GoBeyond Series</h3>
-  <!-- BOOK1_STORE_URL -->
-  <a href="#book1-cta" class="btn">Get Book 1 &rarr;</a>
+<!-- ENERGY BOOK 1 BUY BUTTON -->
+<aside class="b1" id="book1-cta">
+  <p class="gbe-note">Book 1 of the GoBeyond Series. By M.O.</p>
+  <a class="gbe-buy" href="https://mikeinc8.gumroad.com/l/qheaxr" target="_blank" rel="noopener">Get GoBeyond Energy</a>
 </aside>
 <div class="cta">
   <div class="ce">&#9670; GoBeyond Advisory</div>
