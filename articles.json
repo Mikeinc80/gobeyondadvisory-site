@@ -1,7 +1,17 @@
 [
   {
-    "id": "gba-article13-attention-residue",
+    "id": "gba-article16-first-hour",
     "featured": true,
+    "category": "Energy & Capacity",
+    "title": "The First Hour: Why the Start of Your Day Decides the Rest",
+    "excerpt": "The first hour is the only hour with no competition. Most of us give it away without noticing.",
+    "date": "October 2026",
+    "published": "2026-10-29",
+    "url": "/gba-article16-first-hour"
+  },
+  {
+    "id": "gba-article13-attention-residue",
+    "featured": false,
     "category": "Energy & Capacity",
     "title": "Why Switching Tasks Costs More Than the Switch",
     "excerpt": "Each time you switch, part of your attention stays behind on the last task. That is why a fragmented day can leave you drained when no single piece of it was hard, and what to do about it.",
