@@ -792,8 +792,8 @@ footer{
 </section>
 
 <!-- TICKER -->
-<section class="ticker-wrap" tabindex="0" aria-label="Initiative updates">
-  <div class="ticker-track">
+<section class="ticker-wrap" aria-label="Initiative updates">
+  <div class="ticker-window"><div class="ticker-track">
     <span class="ticker-item">EKORails <span>Active</span></span>
     <span class="ticker-item">Cape Coast New City <span>Active</span></span>
     <span class="ticker-item">Centenary City Abuja <span>Structuring</span></span>
@@ -805,18 +805,20 @@ footer{
     <span class="ticker-item">EkoRails profile <span>Public technology layer</span></span>
     <span class="ticker-item">Energy Infrastructure <span>Core</span></span>
     <span class="ticker-item">Cross-Border Capital <span>Active</span></span>
-    <span class="ticker-item">EKORails <span>Active</span></span>
-    <span class="ticker-item">Cape Coast New City <span>Active</span></span>
-    <span class="ticker-item">Centenary City Abuja <span>Structuring</span></span>
-    <span class="ticker-item">JE TEX Energy <span>Operating</span></span>
-    <span class="ticker-item">West Africa <span>Operational</span></span>
-    <span class="ticker-item">GCC Corridor <span>Phase 1</span></span>
-    <span class="ticker-item">Newline Investors <span>Capital Arm</span></span>
-    <span class="ticker-item">Healthcare Infrastructure <span>Active</span></span>
-    <span class="ticker-item">EkoRails profile <span>Public technology layer</span></span>
-    <span class="ticker-item">Energy Infrastructure <span>Core</span></span>
-    <span class="ticker-item">Cross-Border Capital <span>Active</span></span>
+    <span class="ticker-item" aria-hidden="true">EKORails <span>Active</span></span>
+    <span class="ticker-item" aria-hidden="true">Cape Coast New City <span>Active</span></span>
+    <span class="ticker-item" aria-hidden="true">Centenary City Abuja <span>Structuring</span></span>
+    <span class="ticker-item" aria-hidden="true">JE TEX Energy <span>Operating</span></span>
+    <span class="ticker-item" aria-hidden="true">West Africa <span>Operational</span></span>
+    <span class="ticker-item" aria-hidden="true">GCC Corridor <span>Phase 1</span></span>
+    <span class="ticker-item" aria-hidden="true">Newline Investors <span>Capital Arm</span></span>
+    <span class="ticker-item" aria-hidden="true">Healthcare Infrastructure <span>Active</span></span>
+    <span class="ticker-item" aria-hidden="true">EkoRails profile <span>Public technology layer</span></span>
+    <span class="ticker-item" aria-hidden="true">Energy Infrastructure <span>Core</span></span>
+    <span class="ticker-item" aria-hidden="true">Cross-Border Capital <span>Active</span></span>
   </div>
+  </div>
+  <button type="button" id="project-motion" aria-label="Pause project banner" hidden>Pause</button>
 </section>
 
 <!-- MARKERS -->
@@ -1243,6 +1245,9 @@ footer{
     </div>
   </div>
 </footer>
+<button type="button" id="piano-control" hidden>Play piano</button>
+<audio id="advisory-piano" preload="none" loop src="/assets/advisory-piano.mp3"></audio>
+<script defer src="/assets/home-controls.js"></script>
 <script src="/article-loader.js"></script>
 <script>
 (function(){var b=document.querySelector('.menu-toggle'),n=document.getElementById('site-navigation');if(!b||!n)return;b.addEventListener('click',function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!o));n.classList.toggle('open',!o);});n.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.setAttribute('aria-expanded','false');n.classList.remove('open');});});})();
