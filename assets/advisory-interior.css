@@ -1,0 +1,9 @@
+:root { --dark:#102437; --gold:#d9ba7b; --white-30:#bdc9d1; --white-50:#d1dce2; }
+nav { background:#102437; }
+.hero,.page-hero,.team-section,.cta-strip { background-color:#102437; }
+.hero-headline,.page-headline,.team-title { text-wrap:balance; }
+.team-card-photo img { object-fit:cover; }
+.team-card,.brief-card { border-color:#a7b5be; }
+.team-card-focus,.brief-body { line-height:1.65; }
+:focus-visible { outline:3px solid #bb8938; outline-offset:3px; }
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

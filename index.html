@@ -628,8 +628,8 @@ footer{
 .footer-social{display:flex;gap:12px;align-items:center;}
 .footer-social a{
   display:flex;align-items:center;justify-content:center;
-  width:32px;height:32px;border:1px solid rgba(255,255,255,0.15);
-  color:rgba(255,255,255,0.4);text-decoration:none;
+  width:44px;height:44px;border:1px solid rgba(255,255,255,.42);
+  color:#e8edf0;text-decoration:none;
   transition:border-color .2s,color .2s;
   font-family:'JetBrains Mono',monospace;font-size:10px;
 }
@@ -754,6 +754,7 @@ footer{
  }
 }
 </script>
+<link rel="stylesheet" href="/assets/advisory-premium.css">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -767,6 +768,7 @@ footer{
     <a href="#engage-section">Engage</a>
     <a href="#markets">Markets</a>
     <a href="#insights">Insights</a>
+    <a href="/ai-reliability/">AI Reliability</a>
     <a href="founders.html">Leadership</a>
   </div>
   <div class="nav-right">
@@ -790,8 +792,8 @@ footer{
 </section>
 
 <!-- TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker-track">
+<section class="ticker-wrap" aria-label="Initiative updates">
+  <div class="ticker-window"><div class="ticker-track">
     <span class="ticker-item">EKORails <span>Active</span></span>
     <span class="ticker-item">Cape Coast New City <span>Active</span></span>
     <span class="ticker-item">Centenary City Abuja <span>Structuring</span></span>
@@ -799,23 +801,27 @@ footer{
     <span class="ticker-item">West Africa <span>Operational</span></span>
     <span class="ticker-item">GCC Corridor <span>Phase 1</span></span>
     <span class="ticker-item">Newline Investors <span>Capital Arm</span></span>
-    <span class="ticker-item">Healthcare Infrastructure <span>Active</span></span>
+    <span class="ticker-item">Premium Agriculture <span>Planning</span></span>
+    <span class="ticker-item">Timeless Health HQ <span>In development</span></span>
     <span class="ticker-item">EkoRails profile <span>Public technology layer</span></span>
     <span class="ticker-item">Energy Infrastructure <span>Core</span></span>
     <span class="ticker-item">Cross-Border Capital <span>Active</span></span>
-    <span class="ticker-item">EKORails <span>Active</span></span>
-    <span class="ticker-item">Cape Coast New City <span>Active</span></span>
-    <span class="ticker-item">Centenary City Abuja <span>Structuring</span></span>
-    <span class="ticker-item">JE TEX Energy <span>Operating</span></span>
-    <span class="ticker-item">West Africa <span>Operational</span></span>
-    <span class="ticker-item">GCC Corridor <span>Phase 1</span></span>
-    <span class="ticker-item">Newline Investors <span>Capital Arm</span></span>
-    <span class="ticker-item">Healthcare Infrastructure <span>Active</span></span>
-    <span class="ticker-item">EkoRails profile <span>Public technology layer</span></span>
-    <span class="ticker-item">Energy Infrastructure <span>Core</span></span>
-    <span class="ticker-item">Cross-Border Capital <span>Active</span></span>
+    <span class="ticker-item" aria-hidden="true">EKORails <span>Active</span></span>
+    <span class="ticker-item" aria-hidden="true">Cape Coast New City <span>Active</span></span>
+    <span class="ticker-item" aria-hidden="true">Centenary City Abuja <span>Structuring</span></span>
+    <span class="ticker-item" aria-hidden="true">JE TEX Energy <span>Operating</span></span>
+    <span class="ticker-item" aria-hidden="true">West Africa <span>Operational</span></span>
+    <span class="ticker-item" aria-hidden="true">GCC Corridor <span>Phase 1</span></span>
+    <span class="ticker-item" aria-hidden="true">Newline Investors <span>Capital Arm</span></span>
+    <span class="ticker-item" aria-hidden="true">Premium Agriculture <span>Planning</span></span>
+    <span class="ticker-item" aria-hidden="true">Timeless Health HQ <span>In development</span></span>
+    <span class="ticker-item" aria-hidden="true">EkoRails profile <span>Public technology layer</span></span>
+    <span class="ticker-item" aria-hidden="true">Energy Infrastructure <span>Core</span></span>
+    <span class="ticker-item" aria-hidden="true">Cross-Border Capital <span>Active</span></span>
   </div>
-</div>
+  </div>
+  <button type="button" id="project-motion" aria-label="Pause project banner" hidden>Pause</button>
+</section>
 
 <!-- MARKERS -->
 <div class="markers">
@@ -843,7 +849,7 @@ footer{
         <span class="eco-stat-num">$200B+</span>
         <span class="eco-stat-label">Total addressable<br/>market</span>
       </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.3);text-transform:uppercase;text-align:right;line-height:1.7;">Current public profile<br/>technology infrastructure layer</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:#c8d3da;text-transform:uppercase;text-align:right;line-height:1.7;">Current public profile<br/>technology infrastructure layer</div>
     </div>
   </div>
 </div>
@@ -878,7 +884,7 @@ footer{
         <span class="pillar-icon">◉</span>
         <div class="pillar-num">Pillar 04</div>
         <div class="pillar-title">Energy Infrastructure</div>
-        <div class="pillar-body">Upstream and midstream energy services advisory across the Nigerian and West African energy corridor. Delivered through JE TEX Energy Limited, a Nigerian energy services company founded in 2001 and re-incorporated in 2023.</div>
+        <div class="pillar-body">Advisory services for upstream and midstream energy projects. Through JE TEX Energy Limited, clients can engage engineering, procurement and technical field support for pipeline and subsea projects.</div>
       </div>
     </div>
   </div>
@@ -920,9 +926,9 @@ footer{
         <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Operating</div><div class="init-type">Energy · Services</div></div>
         <div class="init-content">
           <div class="init-name">JE TEX Energy Limited</div>
-          <div class="init-desc">Nigerian energy services company (RC 7027707), founded 2001 and re-incorporated 2023. Provides GoBeyond&rsquo;s operating capability across the Nigerian energy corridor, spanning subsea and pipeline services, procurement, and technical support.</div>
+          <div class="init-desc">JE TEX Energy Limited supports energy operators and contractors with engineering coordination, equipment procurement and technical field support for pipeline and subsea projects. Contact the team for a quotation, tender invitation or project partnership.</div>
         </div>
-        <div class="init-link-cell"><a href="#contact" class="init-link">Inquire →</a></div>
+        <div class="init-link-cell"><a href="https://tex-energy.com/" class="init-link">Visit JE TEX Energy →</a></div>
       </div>
       <div class="initiative-row">
         <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Capital Arm</div><div class="init-type">Investment · Deal Structuring</div></div>
@@ -930,15 +936,23 @@ footer{
           <div class="init-name">Newline Investors Inc.</div>
           <div class="init-desc">GoBeyond Advisory's capital deployment arm. Structures institutional-grade investment vehicles, cross-border deal architecture, and emerging market capital partnerships across Africa and the GCC.</div>
         </div>
-        <div class="init-link-cell"><a href="#contact" class="init-link">Inquire →</a></div>
+        <div class="init-link-cell"><a href="https://newlineinvestors.com/" class="init-link">Visit Newline Investors →</a></div>
+      </div>
+      <div class="initiative-row">
+        <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Planning</div><div class="init-type">Agriculture · Processing</div></div>
+        <div class="init-content">
+          <div class="init-name">Premium Agriculture &amp; Logistics</div>
+          <div class="init-desc">Cocoa, cashew and maize are the focus of Phase One. Premium Agriculture &amp; Logistics welcomes inquiries from crop buyers about future supply, processors about their sourcing needs, and equipment suppliers and investors about project partnerships.</div>
+        </div>
+        <div class="init-link-cell"><a href="https://premiumagriculturehq.com/" class="init-link">Visit Premium Agriculture →</a></div>
       </div>
       <div class="initiative-row" style="border-bottom:none;">
         <div class="init-meta"><div class="init-tag"><span class="active-dot"></span>Active</div><div class="init-type">Healthcare · Infrastructure</div></div>
         <div class="init-content">
-          <div class="init-name">Healthcare Infrastructure &amp; Timeless Health</div>
-          <div class="init-desc">Medical equipment, facility advisory, and training infrastructure across Côte d'Ivoire and West African healthcare corridors. Timeless Health, a digital health platform in development, forms the technology layer, with a physical flagship positioned within the Centenary City Abuja development. Structured under GoBeyond Advisory and Newline Investors.</div>
+          <div class="init-name">Timeless Health HQ</div>
+          <div class="init-desc">Timeless Health HQ is developing a digital platform to help people who live or travel across borders follow their health over time and coordinate preventive care. GoBeyond Advisory and Newline Investors are structuring the wider healthcare initiative, including equipment, facility planning and training in West Africa and a planned flagship at Centenary City Abuja.</div>
         </div>
-        <div class="init-link-cell"><a href="https://timelesshealthhq.com/" class="init-link">timelesshealthhq.com →</a></div>
+        <div class="init-link-cell"><a href="https://timelesshealthhq.com/" class="init-link">Visit Timeless Health HQ →</a></div>
       </div>
 
     </div>
@@ -1046,19 +1060,22 @@ footer{
     <h2 class="section-title">Thinking from the<br/><em>frontier of infrastructure.</em></h2>
     <p class="section-body" style="margin-bottom:0;">Original intelligence briefings on infrastructure, cross-border capital, geopolitical risk, and the emerging market landscape.</p>
     <div class="insights-grid">
-  <div id="gba-articles-grid">
-    <!-- Static fallback: replaced by article-loader.js. Keeps this section useful
-         without JavaScript and if /articles.json cannot be fetched. -->
+      <div class="editorial-lead">
+        <div id="gba-articles-grid">
     <!-- FEATURED:START (generated by tools/index_article.py: newest article in articles.json) -->
-    <a href="/gba-article16-first-hour" class="insight-card featured" style="text-decoration:none;display:block;"><div><div class="insight-tag">⭐ Featured · Energy &amp; Capacity</div><div class="insight-title">The First Hour: Why the Start of Your Day Decides the Rest</div><div class="insight-body">The first hour is the only hour with no competition. Most of us give it away without noticing.</div><div class="insight-date">October 2026 · gobeyondadvisory.com</div></div><div class="insight-cta-btn">Read Brief →</div></a>
+    <a href="/gba-article15-ai-approval-gate" class="insight-card featured" style="text-decoration:none;display:block;"><div><div class="insight-tag">⭐ Featured · AI Strategy</div><div class="insight-title">Your AI Agents Need a Gate, Not a Leash</div><div class="insight-body">AI agents can now draft, file, schedule and publish on your behalf. The risk is not that they are slow. It is that they are fast and nobody checked. Here is how to put one clear approval gate in front of everything that leaves your hands.</div><div class="insight-date">October 2026 · gobeyondadvisory.com</div></div><div class="insight-cta-btn">Read Brief →</div></a>
     <!-- FEATURED:END -->
-    <a href="/briefs" class="insight-card" style="text-decoration:none;display:block;">
-      <div class="insight-tag">Intelligence Briefs</div>
-      <div class="insight-title">GoBeyond Advisory Intelligence Briefs</div>
-      <div class="insight-body">Institutional analysis on AI infrastructure, geopolitical capital, African strategy, and sovereign risk — written for allocators operating at the frontier.</div>
-      <div class="insight-cta" style="margin-top:16px;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#B8964A;">View all briefs →</div>
-    </a>
-  </div>
+        </div>
+        <aside class="series-panel" aria-labelledby="series-heading">
+          <small>Video series</small>
+          <h3 id="series-heading">GAR Weekly</h3>
+          <p id="series-description">Practical lessons from GoBeyond AI Reliability on testing AI workflows, reviewing evidence and deciding when a person should step in.</p>
+          <a id="series-link" class="series-action" href="/ai-reliability/weekly/">Explore GAR Weekly →</a>
+        </aside>
+      </div>
+      <div class="recent-head"><h3>GoBeyond Advisory Intelligence Briefs</h3><a class="archive-action" href="/briefs">View all briefs →</a></div>
+      <p class="archive-intro">Institutional analysis on AI infrastructure, geopolitical capital, African strategy, and sovereign risk — written for allocators operating at the frontier.</p>
+      <div id="recent-briefs" class="recent-grid"></div>
     </div>
     <!-- ENERGY BOOK 1 BUY BUTTON -->
     <div class="gbe-book">
@@ -1069,13 +1086,13 @@ footer{
 </div>
 
 <!-- NEWSLETTER -->
-<div class="full-wrap newsletter-wrap">
+<div id="newsletter" class="full-wrap newsletter-wrap">
   <div class="newsletter-inner">
     <div class="nl-left">
       <h3>Subscribe to<br/><em>GoBeyond Intelligence.</em></h3>
       <p>Receive original infrastructure intelligence briefs, corridor research, and geopolitical risk analysis — delivered directly to your inbox. No noise. Institutional-grade insight only.</p>
     </div>
-    <form name="newsletter" method="POST" action="/success" data-netlify="true" data-netlify-honeypot="bot-field">
+    <form name="newsletter" method="POST" action="/success" data-netlify="true" data-brevo-action="https://9908b016.sibforms.com/serve/MUIFAKPQCJgHwSE4tLgEYN29SD2CiGvibtKSMLYnKNAL46qLLwfxtBGEgP1VNVOF61YjQkQN0wn-Xf7fLqYt91E0oHmK89P8EH619jh4bbUUCzghvjd05OxrCCBpmcSz_K3Yj-BkWNiSY1uwhN79DLB9d-K0mRxNW3viEJnpiPsrYM-K5b61h3rAzOFdnvrRy4UktsVbvHDSVbZLXw==" data-netlify-honeypot="bot-field">
       <input type="hidden" name="form-name" value="newsletter"/>
       <p style="display:none;"><label>Do not fill this out: <input type="text" name="bot-field"/></label></p>
       <div class="nl-row">
@@ -1095,9 +1112,10 @@ footer{
           <option>West Africa Markets</option>
           <option>GCC & Middle East</option>
           <option>Geopolitical Risk Intelligence</option>
-          <option>All Briefs</option>
+          <option>GAR Weekly</option><option>All Briefs</option>
         </select>
       </div>
+      <div class="nl-field nl-consent" style="flex-direction:row;align-items:flex-start;gap:8px"><input id="newsletter-consent" type="checkbox" name="gar-weekly-consent" value="yes" required/> <label for="newsletter-consent">Yes, send me GAR Weekly from GoBeyond Advisory. Unsubscribe anytime.</label></div>
       <button type="submit" class="nl-submit">Subscribe to Intelligence Briefs</button>
       <p class="nl-note">No spam. No sales cadence. Intelligence briefs only — published when there is something worth reading.</p>
     </form>
@@ -1163,11 +1181,12 @@ footer{
             <option>Cape Coast New City</option>
             <option>Centenary City Abuja</option>
             <option>Energy Services / JE TEX Energy</option>
-            <option>Healthcare Infrastructure / Timeless Health</option>
+            <option value="Healthcare Infrastructure / Timeless Health">Healthcare Infrastructure / Timeless Health HQ</option>
             <option>Newline Investors / Capital Partnership</option>
             <option>Infrastructure Advisory Mandate</option>
             <option>Institutional / Government Engagement</option>
             <option>Research / Media / Press</option>
+            <option>AI Reliability Snapshot</option>
             <option>General Inquiry</option>
           </select>
         </div>
@@ -1191,7 +1210,10 @@ footer{
       <div class="footer-brand">GOBEYOND ADVISORY</div>
       <div class="footer-brand-desc">Strategic Investment & Infrastructure Advisory<br/>Houston · West Africa · GCC · Europe</div>
       <div class="footer-social">
-        <a href="mailto:partners@gobeyondadvisory.com" title="Email" aria-label="Email">✉</a>
+        <a href="https://www.linkedin.com/in/mikeinc" title="LinkedIn" aria-label="Mike Ogbebor on LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M3 8h4v13H3zM5 2a2.3 2.3 0 1 0 0 4.6A2.3 2.3 0 0 0 5 2zm5 6h3.8v1.8c1-1.5 2.3-2.2 4.2-2.2 3.3 0 4.5 2.1 4.5 5.7V21h-4v-7.2c0-1.8-.4-2.9-2.1-2.9-1.8 0-2.4 1.2-2.4 3V21h-4z"/></svg></a>
+        <a href="https://x.com/MikeInc__" title="X" aria-label="Mike Inc on X"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.9 2H22l-7.1 8.1L23.3 22h-6.5l-5.1-7.2L5.4 22H2.2l8-9.1L2 2h6.7l4.6 6.5L18.9 2zM17.8 20h1.8L7.7 3.9H5.8z"/></svg></a>
+        <a href="https://www.youtube.com/@mikeinc." title="YouTube" aria-label="Mike Inc and GoBeyond on YouTube"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M22.6 7.1a3 3 0 0 0-2.1-2.2C18.7 4.4 12 4.4 12 4.4s-6.7 0-8.5.5a3 3 0 0 0-2.1 2.2A31 31 0 0 0 1 12a31 31 0 0 0 .4 4.9 3 3 0 0 0 2.1 2.2c1.8.5 8.5.5 8.5.5s6.7 0 8.5-.5a3 3 0 0 0 2.1-2.2A31 31 0 0 0 23 12a31 31 0 0 0-.4-4.9zM10 15.4V8.6l6 3.4z"/></svg></a>
+        <a href="mailto:partners@gobeyondadvisory.com" title="Mail" aria-label="Email GoBeyond Advisory partnerships"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2" y="4.5" width="20" height="15" rx="2"/><path d="m3 6 9 7 9-7"/></g></svg></a>
       </div>
     </div>
     <div>
@@ -1234,9 +1256,21 @@ footer{
     </div>
   </div>
 </footer>
+<button type="button" id="piano-control" hidden>Play piano</button>
+<audio id="advisory-piano" preload="none" loop src="/assets/advisory-piano.mp3?v=classical-vibes-2"></audio>
+<script defer src="/assets/home-controls.js"></script>
 <script src="/article-loader.js"></script>
 <script>
 (function(){var b=document.querySelector('.menu-toggle'),n=document.getElementById('site-navigation');if(!b||!n)return;b.addEventListener('click',function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!o));n.classList.toggle('open',!o);});n.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.setAttribute('aria-expanded','false');n.classList.remove('open');});});})();
+</script>
+<script>
+(function(){var f=document.querySelector('form[name="newsletter"]');if(!f)return;var sent=false;
+f.addEventListener('submit',function(e){if(sent)return;e.preventDefault();sent=true;
+var d=new FormData(),n=(f.elements.name.value||'').trim();
+d.append('EMAIL',f.elements.email.value.trim());d.append('FIRSTNAME',n.split(/\s+/)[0]||'');d.append('OPT_IN','1');d.append('locale','en');d.append('email_address_check','');
+var done=function(){HTMLFormElement.prototype.submit.call(f);};
+try{Promise.race([fetch(f.getAttribute('data-brevo-action'),{method:'POST',mode:'no-cors',body:d,keepalive:true}),new Promise(function(r){setTimeout(r,3000);})]).then(done,done);}catch(err){done();}
+});})();
 </script>
 </body>
 </html>

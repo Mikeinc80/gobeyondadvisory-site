@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 
 export const SITE_ORIGIN = 'https://www.gobeyondadvisory.com';
 
@@ -9,8 +9,19 @@ export const SITE_ORIGINS = [SITE_ORIGIN, 'https://gobeyondadvisory.com'];
 /** Files that live in the publish root but are not indexable pages. */
 export const NON_PAGE_HTML = new Set(['404.html']);
 
-export const listHtml = (dir = '.') =>
-  readdirSync(dir).filter((f) => f.endsWith('.html')).sort();
+export function listHtml(dir = '.') {
+  const files = readdirSync(dir).filter(f => f.endsWith('.html'));
+  function visit(subdir) {
+    for (const entry of readdirSync(dir + '/' + subdir, {withFileTypes:true})) {
+      const file = subdir + '/' + entry.name;
+      if (entry.isDirectory()) visit(file);
+      else if (entry.isFile() && entry.name.endsWith('.html')) files.push(file);
+    }
+  }
+  // Only this nested tree is part of the advisory website.
+  if (existsSync(dir + '/ai-reliability')) visit('ai-reliability');
+  return files.sort();
+}
 
 /** Public pages, excluding utility pages that must stay out of the sitemap. */
 export const listPages = (dir = '.') =>
@@ -18,7 +29,12 @@ export const listPages = (dir = '.') =>
 
 /** Canonical public URL for a page file. The site serves extensionless URLs. */
 export const canonicalUrl = (file) =>
-  file === 'index.html' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}/${file.replace(/\.html$/, '')}`;
+  file === 'index.html'
+    ? `${SITE_ORIGIN}/`
+    : file.endsWith('/index.html')
+      // Netlify serves directory pages at the trailing-slash URL (the bare form 301s there).
+      ? `${SITE_ORIGIN}/${file.replace(/index\.html$/, '')}`
+      : `${SITE_ORIGIN}/${file.replace(/\.html$/, '')}`;
 
 export const read = (f) => readFileSync(f, 'utf8');
 

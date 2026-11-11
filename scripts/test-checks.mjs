@@ -30,17 +30,17 @@ const CASES = [
   {
     name: 'dead Cloudflare email-obfuscation link is rejected',
     expect: 'dead Cloudflare email-obfuscation link',
-    mutate: (d) => edit(d, 'briefs.html', (s) => s.replace('href="index.html"', 'href="/cdn-cgi/l/email-protection#83f3"')),
+    mutate: (d) => edit(d, 'briefs.html', (s) => s.replace(/href=(["'])(?:index\.html|\/)\1/, 'href="/cdn-cgi/l/email-protection#83f3"')),
   },
   {
     name: 'anchor pointing at a non-existent section id is rejected',
     expect: 'anchor #focus does not exist',
-    mutate: (d) => edit(d, 'briefs.html', (s) => s.replace('index.html#advisory', 'index.html#focus')),
+    mutate: (d) => edit(d, 'briefs.html', (s) => s.replace(/(?:index\.html|\/)#advisory/, '/#focus')),
   },
   {
     name: 'broken internal link is rejected',
     expect: 'broken internal link',
-    mutate: (d) => edit(d, 'briefs.html', (s) => s.replace('href="founders.html"', 'href="/leadership-team"')),
+    mutate: (d) => edit(d, 'briefs.html', (s) => s.replace(/href=(["'])(?:founders\.html|\/founders)\1/, 'href="/leadership-team"')),
   },
   {
     name: 'page without a title is rejected',
@@ -122,7 +122,7 @@ for (const c of CASES) {
   const dir = mkdtempSync(join(tmpdir(), 'gba-'));
   try {
     for (const f of readdirSync('.').filter((f) => f.endsWith('.html'))) cpSync(f, join(dir, f));
-    for (const f of ['scripts', 'articles.json', 'sitemap.xml', 'robots.txt', 'article-loader.js', 'netlify.toml']) {
+    for (const f of ['scripts', 'assets', 'ai-reliability', 'articles.json', 'sitemap.xml', 'robots.txt', 'article-loader.js', 'netlify.toml']) {
       cpSync(f, join(dir, f), { recursive: true });
     }
 
