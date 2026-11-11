@@ -1,0 +1,19 @@
+GoBeyond Advisory | AI Reliability Snapshot
+Workflow readiness checklist
+
+Workflow name, version and date:
+Accountable owner and reviewer:
+Decision supported and people affected:
+
+[ ] Describe the input, model or tool, output and downstream action.
+[ ] Record what a correct answer looks like and the authoritative source.
+[ ] Select up to ten redacted examples including a normal, ambiguous and failure case.
+[ ] For each case record expected result, actual result, evidence and reviewer.
+[ ] Identify which external actions require human authorization.
+[ ] Confirm how a reviewer can decline, correct or reverse an action.
+[ ] Simulate missing data or tool failure. Record the fallback and owner.
+[ ] Record access limits and what the workflow logs or retains.
+[ ] List the three highest-priority actions, owners and retest dates.
+
+Keep private data and credentials out of the initial inquiry.
+Request a Snapshot: https://www.gobeyondadvisory.com/ai-reliability/audit

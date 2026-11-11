@@ -32,14 +32,15 @@
 
   function card(article, isFeatured) {
     var tag = (isFeatured ? '⭐ Featured · ' : '') + esc(article.category);
+    var action = article.type === 'gar-weekly' ? 'Watch episode →' : 'Read Brief →';
     return '<a href="' + esc(article.url) + '" class="insight-card' + (isFeatured ? ' featured' : '') + '">' +
       (isFeatured ? '<div>' : '') +
         '<div class="insight-tag">' + tag + '</div>' +
         '<div class="insight-title">' + esc(article.title) + '</div>' +
         '<div class="insight-body">' + esc(article.excerpt) + '</div>' +
         '<div class="insight-date">' + esc(article.date) + (isFeatured ? ' · gobeyondadvisory.com' : '') + '</div>' +
-      (isFeatured ? '</div><div class="insight-cta-btn">Read Brief →</div>'
-                  : '<div class="insight-cta">Read Brief →</div>') +
+      (isFeatured ? '</div><div class="insight-cta-btn">' + action + '</div>'
+                  : '<div class="insight-cta">' + action + '</div>') +
     '</a>';
   }
 

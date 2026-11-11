@@ -10,7 +10,7 @@
  *
  * Zero dependencies, so `node scripts/check-site.mjs` works on a clean clone.
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { SITE_ORIGIN, SITE_ORIGINS, listHtml, listPages, canonicalUrl, read, stripTags } from './_pages.mjs';
 
 const failures = [];
@@ -25,17 +25,19 @@ const pages = listPages();
 const allHtml = listHtml();
 const docs = new Map(allHtml.map((f) => [f, read(f)]));
 const idsByFile = new Map(
-  [...docs].map(([f, s]) => [f, new Set([...s.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]))])
+  [...docs].map(([f, s]) => [f, new Set([...s.matchAll(/\bid=["']([^"']+)["']/g)].map((m) => m[1]))])
 );
 
 /** Resolve an internal href to the file that serves it (extensionless URLs included). */
 function resolveTarget(href, from) {
-  const [path] = href.split('#');
-  if (path === '') return from;
-  const clean = path.split('?')[0].replace(/^\//, '');
-  if (clean === '') return 'index.html';
+  const url = new URL(href, SITE_ORIGIN + '/' + from);
+  const clean = url.pathname.replace(/^\//, '').replace(/\/$/, '');
+  if (!clean) return 'index.html';
   if (docs.has(clean)) return clean;
-  if (docs.has(`${clean}.html`)) return `${clean}.html`;
+  if (docs.has(clean + '.html')) return clean + '.html';
+  if (docs.has(clean + '/index.html')) return clean + '/index.html';
+  if (/\.(?:css|js|txt|webp|png|svg|jpg|pdf)$/i.test(clean) &&
+      existsSync(clean) && statSync(clean).isFile()) return clean;
   return null;
 }
 
@@ -65,7 +67,7 @@ for (const f of pages) {
 
 // ── 2. Links ────────────────────────────────────────────────────────────────
 for (const [f, s] of docs) {
-  for (const href of new Set([...s.matchAll(/href="([^"]+)"/g)].map((m) => m[1]))) {
+  for (const href of new Set([...s.matchAll(/\bhref=(["'])(.*?)\1/g)].map((m) => m[2]))) {
     if (href.includes('/cdn-cgi/')) {
       fail(f, `dead Cloudflare email-obfuscation link: ${href}`);
       continue;
@@ -87,7 +89,7 @@ for (const [f, s] of docs) {
       continue;
     }
     const frag = local.split('#')[1];
-    if (frag && !idsByFile.get(target).has(frag)) {
+    if (frag && !idsByFile.get(target)?.has(frag)) {
       fail(f, `anchor #${frag} does not exist in ${target} (via ${href})`);
     }
   }
@@ -145,12 +147,20 @@ for (const [i, a] of articles.entries()) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(a.published ?? '') || Number.isNaN(Date.parse(a.published))) {
     fail(where, `"published" must be an ISO date, got ${JSON.stringify(a.published)}`);
   }
-  if (a.url !== `/${a.id}`) fail(where, `"url" should be "/${a.id}", got ${JSON.stringify(a.url)}`);
-  if (!existsSync(`${a.id}.html`)) fail(where, `no page on disk for id "${a.id}"`);
-  for (const key of Object.keys(a)) {
-    if (!['id', 'featured', 'category', 'title', 'excerpt', 'date', 'published', 'url'].includes(key)) {
-      fail(where, `unknown field "${key}"`);
+  const allowed = ['id','featured','category','title','excerpt','date','published','url'];
+  if (a.type === 'gar-weekly') {
+    allowed.push('type','episode','youtubeId','transcript','sources','relatedIds');
+    const target = resolveTarget(a.url, 'index.html');
+    const anchor = a.url.split('#')[1];
+    if (target !== 'ai-reliability/weekly/index.html' || !idsByFile.get(target)?.has(anchor)) {
+      fail(where, 'episode permalink must resolve to the published GAR Weekly entry');
     }
+  } else {
+    if (a.url !== `/${a.id}`) fail(where, `"url" should be "/${a.id}", got ${JSON.stringify(a.url)}`);
+    if (!existsSync(`${a.id}.html`)) fail(where, `no page on disk for id "${a.id}"`);
+  }
+  for (const key of Object.keys(a)) {
+    if (!allowed.includes(key)) fail(where, `unknown field "${key}"`);
   }
 }
 const featured = articles.filter((a) => a.featured).length;
@@ -159,7 +169,7 @@ if (featured !== 1) fail('articles.json', `expected exactly one featured brief, 
 // Every article page on disk must appear in the index, or briefs go unpublished.
 const NON_ARTICLE = new Set(['index.html', 'founders.html', 'briefs.html', 'success.html', '404.html']);
 for (const f of pages) {
-  if (NON_ARTICLE.has(f)) continue;
+  if (NON_ARTICLE.has(f) || f.startsWith('ai-reliability/')) continue;
   if (!seen.has(f.replace(/\.html$/, ''))) fail(f, 'article page is not listed in articles.json');
 }
 
@@ -204,4 +214,4 @@ if (STRICT && warnings.length) {
   console.error('✖ --strict: warnings are treated as failures.\n');
   process.exit(1);
 }
-console.log(`✔ site checks passed — ${pages.length} pages, ${articles.length} briefs, 0 problems.`);
+console.log(`✔ site checks passed — ${pages.length} pages, ${articles.length} editorial entries, 0 problems.`);
