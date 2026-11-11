@@ -3,7 +3,7 @@
  *
  * Progressive enhancement: #gba-articles-grid ships with a static fallback link
  * in index.html. If this script runs and /articles.json loads, the fallback is
- * replaced with the full card grid. If either fails, the fallback stays put, so
+ * replaced with the current featured brief. If either fails, the fallback stays put, so
  * the section is never empty.
  */
 (function () {
@@ -44,42 +44,24 @@
     '</a>';
   }
 
-  function injectStyles() {
-    if (document.getElementById('gba-loader-styles')) return;
-    var s = document.createElement('style');
-    s.id = 'gba-loader-styles';
-    s.textContent = [
-      '#gba-articles-grid{width:100%;display:block;}',
-      '#gba-articles-grid .insight-card{text-decoration:none;display:block;}',
-      '.insights-grid{display:block;width:100%;max-width:100%;padding:0;}',
-      '.gba-grid-row{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,0.1);}',
-      '.insight-cta-btn{display:inline-block;margin-top:20px;padding:10px 22px;background:#B8964A;color:#0C0A07;',
-      'font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;font-family:monospace;}',
-      '.insight-cta{margin-top:16px;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#B8964A;}',
-      '@media (max-width:860px){.gba-grid-row{grid-template-columns:repeat(2,1fr);}}',
-      '@media (max-width:560px){.gba-grid-row{grid-template-columns:1fr;}}'
-    ].join('\n');
-    document.head.appendChild(s);
-  }
-
   function render(container, articles) {
-    var seen = Object.create(null);
-    var unique = articles.filter(function (a) {
-      if (!a || !a.id || !a.url || seen[a.id]) return false;
-      seen[a.id] = true;
-      return true;
-    });
-    if (!unique.length) return;
-
-    unique.sort(byPublishedDesc);
-
-    // Featured = the newest published article (no hand-set flag needed).
-    var featured = unique.shift();
-
-    injectStyles();
-    container.innerHTML =
-      (featured ? card(featured, true) : '') +
-      (unique.length ? '<div class="gba-grid-row">' + unique.map(function (a) { return card(a, false); }).join('') + '</div>' : '');
+    const entries = articles.filter(article => article && article.id && article.url).sort(byPublishedDesc);
+    const briefs = entries.filter(article => article.type !== 'gar-weekly');
+    if (briefs.length) {
+      container.innerHTML = card(briefs[0], true);
+      document.getElementById('recent-briefs').innerHTML = briefs.slice(1, 4).map(article =>
+        '<a class="recent-item" href="' + esc(article.url) + '"><small>' + esc(article.category) +
+        '</small><strong>' + esc(article.title) + '</strong><time datetime="' + esc(article.published) +
+        '">' + esc(article.date) + '</time></a>'
+      ).join('');
+    }
+    const episode = entries.find(article => article.type === 'gar-weekly');
+    if (episode) {
+      document.getElementById('series-description').textContent = 'Episode ' + episode.episode + ' · ' + episode.title;
+      const link = document.getElementById('series-link');
+      link.href = episode.url;
+      link.textContent = 'Watch episode →';
+    }
   }
 
   function init() {

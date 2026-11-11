@@ -1,6 +1,3 @@
-/* Homepage enhancements. Port photograph: Wolfgang Weiser, Pexels ID 29091982.
-   https://www.pexels.com/photo/container-ships-at-hamburg-port-terminal-29091982/
-   Illustrative infrastructure photography, served locally in two sizes. */
 :root {
   --bg: #f7f8f8;
   --panel: #f0f3f3;
@@ -35,9 +32,9 @@ body > nav { padding-inline: var(--page-edge); background: #fff; border-color: #
 }
 .hero::before {
   inset: 0; width: 100%; height: 100%; z-index: -1;
-  background-image: linear-gradient(90deg, #0b2031 0%, rgba(11,32,49,.96) 30%, rgba(11,32,49,.81) 48%, rgba(11,32,49,.16) 78%), url("advisory-port.webp");
+  background-image: linear-gradient(90deg, #0b2031 0%, rgba(11,32,49,.96) 30%, rgba(11,32,49,.81) 48%, rgba(11,32,49,.16) 78%), url("skyline.webp");
   background-position: center, right 52%;
-  background-size: cover, 80% auto;
+  background-size: cover, cover;
   background-repeat: no-repeat;
 }
 .hero-bg-num { display: none; }
@@ -109,8 +106,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media (max-width: 700px) {
   .hero { min-height: 0; padding-top: 140px; padding-bottom: 42px; }
   .hero::before {
-    background-image: linear-gradient(90deg,rgba(11,32,49,.94),rgba(11,32,49,.78) 62%,rgba(11,32,49,.64)), url("advisory-port-mobile.webp");
-    background-size: cover; background-position: center;
+    background-image: linear-gradient(90deg,rgba(11,32,49,.94),rgba(11,32,49,.78) 62%,rgba(11,32,49,.64)), url("skyline.webp");
+    background-size: cover; background-position: center, 58% center;
   }
   .hero h1 { font-size: clamp(42px, 9.1vw, 60px); line-height: 1.03; }
   .hero-body { max-width: 37em; }
@@ -136,3 +133,27 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 
 #gba-articles-grid .insight-card:not(.featured) .insight-cta { color: #715318; }
+
+@media (min-width:1537px), (min-width:900px) and (min-resolution:1.5dppx) {
+  .hero::before { background-image:linear-gradient(90deg,#0b2031 0%,rgba(11,32,49,.93) 30%,rgba(11,32,49,.72) 49%,rgba(11,32,49,.1) 82%),url("skyline-wide.webp"); }
+}
+#insights .insights-grid { display:block; padding:0; margin-top:2rem; }
+.editorial-lead {display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:1rem;}
+#insights .editorial-lead .featured {display:flex!important;flex-direction:column;justify-content:flex-end;grid-column:auto;padding:clamp(24px,3vw,45px);border:0;min-height:310px;background:#11283d;color:white;}
+#insights .editorial-lead .insight-title {font:500 clamp(27px,3.2vw,45px)/1.08 Georgia,serif;margin:14px 0;}
+#insights .editorial-lead .featured .insight-body {color:#e3eaf0;}
+#insights .insight-cta-btn {align-self:flex-start;margin-top:16px;color:#102437;background:#efd9a8;}
+.series-panel {display:flex;flex-direction:column;align-items:flex-start;padding:clamp(24px,3vw,45px);background:#eaf0ef;color:#102437;border-top:3px solid #937440;}
+.series-panel h3 {font:500 clamp(26px,3vw,39px)/1.1 Georgia,serif;margin:.45em 0;}
+.series-panel p,.archive-intro {font:16px/1.6 Arial,sans-serif;color:#394d58;max-width:58ch;}
+.series-panel .series-action {margin-top:auto;padding-top:24px;}
+.series-action,.archive-action {color:#16384b;font-weight:700;text-decoration:underline;text-underline-offset:4px;}
+.recent-head {margin:36px 0 12px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.recent-head h3 {font:500 clamp(24px,3vw,34px)/1.15 Georgia,serif;}
+.recent-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
+.recent-item {display:block;border-top:1px solid #9ba9ae;padding:18px 0;color:#102437;text-decoration:none;}
+.recent-item strong {display:block;font:500 clamp(21px,2vw,27px)/1.22 Georgia,serif;margin:8px 0;}
+.recent-item small,.series-panel small {font:700 11px/1.5 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#68501c;}
+.recent-item time {color:#495c67;font:13px Arial,sans-serif;}
+.recent-item:hover strong {text-decoration:underline;text-underline-offset:3px;}
+@media(max-width:760px){.editorial-lead,.recent-grid{grid-template-columns:1fr}.recent-grid{gap:0}#insights .editorial-lead .featured{min-height:0}.recent-head{align-items:start}}
