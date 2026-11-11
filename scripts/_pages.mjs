@@ -29,7 +29,12 @@ export const listPages = (dir = '.') =>
 
 /** Canonical public URL for a page file. The site serves extensionless URLs. */
 export const canonicalUrl = (file) =>
-  file === 'index.html' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}/${file.replace(/(?:\/index)?\.html$/, '')}`;
+  file === 'index.html'
+    ? `${SITE_ORIGIN}/`
+    : file.endsWith('/index.html')
+      // Netlify serves directory pages at the trailing-slash URL (the bare form 301s there).
+      ? `${SITE_ORIGIN}/${file.replace(/index\.html$/, '')}`
+      : `${SITE_ORIGIN}/${file.replace(/\.html$/, '')}`;
 
 export const read = (f) => readFileSync(f, 'utf8');
 
