@@ -1092,7 +1092,7 @@ footer{
       <h3>Subscribe to<br/><em>GoBeyond Intelligence.</em></h3>
       <p>Receive original infrastructure intelligence briefs, corridor research, and geopolitical risk analysis — delivered directly to your inbox. No noise. Institutional-grade insight only.</p>
     </div>
-    <form name="newsletter" method="POST" action="/success" data-netlify="true" data-netlify-honeypot="bot-field">
+    <form name="newsletter" method="POST" action="/success" data-netlify="true" data-brevo-action="https://9908b016.sibforms.com/serve/MUIFAKPQCJgHwSE4tLgEYN29SD2CiGvibtKSMLYnKNAL46qLLwfxtBGEgP1VNVOF61YjQkQN0wn-Xf7fLqYt91E0oHmK89P8EH619jh4bbUUCzghvjd05OxrCCBpmcSz_K3Yj-BkWNiSY1uwhN79DLB9d-K0mRxNW3viEJnpiPsrYM-K5b61h3rAzOFdnvrRy4UktsVbvHDSVbZLXw==" data-netlify-honeypot="bot-field">
       <input type="hidden" name="form-name" value="newsletter"/>
       <p style="display:none;"><label>Do not fill this out: <input type="text" name="bot-field"/></label></p>
       <div class="nl-row">
@@ -1115,6 +1115,7 @@ footer{
           <option>GAR Weekly</option><option>All Briefs</option>
         </select>
       </div>
+      <div class="nl-field nl-consent" style="flex-direction:row;align-items:flex-start;gap:8px"><input id="newsletter-consent" type="checkbox" name="gar-weekly-consent" value="yes" required/> <label for="newsletter-consent">Yes, send me GAR Weekly from GoBeyond Advisory. Unsubscribe anytime.</label></div>
       <button type="submit" class="nl-submit">Subscribe to Intelligence Briefs</button>
       <p class="nl-note">No spam. No sales cadence. Intelligence briefs only — published when there is something worth reading.</p>
     </form>
@@ -1261,6 +1262,15 @@ footer{
 <script src="/article-loader.js"></script>
 <script>
 (function(){var b=document.querySelector('.menu-toggle'),n=document.getElementById('site-navigation');if(!b||!n)return;b.addEventListener('click',function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!o));n.classList.toggle('open',!o);});n.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){b.setAttribute('aria-expanded','false');n.classList.remove('open');});});})();
+</script>
+<script>
+(function(){var f=document.querySelector('form[name="newsletter"]');if(!f)return;var sent=false;
+f.addEventListener('submit',function(e){if(sent)return;e.preventDefault();sent=true;
+var d=new FormData(),n=(f.elements.name.value||'').trim();
+d.append('EMAIL',f.elements.email.value.trim());d.append('FIRSTNAME',n.split(/\s+/)[0]||'');d.append('OPT_IN','1');d.append('locale','en');d.append('email_address_check','');
+var done=function(){HTMLFormElement.prototype.submit.call(f);};
+try{Promise.race([fetch(f.getAttribute('data-brevo-action'),{method:'POST',mode:'no-cors',body:d,keepalive:true}),new Promise(function(r){setTimeout(r,3000);})]).then(done,done);}catch(err){done();}
+});})();
 </script>
 </body>
 </html>
