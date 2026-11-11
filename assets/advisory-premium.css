@@ -134,3 +134,5 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+#gba-articles-grid .insight-card:not(.featured) .insight-cta { color: #715318; }
